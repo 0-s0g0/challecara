@@ -12,8 +12,11 @@ interface RegistrationState {
 
   // Step 4 data
   xConnected: boolean
+  xUsername: string
   instagramConnected: boolean
+  instagramUsername: string
   facebookConnected: boolean
+  facebookUsername: string
 
   // Step 5 data
   blogTitle: string
@@ -22,7 +25,14 @@ interface RegistrationState {
   // Actions
   setLoginData: (accountId: string, password: string) => void
   setProfileData: (nickname: string, bio: string, avatarUrl: string) => void
-  setSocialData: (x: boolean, instagram: boolean, facebook: boolean) => void
+  setSocialData: (
+    x: boolean,
+    xUsername: string,
+    instagram: boolean,
+    instagramUsername: string,
+    facebook: boolean,
+    facebookUsername: string
+  ) => void
   setBlogData: (title: string, content: string) => void
   reset: () => void
 }
@@ -34,15 +44,18 @@ export const useRegistrationStore = create<RegistrationState>((set) => ({
   bio: "",
   avatarUrl: "",
   xConnected: false,
+  xUsername: "",
   instagramConnected: false,
+  instagramUsername: "",
   facebookConnected: false,
+  facebookUsername: "",
   blogTitle: "",
   blogContent: "",
 
   setLoginData: (accountId, password) => set({ accountId, password }),
   setProfileData: (nickname, bio, avatarUrl) => set({ nickname, bio, avatarUrl }),
-  setSocialData: (xConnected, instagramConnected, facebookConnected) =>
-    set({ xConnected, instagramConnected, facebookConnected }),
+  setSocialData: (xConnected, xUsername, instagramConnected, instagramUsername, facebookConnected, facebookUsername) =>
+    set({ xConnected, xUsername, instagramConnected, instagramUsername, facebookConnected, facebookUsername }),
   setBlogData: (blogTitle, blogContent) => set({ blogTitle, blogContent }),
   reset: () =>
     set({
@@ -52,8 +65,11 @@ export const useRegistrationStore = create<RegistrationState>((set) => ({
       bio: "",
       avatarUrl: "",
       xConnected: false,
+      xUsername: "",
       instagramConnected: false,
+      instagramUsername: "",
       facebookConnected: false,
+      facebookUsername: "",
       blogTitle: "",
       blogContent: "",
     }),

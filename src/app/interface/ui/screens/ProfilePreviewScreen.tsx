@@ -40,12 +40,11 @@ export function ProfilePreviewScreen({ onBack }: ProfilePreviewScreenProps) {
               </p>
 
               <div className="mt-4 flex gap-3">
-                {formData.instagramConnected && (
+                {formData.instagramUsername && (
                   <SocialIcon color="bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]" />
                 )}
-                {formData.xConnected && <SocialIcon color="bg-[#1DA1F2]" />}
-                {formData.facebookConnected && <SocialIcon color="bg-[#1877F2]" />}
-                <SocialIcon color="bg-foreground" />
+                {formData.xUsername && <SocialIcon color="bg-[#1DA1F2]" />}
+                {formData.facebookUsername && <SocialIcon color="bg-[#1877F2]" />}
               </div>
             </div>
           </div>
