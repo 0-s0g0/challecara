@@ -3,8 +3,8 @@
 import type React from "react"
 
 import { useState } from "react"
-import { Button } from "@/app/components/ui/button"
-import { Input } from "@/app/components/ui/input"
+import { Button } from "@/app/interface/ui/components/ui/button"
+import { Input } from "@/app/interface/ui/components/ui/input"
 import { ChevronLeft } from "lucide-react"
 import { useRegistrationStore } from "../../state/registrationStore"
 

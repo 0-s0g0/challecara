@@ -1,11 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "@/app/components/ui/button"
-import { Card } from "@/app/components/ui/card"
+import { Button } from "@/app/interface/ui/components/ui/button"
+import { Card } from "@/app/interface/ui/components/ui/card"
 import { Copy, Check } from "lucide-react"
 import { useRegistrationStore } from "../../state/registrationStore"
-import { Layout1, Layout2, Layout3, Layout4 } from "@/app/components/ProfileLayouts"
+import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
 
 interface FinalProfileScreenProps {
   onNext: () => void

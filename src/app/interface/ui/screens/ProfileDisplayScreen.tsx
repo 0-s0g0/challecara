@@ -2,8 +2,8 @@
 
 import { useState } from "react"
 import { useRegistrationStore } from "../../state/registrationStore"
-import { Layout1, Layout2, Layout3, Layout4 } from "@/app/components/ProfileLayouts"
-import { AppFooter } from "@/app/components/AppFooter"
+import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
+import { AppFooter } from "@/app/interface/ui/components/AppFooter"
 import { SearchScreen } from "./SearchScreen"
 import { BlogCreateScreen } from "./BlogCreateScreen"
 import { AnalyticsScreen } from "./AnalyticsScreen"

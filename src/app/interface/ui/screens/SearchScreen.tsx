@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { Input } from "@/app/components/ui/input"
+import { Input } from "@/app/interface/ui/components/ui/input"
 import { Search } from "lucide-react"
-import { Card } from "@/app/components/ui/card"
+import { Card } from "@/app/interface/ui/components/ui/card"
 
 export function SearchScreen() {
   const [searchQuery, setSearchQuery] = useState("")

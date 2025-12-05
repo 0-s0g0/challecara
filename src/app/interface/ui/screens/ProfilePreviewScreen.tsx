@@ -1,10 +1,10 @@
 "use client"
 
 import { useState, useRef } from "react"
-import { Button } from "@/app/components/ui/button"
+import { Button } from "@/app/interface/ui/components/ui/button"
 import { ChevronLeft } from "lucide-react"
 import { useRegistrationStore } from "../../state/registrationStore"
-import { Layout1, Layout2, Layout3, Layout4 } from "@/app/components/ProfileLayouts"
+import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
 
 interface ProfilePreviewScreenProps {
   onBack: () => void

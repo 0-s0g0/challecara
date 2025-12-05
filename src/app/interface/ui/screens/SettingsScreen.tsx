@@ -1,6 +1,6 @@
 "use client"
 
-import { Card } from "@/app/components/ui/card"
+import { Card } from "@/app/interface/ui/components/ui/card"
 import { ChevronRight, User, Bell, Lock, Palette, HelpCircle, LogOut } from "lucide-react"
 
 export function SettingsScreen() {

@@ -2,7 +2,7 @@
 
 import type React from "react"
 import Image from "next/image"
-import { Card } from "@/app/components/ui/card"
+import { Card } from "@/app/interface/ui/components/ui/card"
 
 interface ProfileData {
   nickname: string

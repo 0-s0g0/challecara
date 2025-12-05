@@ -1,7 +1,7 @@
 "use client"
 
-import { Button } from "@/app/components/ui/button"
-import { PastelBackground } from "@/app/components/PastelBackground"
+import { Button } from "@/app/interface/ui/components/ui/button"
+import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
 
 interface WelcomeScreenProps {
   onNext: () => void

@@ -1,6 +1,6 @@
 "use client"
 
-import { Card } from "@/app/components/ui/card"
+import { Card } from "@/app/interface/ui/components/ui/card"
 import { Eye, Heart, MessageCircle, TrendingUp } from "lucide-react"
 
 export function AnalyticsScreen() {
