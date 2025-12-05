@@ -10,6 +10,7 @@ import { ProfilePreviewScreen } from "@/app/interface/ui/screens/ProfilePreviewS
 
 export default function Home() {
   const [currentScreen, setCurrentScreen] = useState(1)
+  const [showLoginModal, setShowLoginModal] = useState(false)
 
   const handleNext = () => {
     setCurrentScreen(currentScreen + 1)
@@ -19,16 +20,36 @@ export default function Home() {
     setCurrentScreen(Math.max(1, currentScreen - 1))
   }
 
+  const handleWelcomeNext = () => {
+    setShowLoginModal(true)
+  }
+
+  const handleLoginClose = () => {
+    setShowLoginModal(false)
+  }
+
+  const handleLoginNext = () => {
+    setShowLoginModal(false)
+    setCurrentScreen(3)
+  }
+
   return (
     <main className="min-h-screen bg-background">
       <div className="mx-auto max-w-md">
-        {currentScreen === 1 && <WelcomeScreen onNext={handleNext} />}
-        {currentScreen === 2 && <LoginScreen onNext={handleNext} onBack={handleBack} />}
+        {currentScreen === 1 && <WelcomeScreen onNext={handleWelcomeNext} />}
         {currentScreen === 3 && <ProfileSetupScreen onNext={handleNext} onBack={handleBack} />}
         {currentScreen === 4 && <SocialSetupScreen onNext={handleNext} onBack={handleBack} />}
         {currentScreen === 5 && <BlogSetupScreen onNext={handleNext} onBack={handleBack} />}
         {currentScreen === 6 && <ProfilePreviewScreen onBack={handleBack} />}
+
+        {showLoginModal && (
+          <LoginScreenModal onNext={handleLoginNext} onBack={handleLoginClose} />
+        )}
       </div>
     </main>
   )
+}
+
+function LoginScreenModal({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
+  return <LoginScreen onNext={onNext} onBack={onBack} />
 }

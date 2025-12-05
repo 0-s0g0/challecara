@@ -41,76 +41,77 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-gradient-to-br from-background to-secondary p-8">
-      {/* Decorative circles */}
-      <div className="absolute right-0 top-20 h-56 w-56 rounded-full bg-pastel-mint/40 blur-3xl" />
-      <div className="absolute bottom-32 left-0 h-48 w-48 rounded-full bg-pastel-pink/30 blur-3xl" />
+    <>
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 z-40 bg-black/20 animate-in fade-in duration-300"
+        onClick={onBack}
+      />
 
-      {/* Header */}
-      <div className="mt-16 text-center">
-        <h1 className="text-3xl font-bold text-foreground">TsunaguLink</h1>
-        <h2 className="mt-8 text-2xl font-semibold text-foreground">LOG IN</h2>
-      </div>
+      {/* Modal */}
+      <div className="fixed inset-x-0 bottom-0 z-50 animate-in slide-in-from-bottom duration-300">
+        <div className="mx-auto max-w-md rounded-t-3xl bg-white p-8 pb-12 shadow-2xl">
+          <div className="mb-6 text-center">
+            <h2 className="text-2xl font-bold text-[#6B5335]">LOG IN</h2>
+          </div>
 
-      {/* Content */}
-      <div className="z-10 mt-12 flex flex-1 flex-col space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="accountId" className="text-sm text-muted-foreground">
-            アカウントID
-          </Label>
-          <Input
-            id="accountId"
-            type="text"
-            value={accountId}
-            onChange={(e) => setAccountId(e.target.value)}
-            className="h-12 rounded-2xl border-border bg-white/80 backdrop-blur-sm"
-            placeholder=""
-          />
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="accountId" className="text-sm text-gray-600">
+                アカウントID
+              </Label>
+              <Input
+                id="accountId"
+                type="text"
+                value={accountId}
+                onChange={(e) => setAccountId(e.target.value)}
+                className="h-12 rounded-2xl border-gray-200"
+                placeholder=""
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-sm text-gray-600">
+                アカウントパスワード
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="h-12 rounded-2xl border-gray-200"
+                placeholder=""
+              />
+            </div>
+
+            {error && <p className="text-sm text-red-500">{error}</p>}
+
+            <div className="text-center">
+              <p className="text-xs text-gray-500">
+                アカウントを持っていない場合{" "}
+                <button className="font-semibold text-[#8B7355] underline">SIGN UP</button>
+              </p>
+            </div>
+
+            <div className="flex gap-4 pt-4">
+              <Button
+                onClick={onBack}
+                variant="outline"
+                className="h-12 flex-1 rounded-full border-gray-300 hover:bg-gray-50"
+              >
+                <ChevronLeft className="mr-1 h-4 w-4" />
+                戻る
+              </Button>
+              <Button
+                onClick={handleSubmit}
+                className="h-12 flex-1 rounded-full bg-[#8B7355] text-white hover:bg-[#6B5335]"
+              >
+                START
+              </Button>
+            </div>
+          </div>
         </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="password" className="text-sm text-muted-foreground">
-            アカウントパスワード
-          </Label>
-          <Input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="h-12 rounded-2xl border-border bg-white/80 backdrop-blur-sm"
-            placeholder=""
-          />
-        </div>
-
-        {error && <p className="text-sm text-red-500">{error}</p>}
-
-        <div className="text-center">
-          <p className="text-xs text-muted-foreground">
-            アカウントを持っていない場合 <button className="font-semibold text-primary underline">SIGN UP</button>
-          </p>
-        </div>
       </div>
-
-      {/* Navigation Buttons */}
-      <div className="z-10 mb-8 flex gap-4">
-        <Button
-          onClick={onBack}
-          variant="outline"
-          className="h-12 flex-1 rounded-full border-primary/20 bg-white/80 backdrop-blur-sm hover:bg-white"
-        >
-          <ChevronLeft className="mr-1 h-4 w-4" />
-          戻る
-        </Button>
-        <Button
-          onClick={handleSubmit}
-          className="h-12 flex-1 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
-        >
-          START
-          <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </Button>
-      </div>
-    </div>
+    </>
   )
 }
