@@ -31,14 +31,14 @@ export function BlogSetupScreen({ onNext, onBack }: BlogSetupScreenProps) {
 
     try {
       const socialLinks = []
-      if (registrationData.xConnected) {
-        socialLinks.push({ provider: "twitter", url: "https://twitter.com/user" })
+      if (registrationData.xUsername) {
+        socialLinks.push({ provider: "twitter", url: `https://twitter.com/${registrationData.xUsername}` })
       }
-      if (registrationData.instagramConnected) {
-        socialLinks.push({ provider: "instagram", url: "https://instagram.com/user" })
+      if (registrationData.instagramUsername) {
+        socialLinks.push({ provider: "instagram", url: `https://instagram.com/${registrationData.instagramUsername}` })
       }
-      if (registrationData.facebookConnected) {
-        socialLinks.push({ provider: "facebook", url: "https://facebook.com/user" })
+      if (registrationData.facebookUsername) {
+        socialLinks.push({ provider: "facebook", url: `https://facebook.com/${registrationData.facebookUsername}` })
       }
 
       const result = await createProfile({

@@ -4,6 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { Button } from "@/app/components/ui/button"
+import { Input } from "@/app/components/ui/input"
 import { ChevronLeft } from "lucide-react"
 import { useRegistrationStore } from "../../state/registrationStore"
 
@@ -12,20 +13,48 @@ interface SocialSetupScreenProps {
   onBack: () => void
 }
 
+type SocialType = "x" | "instagram" | "facebook"
+
 export function SocialSetupScreen({ onNext, onBack }: SocialSetupScreenProps) {
-  const {
-    xConnected: storedX,
-    instagramConnected: storedInstagram,
-    facebookConnected: storedFacebook,
-  } = useRegistrationStore()
+  const store = useRegistrationStore()
   const setSocialData = useRegistrationStore((state) => state.setSocialData)
 
-  const [xConnected, setXConnected] = useState(storedX)
-  const [instagramConnected, setInstagramConnected] = useState(storedInstagram)
-  const [facebookConnected, setFacebookConnected] = useState(storedFacebook)
+  const [selectedSocial, setSelectedSocial] = useState<SocialType | null>(null)
+  const [tempUsername, setTempUsername] = useState("")
+
+  const [xUsername, setXUsername] = useState(store.xUsername)
+  const [instagramUsername, setInstagramUsername] = useState(store.instagramUsername)
+  const [facebookUsername, setFacebookUsername] = useState(store.facebookUsername)
+
+  const handleSocialClick = (social: SocialType) => {
+    setSelectedSocial(social)
+    if (social === "x") setTempUsername(xUsername)
+    if (social === "instagram") setTempUsername(instagramUsername)
+    if (social === "facebook") setTempUsername(facebookUsername)
+  }
+
+  const handleSave = () => {
+    if (selectedSocial === "x") setXUsername(tempUsername)
+    if (selectedSocial === "instagram") setInstagramUsername(tempUsername)
+    if (selectedSocial === "facebook") setFacebookUsername(tempUsername)
+    setSelectedSocial(null)
+    setTempUsername("")
+  }
+
+  const handleCancel = () => {
+    setSelectedSocial(null)
+    setTempUsername("")
+  }
 
   const handleSubmit = () => {
-    setSocialData(xConnected, instagramConnected, facebookConnected)
+    setSocialData(
+      !!xUsername,
+      xUsername,
+      !!instagramUsername,
+      instagramUsername,
+      !!facebookUsername,
+      facebookUsername
+    )
     onNext()
   }
 
@@ -39,7 +68,7 @@ export function SocialSetupScreen({ onNext, onBack }: SocialSetupScreenProps) {
         <span className="text-sm text-muted-foreground">2/3</span>
       </div>
 
-      <div className="z-10 mt-12 flex flex-1 flex-col items-center justify-center space-y-6">
+      <div className="z-10 mt-12 flex flex-1 flex-col items-center justify-start space-y-6">
         <SocialButton
           icon={
             <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
@@ -47,9 +76,20 @@ export function SocialSetupScreen({ onNext, onBack }: SocialSetupScreenProps) {
             </svg>
           }
           label="X (Twitter)"
-          connected={xConnected}
-          onToggle={() => setXConnected(!xConnected)}
+          username={xUsername}
+          isSelected={selectedSocial === "x"}
+          onClick={() => handleSocialClick("x")}
         />
+
+        {selectedSocial === "x" && (
+          <UsernameInput
+            value={tempUsername}
+            onChange={setTempUsername}
+            onSave={handleSave}
+            onCancel={handleCancel}
+          />
+        )}
+
         <SocialButton
           icon={
             <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
@@ -57,9 +97,20 @@ export function SocialSetupScreen({ onNext, onBack }: SocialSetupScreenProps) {
             </svg>
           }
           label="Instagram"
-          connected={instagramConnected}
-          onToggle={() => setInstagramConnected(!instagramConnected)}
+          username={instagramUsername}
+          isSelected={selectedSocial === "instagram"}
+          onClick={() => handleSocialClick("instagram")}
         />
+
+        {selectedSocial === "instagram" && (
+          <UsernameInput
+            value={tempUsername}
+            onChange={setTempUsername}
+            onSave={handleSave}
+            onCancel={handleCancel}
+          />
+        )}
+
         <SocialButton
           icon={
             <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
@@ -67,9 +118,19 @@ export function SocialSetupScreen({ onNext, onBack }: SocialSetupScreenProps) {
             </svg>
           }
           label="Facebook"
-          connected={facebookConnected}
-          onToggle={() => setFacebookConnected(!facebookConnected)}
+          username={facebookUsername}
+          isSelected={selectedSocial === "facebook"}
+          onClick={() => handleSocialClick("facebook")}
         />
+
+        {selectedSocial === "facebook" && (
+          <UsernameInput
+            value={tempUsername}
+            onChange={setTempUsername}
+            onSave={handleSave}
+            onCancel={handleCancel}
+          />
+        )}
       </div>
 
       <div className="z-10 mb-8 flex gap-4">
@@ -98,25 +159,68 @@ export function SocialSetupScreen({ onNext, onBack }: SocialSetupScreenProps) {
 function SocialButton({
   icon,
   label,
-  connected,
-  onToggle,
+  username,
+  isSelected,
+  onClick,
 }: {
   icon: React.ReactNode
   label: string
-  connected: boolean
-  onToggle: () => void
+  username: string
+  isSelected: boolean
+  onClick: () => void
 }) {
   return (
     <button
-      onClick={onToggle}
+      onClick={onClick}
       className={`flex w-full max-w-xs items-center justify-center gap-3 rounded-2xl p-4 transition-all ${
-        connected
+        username
           ? "bg-primary text-primary-foreground shadow-lg"
           : "bg-white/80 text-foreground backdrop-blur-sm hover:bg-white"
-      }`}
+      } ${isSelected ? "ring-2 ring-primary ring-offset-2" : ""}`}
     >
       {icon}
-      <span className="font-medium">{label}</span>
+      <div className="flex flex-col items-start">
+        <span className="font-medium">{label}</span>
+        {username && <span className="text-xs opacity-80">@{username}</span>}
+      </div>
     </button>
+  )
+}
+
+function UsernameInput({
+  value,
+  onChange,
+  onSave,
+  onCancel,
+}: {
+  value: string
+  onChange: (value: string) => void
+  onSave: () => void
+  onCancel: () => void
+}) {
+  return (
+    <div className="w-full max-w-xs space-y-3 rounded-2xl bg-white/90 p-4 shadow-lg backdrop-blur-sm">
+      <Input
+        placeholder="ユーザー名を入力"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="h-10 rounded-xl border-gray-200"
+      />
+      <div className="flex gap-2">
+        <Button
+          onClick={onCancel}
+          variant="outline"
+          className="h-10 flex-1 rounded-full border-gray-300 text-sm hover:bg-gray-50"
+        >
+          取り消し
+        </Button>
+        <Button
+          onClick={onSave}
+          className="h-10 flex-1 rounded-full bg-primary text-sm text-primary-foreground hover:bg-primary/90"
+        >
+          保存
+        </Button>
+      </div>
+    </div>
   )
 }
