@@ -3,15 +3,14 @@ import { getAuth, Auth } from 'firebase/auth'
 import { getFirestore, Firestore } from 'firebase/firestore'
 
 /**
- * 必須の環境変数を取得
- * @throws Error 環境変数が設定されていない場合
+ * 環境変数を取得（デフォルト値付き）
  */
-function getRequiredEnv(key: string): string {
+function getEnv(key: string, defaultValue: string = ''): string {
   const value = process.env[key]
   if (!value) {
-    throw new Error(`必須の環境変数が設定されていません: ${key}`)
+    console.warn(`⚠️ 環境変数 ${key} が設定されていません。デフォルト値を使用します。`)
   }
-  return value
+  return value || defaultValue
 }
 
 /**
@@ -22,13 +21,13 @@ function getOptionalEnv(key: string): string | undefined {
 }
 
 const firebaseConfig = {
-  apiKey: getRequiredEnv('NEXT_PUBLIC_FIREBASE_API_KEY'),
-  authDomain: getRequiredEnv('NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN'),
-  projectId: getRequiredEnv('NEXT_PUBLIC_FIREBASE_PROJECT_ID'),
-  storageBucket: getRequiredEnv('NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET'),
-  messagingSenderId: getRequiredEnv('NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID'),
-  appId: getRequiredEnv('NEXT_PUBLIC_FIREBASE_APP_ID'),
-  measurementId: getOptionalEnv('NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID'), // オプショナル
+  apiKey: getEnv('NEXT_PUBLIC_FIREBASE_API_KEY', 'AIzaSyClxBGPOhYeOKpQtFkPys1uD2YGyQy2Dak'),
+  authDomain: getEnv('NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN', 'tsunagu-link.firebaseapp.com'),
+  projectId: getEnv('NEXT_PUBLIC_FIREBASE_PROJECT_ID', 'tsunagu-link'),
+  storageBucket: getEnv('NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET', 'tsunagu-link.firebasestorage.app'),
+  messagingSenderId: getEnv('NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID', '156706603796'),
+  appId: getEnv('NEXT_PUBLIC_FIREBASE_APP_ID', '1:156706603796:web:2fed5c75723e2cefc0b801'),
+  measurementId: getOptionalEnv('NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID'),
 }
 
 // Singleton pattern for Firebase initialization
