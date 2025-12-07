@@ -1,6 +1,5 @@
 export interface User {
   id: string
-  accountId: string
   email: string
   nickname: string
   bio: string
@@ -10,7 +9,6 @@ export interface User {
 }
 
 export interface UserCreateInput {
-  accountId: string
   email: string
   password: string
   nickname: string
@@ -19,10 +17,6 @@ export interface UserCreateInput {
 }
 
 export class UserModel {
-  static validateAccountId(accountId: string): boolean {
-    return accountId.length >= 3 && accountId.length <= 20
-  }
-
   static validateEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return emailRegex.test(email)

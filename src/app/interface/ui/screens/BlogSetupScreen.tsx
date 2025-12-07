@@ -42,7 +42,7 @@ export function BlogSetupScreen({ onNext, onBack }: BlogSetupScreenProps) {
       }
 
       const result = await createProfile({
-        accountId: registrationData.accountId,
+        email: registrationData.email,
         password: registrationData.password,
         nickname: registrationData.nickname,
         bio: registrationData.bio,

@@ -13,14 +13,13 @@ interface LoginScreenProps {
 }
 
 export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
-  const [accountId, setAccountId] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const setLoginData = useRegistrationStore((state) => state.setLoginData)
 
   const handleSubmit = async () => {
-    if (!accountId || !email || !password) {
+    if (!email || !password) {
       setError("すべての項目を入力してください")
       return
     }
@@ -31,18 +30,13 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
       return
     }
 
-    if (accountId.length < 3 || accountId.length > 20) {
-      setError("アカウントIDは3〜20文字で入力してください")
-      return
-    }
-
     if (password.length < 8) {
       setError("パスワードは8文字以上で入力してください")
       return
     }
 
     // Store in state for registration flow
-    setLoginData(accountId, email, password)
+    setLoginData(email, password)
     setError("")
     onNext()
   }
@@ -74,20 +68,6 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
                 onChange={(e) => setEmail(e.target.value)}
                 className="h-12 rounded-2xl border-gray-200"
                 placeholder="example@example.com"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="accountId" className="text-sm text-gray-600">
-                アカウントID
-              </Label>
-              <Input
-                id="accountId"
-                type="text"
-                value={accountId}
-                onChange={(e) => setAccountId(e.target.value)}
-                className="h-12 rounded-2xl border-gray-200"
-                placeholder=""
               />
             </div>
 

@@ -5,7 +5,6 @@ import { UserModel } from "../models/user"
 
 export interface IUserRepository {
   create(input: UserCreateInput & { id: string }): Promise<User>
-  findByAccountId(accountId: string): Promise<User | null>
   findByEmail(email: string): Promise<User | null>
 }
 
@@ -22,7 +21,6 @@ export interface IAuthGateway {
 }
 
 export interface ProfileCreationInput {
-  accountId: string
   email: string
   password: string
   nickname: string
@@ -42,10 +40,6 @@ export class ProfileCreationUseCase {
   ) {}
 
   async execute(input: ProfileCreationInput): Promise<User> {
-    if (!UserModel.validateAccountId(input.accountId)) {
-      throw new Error("アカウントIDは3〜20文字で入力してください")
-    }
-
     if (!UserModel.validateEmail(input.email)) {
       throw new Error("有効なメールアドレスを入力してください")
     }
@@ -58,11 +52,6 @@ export class ProfileCreationUseCase {
       throw new Error("ニックネームは1〜50文字で入力してください")
     }
 
-    const existingAccountId = await this.userRepository.findByAccountId(input.accountId)
-    if (existingAccountId) {
-      throw new Error("このアカウントIDは既に使用されています")
-    }
-
     const existingEmail = await this.userRepository.findByEmail(input.email)
     if (existingEmail) {
       throw new Error("このメールアドレスは既に使用されています")
@@ -72,7 +61,6 @@ export class ProfileCreationUseCase {
 
     const user = await this.userRepository.create({
       id: uid,
-      accountId: input.accountId,
       email: input.email,
       password: input.password,
       nickname: input.nickname,

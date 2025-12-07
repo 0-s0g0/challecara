@@ -16,7 +16,6 @@ import type { IUserRepository } from "../../domain/usecase/profileCreationUseCas
 export class UserRepository implements IUserRepository {
   async create(input: UserCreateInput & { id: string }): Promise<User> {
     const userDoc = {
-      accountId: input.accountId,
       email: input.email,
       nickname: input.nickname,
       bio: input.bio,
@@ -27,13 +26,8 @@ export class UserRepository implements IUserRepository {
 
     await setDoc(doc(db, "users", input.id), userDoc)
 
-    await setDoc(doc(db, "accountIdIndex", input.accountId), {
-      uid: input.id,
-    })
-
     return {
       id: input.id,
-      accountId: input.accountId,
       email: input.email,
       nickname: input.nickname,
       bio: input.bio,
@@ -41,17 +35,6 @@ export class UserRepository implements IUserRepository {
       createdAt: new Date(),
       updatedAt: new Date(),
     }
-  }
-
-  async findByAccountId(accountId: string): Promise<User | null> {
-    const indexDoc = await getDoc(doc(db, "accountIdIndex", accountId))
-
-    if (!indexDoc.exists()) {
-      return null
-    }
-
-    const uid = indexDoc.data().uid
-    return this.findById(uid)
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -67,7 +50,6 @@ export class UserRepository implements IUserRepository {
 
     return {
       id: userId,
-      accountId: userData.accountId,
       email: userData.email,
       nickname: userData.nickname,
       bio: userData.bio,
@@ -88,7 +70,6 @@ export class UserRepository implements IUserRepository {
 
     return {
       id: userDoc.id,
-      accountId: userData.accountId,
       email: userData.email,
       nickname: userData.nickname,
       bio: userData.bio,

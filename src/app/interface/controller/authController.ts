@@ -2,10 +2,10 @@
 
 import { UseCaseFactory } from "../../config/factories/useCaseFactory"
 
-export async function login(email: string, accountId: string, password: string) {
+export async function login(email: string, password: string) {
   try {
     const useCase = UseCaseFactory.createAuthLoginUseCase()
-    const result = await useCase.execute(email, accountId, password)
+    const result = await useCase.execute(email, password)
 
     return {
       success: true,

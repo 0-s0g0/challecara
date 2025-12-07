@@ -7,12 +7,6 @@ service cloud.firestore {
       allow write: if request.auth != null && request.auth.uid == userId;
     }
 
-    // AccountId index - public read, owner write
-    match /accountIdIndex/{accountId} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-
     // Social links - public read, owner write
     match /socialLinks/{linkId} {
       allow read: if true;

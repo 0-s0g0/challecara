@@ -2,7 +2,6 @@ import { create } from "zustand"
 
 interface RegistrationState {
   // Step 2 data
-  accountId: string
   email: string
   password: string
 
@@ -21,7 +20,7 @@ interface RegistrationState {
   blogContent: string
 
   // Actions
-  setLoginData: (accountId: string, email: string, password: string) => void
+  setLoginData: (email: string, password: string) => void
   setProfileData: (nickname: string, bio: string, avatarUrl: string) => void
   setSocialData: (x: boolean, instagram: boolean, facebook: boolean) => void
   setBlogData: (title: string, content: string) => void
@@ -29,7 +28,6 @@ interface RegistrationState {
 }
 
 export const useRegistrationStore = create<RegistrationState>((set) => ({
-  accountId: "",
   email: "",
   password: "",
   nickname: "",
@@ -41,14 +39,13 @@ export const useRegistrationStore = create<RegistrationState>((set) => ({
   blogTitle: "",
   blogContent: "",
 
-  setLoginData: (accountId, email, password) => set({ accountId, email, password }),
+  setLoginData: (email, password) => set({ email, password }),
   setProfileData: (nickname, bio, avatarUrl) => set({ nickname, bio, avatarUrl }),
   setSocialData: (xConnected, instagramConnected, facebookConnected) =>
     set({ xConnected, instagramConnected, facebookConnected }),
   setBlogData: (blogTitle, blogContent) => set({ blogTitle, blogContent }),
   reset: () =>
     set({
-      accountId: "",
       email: "",
       password: "",
       nickname: "",
