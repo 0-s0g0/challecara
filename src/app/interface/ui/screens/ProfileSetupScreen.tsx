@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "@/app/components/ui/button"
-import { Input } from "@/app/components/ui/input"
-import { Label } from "@/app/components/ui/label"
-import { Textarea } from "@/app/components/ui/textarea"
+import { Button } from "@/app/interface/ui/components/ui/button"
+import { Input } from "@/app/interface/ui/components/ui/input"
+import { Label } from "@/app/interface/ui/components/ui/label"
+import { Textarea } from "@/app/interface/ui/components/ui/textarea"
 import { ChevronLeft, Upload } from "lucide-react"
 import { useRegistrationStore } from "../../state/registrationStore"
 
@@ -19,8 +19,19 @@ export function ProfileSetupScreen({ onNext, onBack }: ProfileSetupScreenProps) 
 
   const [nickname, setNickname] = useState(storedNickname)
   const [bio, setBio] = useState(storedBio)
-  const [avatarUrl] = useState(storedAvatarUrl)
+  const [avatarUrl, setAvatarUrl] = useState(storedAvatarUrl)
   const [error, setError] = useState("")
+  const [fileName, setFileName] = useState("")
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setFileName(file.name)
+      // Create a local URL for the uploaded image
+      const imageUrl = URL.createObjectURL(file)
+      setAvatarUrl(imageUrl)
+    }
+  }
 
   const handleSubmit = () => {
     if (!nickname) {
@@ -77,10 +88,24 @@ export function ProfileSetupScreen({ onNext, onBack }: ProfileSetupScreenProps) 
         <div className="space-y-2">
           <Label className="text-sm text-muted-foreground">メイン画像</Label>
           <div className="flex items-center gap-3">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-dashed border-border bg-white/80">
-              <Upload className="h-6 w-6 text-muted-foreground" />
-            </div>
-            <span className="text-xs text-muted-foreground">AAAAA.png</span>
+            <label
+              htmlFor="avatar-upload"
+              className="flex h-16 w-16 cursor-pointer items-center justify-center rounded-2xl border-2 border-dashed border-border bg-white/80 transition-colors hover:border-primary/50"
+            >
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="Avatar" className="h-full w-full rounded-2xl object-cover" />
+              ) : (
+                <Upload className="h-6 w-6 text-muted-foreground" />
+              )}
+            </label>
+            <input
+              id="avatar-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="hidden"
+            />
+            <span className="text-xs text-muted-foreground">{fileName || "画像を選択"}</span>
           </div>
         </div>
 
