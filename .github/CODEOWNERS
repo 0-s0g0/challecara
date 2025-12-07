@@ -1,0 +1,6 @@
+# CODEOWNERS
+# This file defines the code owners for this repository.
+# Code owners are automatically requested for review when someone opens a pull request.
+
+# Default owners for everything in the repo
+* @dokkiitech @0-s0-g0
