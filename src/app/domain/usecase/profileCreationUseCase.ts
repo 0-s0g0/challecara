@@ -16,6 +16,7 @@ import {
 
 export interface ProfileCreationInput {
   accountId: string
+  email: string
   password: string
   nickname: string
   bio: string
@@ -45,8 +46,8 @@ export class ProfileCreationUseCase {
       throw new DuplicateAccountIdError()
     }
 
-    // Create Firebase Auth account first
-    const userId = await this.authGateway.createAccount(input.accountId, input.password)
+    // Create Firebase Auth account first using email
+    const userId = await this.authGateway.createAccount(input.email, input.password)
 
     // Create user profile in Firestore
     const user = await this.userRepository.create({
