@@ -41,24 +41,24 @@ export async function login(email: string, password: string) {
 export async function signup(email: string, password: string, nickname: string) {
   try {
     const useCase = UseCaseFactory.createProfileCreationUseCase()
-    
+
     // Generate a unique accountId from email
     // Example: "user@example.com" -> "user_abc123"
-    const emailUsername = email.split('@')[0]
+    const emailUsername = email.split("@")[0]
     const randomSuffix = Math.random().toString(36).substring(2, 8)
     const accountId = `${emailUsername}_${randomSuffix}`
-    
+
     // Create user profile with auto-generated accountId
     const user = await useCase.execute({
       accountId,
       email,
       password,
       nickname,
-      bio: '', // Empty bio initially
-      avatarUrl: '', // Empty avatar initially
+      bio: "", // Empty bio initially
+      avatarUrl: "", // Empty avatar initially
       socialLinks: [], // No social links initially
-      blogTitle: '', // No blog initially
-      blogContent: '',
+      blogTitle: "", // No blog initially
+      blogContent: "",
     })
 
     // Automatically log in the user after signup
@@ -67,12 +67,12 @@ export async function signup(email: string, password: string, nickname: string) 
 
     // Store token in HTTP-only cookie
     const cookieStore = await cookies()
-    cookieStore.set('authToken', result.token, {
+    cookieStore.set("authToken", result.token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       maxAge: 60 * 60 * 24 * 7, // 7 days
-      path: '/',
+      path: "/",
     })
 
     return {

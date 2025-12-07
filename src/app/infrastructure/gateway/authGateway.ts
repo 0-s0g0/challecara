@@ -2,15 +2,10 @@ import {
   type AuthError,
   type User as FirebaseUser,
   createUserWithEmailAndPassword,
-  signOut as firebaseSignOut,
   signInWithEmailAndPassword,
+  signOut as firebaseSignOut,
 } from "firebase/auth"
-import { accountIdToEmail, getFirebaseAuth } from "../../config/firebase/firebaseConfig"
-  User as FirebaseUser,
-  AuthError
-} from 'firebase/auth'
-import { getFirebaseAuth } from '../../config/firebase/firebaseConfig'
-import type { IAuthGateway } from '../../domain/gateway/IAuthGateway'
+import { getFirebaseAuth } from "../../config/firebase/firebaseConfig"
 import {
   AuthenticationError,
   DuplicateAccountIdError,
@@ -28,13 +23,7 @@ export class AuthGateway implements IAuthGateway {
    */
   async createAccount(email: string, password: string): Promise<string> {
     try {
-      const email = accountIdToEmail(accountId)
       const userCredential = await createUserWithEmailAndPassword(this.auth, email, password)
-      const userCredential = await createUserWithEmailAndPassword(
-        this.auth,
-        email,
-        password
-      )
       return userCredential.user.uid
     } catch (error) {
       // Map Firebase errors to domain errors
@@ -55,13 +44,7 @@ export class AuthGateway implements IAuthGateway {
    */
   async authenticate(email: string, password: string): Promise<string> {
     try {
-      const email = accountIdToEmail(accountId)
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password)
-      const userCredential = await signInWithEmailAndPassword(
-        this.auth,
-        email,
-        password
-      )
       return userCredential.user.uid
     } catch (error) {
       if (this.isAuthError(error)) {
