@@ -1,18 +1,10 @@
 import type { User } from "../models/user"
 import type { SocialLink } from "../models/socialLink"
 import type { BlogPost } from "../models/blog"
-
-export interface IUserRepository {
-  findById(id: string): Promise<User | null>
-}
-
-export interface ISocialLinkRepository {
-  findByUserId(userId: string): Promise<SocialLink[]>
-}
-
-export interface IBlogPostRepository {
-  findByUserId(userId: string): Promise<BlogPost[]>
-}
+import type { IUserRepository } from "../repository/IUserRepository"
+import type { ISocialLinkRepository } from "../repository/ISocialLinkRepository"
+import type { IBlogPostRepository } from "../repository/IBlogPostRepository"
+import { UserNotFoundError } from "../errors/DomainErrors"
 
 export interface ProfileData {
   user: User
@@ -31,7 +23,7 @@ export class GetProfileUseCase {
     const user = await this.userRepository.findById(userId)
 
     if (!user) {
-      throw new Error("ユーザーが見つかりません")
+      throw new UserNotFoundError()
     }
 
     const socialLinks = await this.socialLinkRepository.findByUserId(userId)

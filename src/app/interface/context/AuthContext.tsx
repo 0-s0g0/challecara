@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { User as FirebaseUser, onAuthStateChanged } from 'firebase/auth'
 import { getFirebaseAuth } from '../../config/firebase/firebaseConfig'
 import type { User } from '../../domain/models/user'
-import { UserRepository } from '../../infrastructure/repository/userRepository'
+import { UseCaseFactory } from '../../config/factories/useCaseFactory'
 
 interface AuthContextType {
   firebaseUser: FirebaseUser | null
@@ -21,7 +21,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   const auth = getFirebaseAuth()
-  const userRepository = new UserRepository()
 
   useEffect(() => {
     // Subscribe to Firebase Auth state changes
@@ -29,10 +28,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setFirebaseUser(firebaseUser)
 
       if (firebaseUser) {
-        // Fetch user data from Firestore
+        // Fetch user data from Firestore using UseCase
         try {
-          const userData = await userRepository.findById(firebaseUser.uid)
-          setUser(userData)
+          const getProfileUseCase = UseCaseFactory.createGetProfileUseCase()
+          const profileData = await getProfileUseCase.execute(firebaseUser.uid)
+          setUser(profileData.user)
         } catch (error) {
           console.error('Error fetching user data:', error)
           setUser(null)
