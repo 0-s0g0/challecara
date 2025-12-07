@@ -5,7 +5,8 @@ import type React from "react"
 import { useState } from "react"
 import { Button } from "@/app/interface/ui/components/ui/button"
 import { Input } from "@/app/interface/ui/components/ui/input"
-import { ChevronLeft, Twitter, Instagram, Facebook } from "lucide-react"
+import { ChevronLeft } from "lucide-react"
+import { FaXTwitter, FaInstagram, FaFacebook } from "react-icons/fa6"
 import { useRegistrationStore } from "../../state/registrationStore"
 
 interface SocialSetupScreenProps {
@@ -70,7 +71,7 @@ export function SocialSetupScreen({ onNext, onBack }: SocialSetupScreenProps) {
 
       <div className="z-10 mt-12 flex flex-1 flex-col items-center justify-start space-y-6">
         <SocialButton
-          icon={<Twitter className="h-6 w-6" />}
+          icon={<FaXTwitter className="h-6 w-6" />}
           label="X (Twitter)"
           username={xUsername}
           isSelected={selectedSocial === "x"}
@@ -87,7 +88,7 @@ export function SocialSetupScreen({ onNext, onBack }: SocialSetupScreenProps) {
         )}
 
         <SocialButton
-          icon={<Instagram className="h-6 w-6" />}
+          icon={<FaInstagram className="h-6 w-6" />}
           label="Instagram"
           username={instagramUsername}
           isSelected={selectedSocial === "instagram"}
@@ -104,7 +105,7 @@ export function SocialSetupScreen({ onNext, onBack }: SocialSetupScreenProps) {
         )}
 
         <SocialButton
-          icon={<Facebook className="h-6 w-6" />}
+          icon={<FaFacebook className="h-6 w-6" />}
           label="Facebook"
           username={facebookUsername}
           isSelected={selectedSocial === "facebook"}
