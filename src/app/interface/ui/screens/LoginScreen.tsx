@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { login } from "../../controller/authController"
 import { useRegistrationStore } from "../../state/registrationStore"
+import { useState } from "react"
+import { SignModal } from "@/app/interface/ui/components/SignModal"
 
 interface LoginScreenProps {
   onNext: () => void
@@ -15,50 +17,19 @@ interface LoginScreenProps {
 }
 
 export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
-  const [accountId, setAccountId] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
-  const setLoginData = useRegistrationStore((state) => state.setLoginData)
+  const [isModalOpen, setIsModalOpen] = useState(true)
 
-  const handleSubmit = async () => {
-    if (!accountId || !password) {
-      setError("すべての項目を入力してください")
-      return
+  const handleModalClose = (open: boolean) => {
+    setIsModalOpen(open)
+    if (!open) {
+      onBack()
     }
+  }
 
-    if (accountId.length < 3 || accountId.length > 20) {
-      setError("アカウントIDは3〜20文字で入力してください")
-      return
-    }
-
-    if (password.length < 8) {
-      setError("パスワードは8文字以上で入力してください")
-      return
-    }
-
-    setLoading(true)
-    setError("")
-
-    try {
-      // Call server action to login with Firebase
-      const result = await login(accountId, password)
-
-      if (result.success) {
-        // Store in state for potential use
-        setLoginData(accountId, password)
-
-        // Redirect to user's profile or dashboard
-        router.push(`/profile/${result.user?.accountId}`)
-      } else {
-        setError(result.error || "ログインに失敗しました")
-      }
-    } catch (err) {
-      setError("ログインに失敗しました")
-    } finally {
-      setLoading(false)
-    }
+  const handleSuccess = () => {
+    // Close modal and proceed to next step in tutorial
+    setIsModalOpen(false)
+    onNext()
   }
 
   return (
@@ -140,5 +111,10 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
         </div>
       </div>
     </>
+    <SignModal
+      open={isModalOpen}
+      onOpenChange={handleModalClose}
+      onSuccess={handleSuccess}
+    />
   )
 }

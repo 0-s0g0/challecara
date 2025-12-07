@@ -8,13 +8,13 @@ export interface IAuthGateway {
    * 新しいアカウントを作成（Firebase Authに登録）
    * @returns Firebase UID
    */
-  createAccount(accountId: string, password: string): Promise<string>
+  createAccount(email: string, password: string): Promise<string>
 
   /**
-   * アカウントIDとパスワードで認証
+   * メールアドレスとパスワードで認証
    * @returns Firebase UID
    */
-  authenticate(accountId: string, password: string): Promise<string>
+  authenticate(email: string, password: string): Promise<string>
 
   /**
    * サインアウト

@@ -55,13 +55,3 @@ export function getFirebaseDb(): Firestore {
   }
   return db
 }
-
-// Helper to convert accountId to Firebase email
-export function accountIdToEmail(accountId: string): string {
-  return `${accountId}@app.internal`
-}
-
-// Helper to extract accountId from Firebase email
-export function emailToAccountId(email: string): string {
-  return email.replace("@app.internal", "")
-}

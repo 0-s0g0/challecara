@@ -9,9 +9,9 @@ export class AuthLoginUseCase {
     private authGateway: IAuthGateway
   ) {}
 
-  async execute(accountId: string, password: string): Promise<{ token: string; user: User }> {
-    // Authenticate with Firebase (throws error if invalid)
-    const userId = await this.authGateway.authenticate(accountId, password)
+  async execute(email: string, password: string): Promise<{ token: string; user: User }> {
+    // Authenticate with Firebase using email (throws error if invalid)
+    const userId = await this.authGateway.authenticate(email, password)
 
     // Fetch user data from Firestore
     const user = await this.userRepository.findById(userId)
