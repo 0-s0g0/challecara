@@ -179,7 +179,7 @@ function SocialIcon({ type }: { type: "instagram" | "x" | "facebook" }) {
       )
     },
     x: {
-      bg: "bg-[#1DA1F2]",
+      bg: "bg-[#000000]",
       icon: (
         <svg className="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 24 24">
           <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -224,7 +224,7 @@ function SocialIconSmall({ type }: { type: "instagram" | "x" | "facebook" }) {
 
   const config = {
     instagram: "bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]",
-    x: "bg-[#1DA1F2]",
+    x: "bg-[#000000]",
     facebook: "bg-[#1877F2]"
   }
 
@@ -256,7 +256,7 @@ function SocialIconLarge({ type }: { type: "instagram" | "x" | "facebook" }) {
 
   const config = {
     instagram: "bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]",
-    x: "bg-[#1DA1F2]",
+    x: "bg-[#000000]",
     facebook: "bg-[#1877F2]"
   }
 
