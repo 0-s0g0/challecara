@@ -3,13 +3,6 @@
 import * as React from 'react'
 import { useState } from 'react'
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/app/interface/ui/components/ui/dialog'
-import {
   Tabs,
   TabsContent,
   TabsList,
@@ -130,25 +123,32 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>アカウント</DialogTitle>
-          <DialogDescription>
-            サインインまたは新規アカウントを作成してください
-          </DialogDescription>
-        </DialogHeader>
+    <>
+      {open && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 z-40 bg-black/20 animate-in fade-in duration-300"
+            onClick={() => onOpenChange(false)}
+          />
 
-        <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="signin">サインイン</TabsTrigger>
-            <TabsTrigger value="signup">サインアップ</TabsTrigger>
-          </TabsList>
+          {/* Modal */}
+          <div className="fixed inset-x-0 bottom-0 z-50 animate-in slide-in-from-bottom duration-300">
+            <div className="mx-auto max-w-md rounded-t-3xl bg-white p-8 pb-12 shadow-2xl">
+              <div className="mb-6 text-center">
+                <h2 className="text-2xl font-bold text-[#6B5335]">アカウント</h2>
+                <p className="mt-2 text-sm text-gray-600">
+                  サインインまたは新規アカウントを作成してください
+                </p>
+              </div>
 
-          <TabsContent value="signin">
-            <form onSubmit={handleSignIn} className="space-y-4">
+              <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+          <TabsContent value="signin" className="mt-0">
+            <form onSubmit={handleSignIn} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="signin-email">メールアドレス</Label>
+                <Label htmlFor="signin-email" className="text-sm text-gray-600">
+                  メールアドレス
+                </Label>
                 <Input
                   id="signin-email"
                   type="email"
@@ -159,11 +159,14 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                   }
                   required
                   disabled={isLoading}
+                  className="h-12 rounded-2xl border-gray-200"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="signin-password">パスワード</Label>
+                <Label htmlFor="signin-password" className="text-sm text-gray-600">
+                  パスワード
+                </Label>
                 <Input
                   id="signin-password"
                   type="password"
@@ -174,25 +177,43 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                   }
                   required
                   disabled={isLoading}
+                  className="h-12 rounded-2xl border-gray-200"
                 />
               </div>
 
               {error && (
-                <div className="text-sm text-destructive bg-destructive/10 px-3 py-2 rounded-md">
-                  {error}
-                </div>
+                <p className="text-sm text-red-500">{error}</p>
               )}
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button
+                type="submit"
+                className="h-12 w-full rounded-full bg-[#8B7355] text-white hover:bg-[#6B5335]"
+                disabled={isLoading}
+              >
                 {isLoading ? 'サインイン中...' : 'サインイン'}
               </Button>
+
+              <div className="text-center">
+                <p className="text-xs text-gray-500">
+                  アカウントを持っていませんか?{" "}
+                  <button
+                    type="button"
+                    className="font-semibold text-[#8B7355] underline"
+                    onClick={() => setActiveTab('signup')}
+                  >
+                    新規作成
+                  </button>
+                </p>
+              </div>
             </form>
           </TabsContent>
 
-          <TabsContent value="signup">
-            <form onSubmit={handleSignUp} className="space-y-4">
+          <TabsContent value="signup" className="mt-0">
+            <form onSubmit={handleSignUp} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="signup-email">メールアドレス</Label>
+                <Label htmlFor="signup-email" className="text-sm text-gray-600">
+                  メールアドレス
+                </Label>
                 <Input
                   id="signup-email"
                   type="email"
@@ -203,11 +224,14 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                   }
                   required
                   disabled={isLoading}
+                  className="h-12 rounded-2xl border-gray-200"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="signup-nickname">ニックネーム</Label>
+                <Label htmlFor="signup-nickname" className="text-sm text-gray-600">
+                  ニックネーム
+                </Label>
                 <Input
                   id="signup-nickname"
                   type="text"
@@ -220,11 +244,14 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                   disabled={isLoading}
                   minLength={1}
                   maxLength={50}
+                  className="h-12 rounded-2xl border-gray-200"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="signup-password">パスワード</Label>
+                <Label htmlFor="signup-password" className="text-sm text-gray-600">
+                  パスワード
+                </Label>
                 <Input
                   id="signup-password"
                   type="password"
@@ -236,14 +263,13 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                   required
                   disabled={isLoading}
                   minLength={8}
+                  className="h-12 rounded-2xl border-gray-200"
                 />
-                <p className="text-xs text-muted-foreground">
-                  8文字以上
-                </p>
+                <p className="text-xs text-gray-500">8文字以上</p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="signup-confirm-password">
+                <Label htmlFor="signup-confirm-password" className="text-sm text-gray-600">
                   パスワード（確認）
                 </Label>
                 <Input
@@ -260,22 +286,41 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                   required
                   disabled={isLoading}
                   minLength={8}
+                  className="h-12 rounded-2xl border-gray-200"
                 />
               </div>
 
               {error && (
-                <div className="text-sm text-destructive bg-destructive/10 px-3 py-2 rounded-md">
-                  {error}
-                </div>
+                <p className="text-sm text-red-500">{error}</p>
               )}
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button
+                type="submit"
+                className="h-12 w-full rounded-full bg-[#8B7355] text-white hover:bg-[#6B5335]"
+                disabled={isLoading}
+              >
                 {isLoading ? 'アカウント作成中...' : 'アカウントを作成'}
               </Button>
+
+              <div className="text-center">
+                <p className="text-xs text-gray-500">
+                  すでにアカウントをお持ちですか?{" "}
+                  <button
+                    type="button"
+                    className="font-semibold text-[#8B7355] underline"
+                    onClick={() => setActiveTab('signin')}
+                  >
+                    サインイン
+                  </button>
+                </p>
+              </div>
             </form>
           </TabsContent>
         </Tabs>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
+  </>
+      )}
+    </>
   )
 }
