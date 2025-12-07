@@ -1,5 +1,5 @@
 cat << EOF > requirements_clean_arch.md
-# 🌟 Tsuna-gu Link アプリケーション要件定義書 - クリーンアーキテクチャ版
+# 🌟 Tsunagu Link アプリケーション要件定義書 - クリーンアーキテクチャ版
 
 ## 🚀 開発環境・構成
 * **フレームワーク**: Next.js 14+ (フルスタック / App Router)
@@ -15,7 +15,7 @@ cat << EOF > requirements_clean_arch.md
 
 Next.jsの特性（\`app/\`フォルダ）とクリーンアーキテクチャの分離を両立させるため、コアなロジックは\`src/\`ディレクトリに配置し、Next.jsのルーティングは\`app/\`に集約します。
 
-\`\`\`
+```
 tsuna-gu-link/
 ├── app/                  # 9. App層: Next.jsのエントリーポイント (ルーティング、レイアウト)
 │   ├── (auth)/
@@ -37,7 +37,7 @@ tsuna-gu-link/
 │   └── config/
 │       └── factories/    # 8. Factory層: 依存性注入 (DI) の設定
 └── ...
-\`\`\`
+```
 
 ---
 
