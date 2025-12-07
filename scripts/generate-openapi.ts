@@ -14,7 +14,7 @@ async function generateOpenAPISpec() {
 
   try {
     const spec = getApiDocs();
-    const outputPath = resolve(process.cwd(), 'public/openapi.json');
+    const outputPath = resolve(process.cwd(), 'api/openapi/openapi.json');
 
     writeFileSync(outputPath, JSON.stringify(spec, null, 2));
 
@@ -22,7 +22,7 @@ async function generateOpenAPISpec() {
     console.log(`📄 File saved to: ${outputPath}`);
     console.log('\n📖 You can now:');
     console.log('   - View the spec at: http://localhost:3000/api/docs');
-    console.log('   - Access the JSON at: http://localhost:3000/openapi.json');
+    console.log('   - Access the JSON at: http://localhost:3000/api/openapi');
   } catch (error) {
     console.error('❌ Failed to generate OpenAPI specification:', error);
     process.exit(1);
