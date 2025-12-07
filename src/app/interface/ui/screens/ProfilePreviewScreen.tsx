@@ -4,6 +4,8 @@ import { useState, useRef } from "react"
 import { Button } from "@/app/interface/ui/components/ui/button"
 import { ChevronLeft } from "lucide-react"
 import { useRegistrationStore } from "../../state/registrationStore"
+import { createProfile } from "../../controller/profileController"
+import { useRouter } from "next/navigation"
 import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
 
 interface ProfilePreviewScreenProps {
@@ -13,49 +15,53 @@ interface ProfilePreviewScreenProps {
 
 export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenProps) {
   const formData = useRegistrationStore()
-  const setSelectedLayoutInStore = useRegistrationStore((state) => state.setSelectedLayout)
-  const [selectedLayout, setSelectedLayout] = useState(formData.selectedLayout || 0)
-  const scrollRef = useRef<HTMLDivElement>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
+  const router = useRouter()
 
-  const layouts = [
-    { id: 0, name: "クラシック", component: Layout1 },
-    { id: 1, name: "モダン", component: Layout2 },
-    { id: 2, name: "ミニマル", component: Layout3 },
-    { id: 3, name: "グリッド", component: Layout4 },
-  ]
+  const handleComplete = async () => {
+    setLoading(true)
+    setError("")
 
-  const handleScroll = () => {
-    if (!scrollRef.current) return
-    const scrollLeft = scrollRef.current.scrollLeft
-    const cardWidth = scrollRef.current.offsetWidth
-    const newIndex = Math.round(scrollLeft / cardWidth)
-    setSelectedLayout(newIndex)
-  }
+    try {
+      // Build social links array
+      const socialLinks = []
+      if (formData.xConnected) {
+        socialLinks.push({ provider: 'twitter', url: '' })
+      }
+      if (formData.instagramConnected) {
+        socialLinks.push({ provider: 'instagram', url: '' })
+      }
+      if (formData.facebookConnected) {
+        socialLinks.push({ provider: 'facebook', url: '' })
+      }
 
-  const scrollToLayout = (index: number) => {
-    if (!scrollRef.current) return
-    const cardWidth = scrollRef.current.offsetWidth
-    scrollRef.current.scrollTo({
-      left: cardWidth * index,
-      behavior: "smooth",
-    })
-    setSelectedLayout(index)
-  }
+      // Call server action to create profile
+      const result = await createProfile({
+        accountId: formData.accountId,
+        password: formData.password,
+        nickname: formData.nickname,
+        bio: formData.bio,
+        avatarUrl: formData.avatarUrl,
+        socialLinks,
+        blogTitle: formData.blogTitle,
+        blogContent: formData.blogContent,
+      })
 
-  const handleDecide = () => {
-    // Save selected layout to store
-    setSelectedLayoutInStore(selectedLayout)
-    onNext()
-  }
+      if (result.success) {
+        // Reset store
+        formData.reset()
 
-  const profileData = {
-    nickname: formData.nickname,
-    bio: formData.bio,
-    avatarUrl: formData.avatarUrl,
-    xUsername: formData.xUsername,
-    instagramUsername: formData.instagramUsername,
-    facebookUsername: formData.facebookUsername,
-    blogTitle: formData.blogTitle,
+        // Redirect to user's profile
+        router.push(`/profile/${result.user?.accountId}`)
+      } else {
+        setError(result.error || "プロフィールの作成に失敗しました")
+      }
+    } catch (err) {
+      setError("プロフィールの作成に失敗しました")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -103,21 +109,38 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
         ))}
       </div>
 
+      {error && (
+        <div className="z-10 mb-4 text-center">
+          <p className="text-sm text-red-500">{error}</p>
+        </div>
+      )}
+
+      {error && (
+        <div className="z-10 mb-4 text-center">
+          <p className="text-sm text-red-500">{error}</p>
+        </div>
+      )}
+
       {/* Navigation Buttons */}
       <div className="z-10 mb-8 flex gap-4">
         <Button
           onClick={onBack}
           variant="outline"
           className="h-12 flex-1 rounded-full border-primary/20 bg-white/80 backdrop-blur-sm hover:bg-white"
+          disabled={loading}
         >
           <ChevronLeft className="mr-1 h-4 w-4" />
           戻る
         </Button>
         <Button
-          onClick={handleDecide}
+          onClick={handleComplete}
           className="h-12 flex-1 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+          disabled={loading}
         >
-          決定
+          {loading ? "作成中..." : "完了"}
+          <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
         </Button>
       </div>
 

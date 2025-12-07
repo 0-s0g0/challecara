@@ -6,7 +6,7 @@ import { SocialLinkRepository } from "../../infrastructure/repository/socialLink
 import { BlogPostRepository } from "../../infrastructure/repository/blogPostRepository"
 import { AuthGateway } from "../../infrastructure/gateway/authGateway"
 
-// Singleton repositories (in-memory state)
+// Singleton repositories (now using Firestore)
 const userRepository = new UserRepository()
 const socialLinkRepository = new SocialLinkRepository()
 const blogPostRepository = new BlogPostRepository()
@@ -23,5 +23,9 @@ export class UseCaseFactory {
 
   static createAuthLoginUseCase(): AuthLoginUseCase {
     return new AuthLoginUseCase(userRepository, authGateway)
+  }
+
+  static createAuthGateway(): AuthGateway {
+    return authGateway
   }
 }
