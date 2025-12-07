@@ -7,8 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "biome:check": "biome check .",
+    "biome:fix": "biome check --write .",
     "openapi:generate": "tsx scripts/generate-openapi.ts",
-    "prebuild": "pnpm openapi:generate"
+    "prebuild": "pnpm openapi:generate",
+    "test": "echo 'No tests specified yet' && exit 0"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",
@@ -51,6 +56,7 @@
     "zustand": "^5.0.9"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
