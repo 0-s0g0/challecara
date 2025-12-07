@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "openapi:generate": "tsx scripts/generate-openapi.ts",
-    "prebuild": "npm run openapi:generate"
+    "prebuild": "pnpm openapi:generate"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",
