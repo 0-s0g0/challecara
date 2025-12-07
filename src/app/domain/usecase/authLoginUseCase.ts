@@ -2,10 +2,12 @@ import type { User } from "../models/user"
 
 export interface IUserRepository {
   findByAccountId(accountId: string): Promise<User | null>
+  findById(id: string): Promise<User | null>
   create(user: any): Promise<User>
 }
 
 export interface IAuthGateway {
+  authenticate(accountId: string, password: string): Promise<string> // Returns userId
   hashPassword(password: string): Promise<string>
   verifyPassword(password: string, hash: string): Promise<boolean>
   generateToken(userId: string): Promise<string>
@@ -18,19 +20,18 @@ export class AuthLoginUseCase {
   ) {}
 
   async execute(accountId: string, password: string): Promise<{ token: string; user: User }> {
-    const user = await this.userRepository.findByAccountId(accountId)
+    // Authenticate with Firebase (throws error if invalid)
+    const userId = await this.authGateway.authenticate(accountId, password)
+
+    // Fetch user data from Firestore
+    const user = await this.userRepository.findById(userId)
 
     if (!user) {
-      throw new Error("ユーザーが見つかりません")
+      throw new Error("ユーザーデータが見つかりません")
     }
 
-    const isValid = await this.authGateway.verifyPassword(password, user.passwordHash)
-
-    if (!isValid) {
-      throw new Error("パスワードが正しくありません")
-    }
-
-    const token = await this.authGateway.generateToken(user.id)
+    // Generate Firebase token
+    const token = await this.authGateway.generateToken(userId)
 
     return { token, user }
   }

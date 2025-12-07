@@ -6,6 +6,8 @@ import { Input } from "@/app/interface/ui/components/ui/input"
 import { Label } from "@/app/interface/ui/components/ui/label"
 import { ChevronLeft } from "lucide-react"
 import { useRegistrationStore } from "../../state/registrationStore"
+import { login } from "../../controller/authController"
+import { useRouter } from "next/navigation"
 
 interface LoginScreenProps {
   onNext: () => void
@@ -16,6 +18,8 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
   const [accountId, setAccountId] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
   const setLoginData = useRegistrationStore((state) => state.setLoginData)
 
   const handleSubmit = async () => {
@@ -34,10 +38,27 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
       return
     }
 
-    // Store in state for registration flow
-    setLoginData(accountId, password)
+    setLoading(true)
     setError("")
-    onNext()
+
+    try {
+      // Call server action to login with Firebase
+      const result = await login(accountId, password)
+
+      if (result.success) {
+        // Store in state for potential use
+        setLoginData(accountId, password)
+
+        // Redirect to user's profile or dashboard
+        router.push(`/profile/${result.user?.accountId}`)
+      } else {
+        setError(result.error || "ログインに失敗しました")
+      }
+    } catch (err) {
+      setError("ログインに失敗しました")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -67,6 +88,7 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
                 onChange={(e) => setAccountId(e.target.value)}
                 className="h-12 rounded-2xl border-gray-200"
                 placeholder=""
+                disabled={loading}
               />
             </div>
 
@@ -81,6 +103,7 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
                 onChange={(e) => setPassword(e.target.value)}
                 className="h-12 rounded-2xl border-gray-200"
                 placeholder=""
+                disabled={loading}
               />
             </div>
 
@@ -89,7 +112,12 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
             <div className="text-center">
               <p className="text-xs text-gray-500">
                 アカウントを持っていない場合{" "}
-                <button className="font-semibold text-[#8B7355] underline">SIGN UP</button>
+                <button
+                  className="font-semibold text-[#8B7355] underline"
+                  onClick={onNext}
+                >
+                  SIGN UP
+                </button>
               </p>
             </div>
 
@@ -98,6 +126,7 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
                 onClick={onBack}
                 variant="outline"
                 className="h-12 flex-1 rounded-full border-gray-300 hover:bg-gray-50"
+                disabled={loading}
               >
                 <ChevronLeft className="mr-1 h-4 w-4" />
                 戻る
@@ -105,8 +134,9 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
               <Button
                 onClick={handleSubmit}
                 className="h-12 flex-1 rounded-full bg-[#8B7355] text-white hover:bg-[#6B5335]"
+                disabled={loading}
               >
-                START
+                {loading ? "ログイン中..." : "START"}
               </Button>
             </div>
           </div>

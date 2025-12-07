@@ -17,6 +17,7 @@ export interface IBlogPostRepository {
 }
 
 export interface IAuthGateway {
+  createAccount(accountId: string, password: string): Promise<string> // Returns userId
   hashPassword(password: string): Promise<string>
 }
 
@@ -53,19 +54,20 @@ export class ProfileCreationUseCase {
       throw new Error("ニックネームは1〜50文字で入力してください")
     }
 
-    // Check if account already exists
+    // Check if account already exists (check accountId index)
     const existingUser = await this.userRepository.findByAccountId(input.accountId)
     if (existingUser) {
       throw new Error("このアカウントIDは既に使用されています")
     }
 
-    // Hash password
-    const passwordHash = await this.authGateway.hashPassword(input.password)
+    // Create Firebase Auth account first
+    const userId = await this.authGateway.createAccount(input.accountId, input.password)
 
-    // Create user
+    // Create user profile in Firestore
     const user = await this.userRepository.create({
+      id: userId, // Use Firebase UID
       accountId: input.accountId,
-      password: passwordHash,
+      password: '', // Not stored in Firestore
       nickname: input.nickname,
       bio: input.bio,
       avatarUrl: input.avatarUrl,

@@ -1,0 +1,46 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      // Anyone can read public profiles
+      allow read: if true;
+      // Only the user can create/update their own profile
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+      // No deletes for now
+      allow delete: if false;
+    }
+
+    // AccountId index
+    match /accountIdIndex/{accountId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    // Social links
+    match /socialLinks/{linkId} {
+      // Anyone can read
+      allow read: if true;
+      // Only owner can write
+      allow create, update, delete: if isOwner(resource.data.userId);
+    }
+
+    // Blog posts
+    match /blogPosts/{postId} {
+      // Anyone can read published posts
+      allow read: if resource.data.isPublished == true || isOwner(resource.data.userId);
+      // Only owner can write
+      allow create, update, delete: if isOwner(resource.data.userId);
+    }
+  }
+}
