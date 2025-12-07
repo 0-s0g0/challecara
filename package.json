@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "openapi:generate": "tsx scripts/generate-openapi.ts",
+    "prebuild": "npm run openapi:generate"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",
@@ -51,9 +53,13 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/swagger-ui-react": "^5.18.0",
     "eslint": "^9",
     "eslint-config-next": "16.0.7",
+    "next-swagger-doc": "^0.4.1",
+    "swagger-ui-react": "^5.30.3",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }
