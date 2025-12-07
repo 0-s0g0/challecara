@@ -13,7 +13,10 @@
     "biome:fix": "biome check --write .",
     "openapi:generate": "tsx scripts/generate-openapi.ts",
     "prebuild": "pnpm openapi:generate",
-    "test": "echo 'No tests specified yet' && exit 0"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",
@@ -58,17 +61,24 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/swagger-ui-react": "^5.18.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/ui": "^2.1.8",
     "eslint": "^9",
     "eslint-config-next": "16.0.7",
+    "jsdom": "^25.0.1",
     "next-swagger-doc": "^0.4.1",
     "swagger-ui-react": "^5.30.3",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^2.1.8"
   },
   "packageManager": "pnpm@10.12.1+sha512.f0dda8580f0ee9481c5c79a1d927b9164f2c478e90992ad268bbb2465a736984391d6333d2c327913578b2804af33474ca554ba29c04a8b13060a717675ae3ac"
 }
