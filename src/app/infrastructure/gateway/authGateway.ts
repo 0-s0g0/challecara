@@ -5,7 +5,7 @@ import {
   User as FirebaseUser,
   AuthError
 } from 'firebase/auth'
-import { getFirebaseAuth, accountIdToEmail } from '../../config/firebase/firebaseConfig'
+import { getFirebaseAuth } from '../../config/firebase/firebaseConfig'
 import type { IAuthGateway } from '../../domain/gateway/IAuthGateway'
 import {
   DuplicateAccountIdError,
@@ -19,12 +19,10 @@ export class AuthGateway implements IAuthGateway {
   private auth = getFirebaseAuth()
 
   /**
-   * Creates a new user account in Firebase Auth
-   * Maps accountId to virtual email: accountId@app.internal
+   * Creates a new user account in Firebase Auth using email
    */
-  async createAccount(accountId: string, password: string): Promise<string> {
+  async createAccount(email: string, password: string): Promise<string> {
     try {
-      const email = accountIdToEmail(accountId)
       const userCredential = await createUserWithEmailAndPassword(
         this.auth,
         email,
@@ -46,11 +44,10 @@ export class AuthGateway implements IAuthGateway {
   }
 
   /**
-   * Authenticates user and returns Firebase UID
+   * Authenticates user with email and returns Firebase UID
    */
-  async authenticate(accountId: string, password: string): Promise<string> {
+  async authenticate(email: string, password: string): Promise<string> {
     try {
-      const email = accountIdToEmail(accountId)
       const userCredential = await signInWithEmailAndPassword(
         this.auth,
         email,
@@ -86,8 +83,9 @@ export class AuthGateway implements IAuthGateway {
 
   /**
    * Generates an ID token for the current user
+   * Note: userId parameter is not used as Firebase uses currentUser
    */
-  async generateToken(userId: string): Promise<string> {
+  async generateToken(_userId: string): Promise<string> {
     // Firebase handles token generation internally
     const user = this.auth.currentUser
     if (!user) {

@@ -1,0 +1,326 @@
+'use client'
+
+import * as React from 'react'
+import { useState } from 'react'
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/app/interface/ui/components/ui/tabs'
+import { Input } from '@/app/interface/ui/components/ui/input'
+import { Button } from '@/app/interface/ui/components/ui/button'
+import { Label } from '@/app/interface/ui/components/ui/label'
+import { login, signup } from '@/app/interface/controller/authController'
+
+interface SignModalProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  onSuccess?: () => void
+}
+
+export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState('signin')
+
+  // Sign In form state
+  const [signInData, setSignInData] = useState({
+    email: '',
+    password: '',
+  })
+
+  // Sign Up form state
+  const [signUpData, setSignUpData] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+    nickname: '',
+  })
+
+  // Clear error when switching tabs
+  const handleTabChange = (value: string) => {
+    setActiveTab(value)
+    setError(null)
+  }
+
+  const handleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const result = await login(signInData.email, signInData.password)
+
+      if (result.success) {
+        onOpenChange(false)
+        setSignInData({ email: '', password: '' })
+
+        // Call success callback if provided, otherwise reload
+        if (onSuccess) {
+          onSuccess()
+        } else {
+          window.location.reload()
+        }
+      } else {
+        setError(result.error || 'サインインに失敗しました')
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'サインインに失敗しました')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError(null)
+
+    // Validation
+    if (signUpData.password !== signUpData.confirmPassword) {
+      setError('パスワードが一致しません')
+      setIsLoading(false)
+      return
+    }
+
+    if (signUpData.password.length < 8) {
+      setError('パスワードは8文字以上である必要があります')
+      setIsLoading(false)
+      return
+    }
+
+    try {
+      const result = await signup(
+        signUpData.email,
+        signUpData.password,
+        signUpData.nickname
+      )
+
+      if (result.success) {
+        onOpenChange(false)
+        setSignUpData({
+          email: '',
+          password: '',
+          confirmPassword: '',
+          nickname: '',
+        })
+
+        // Call success callback if provided, otherwise reload
+        if (onSuccess) {
+          onSuccess()
+        } else {
+          window.location.reload()
+        }
+      } else {
+        setError(result.error || 'サインアップに失敗しました')
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'サインアップに失敗しました')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <>
+      {open && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 z-40 bg-black/20 animate-in fade-in duration-300"
+            onClick={() => onOpenChange(false)}
+          />
+
+          {/* Modal */}
+          <div className="fixed inset-x-0 bottom-0 z-50 animate-in slide-in-from-bottom duration-300">
+            <div className="mx-auto max-w-md rounded-t-3xl bg-white p-8 pb-12 shadow-2xl">
+              <div className="mb-6 text-center">
+                <h2 className="text-2xl font-bold text-[#6B5335]">アカウント</h2>
+                <p className="mt-2 text-sm text-gray-600">
+                  サインインまたは新規アカウントを作成してください
+                </p>
+              </div>
+
+              <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+          <TabsContent value="signin" className="mt-0">
+            <form onSubmit={handleSignIn} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="signin-email" className="text-sm text-gray-600">
+                  メールアドレス
+                </Label>
+                <Input
+                  id="signin-email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={signInData.email}
+                  onChange={(e) =>
+                    setSignInData({ ...signInData, email: e.target.value })
+                  }
+                  required
+                  disabled={isLoading}
+                  className="h-12 rounded-2xl border-gray-200"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="signin-password" className="text-sm text-gray-600">
+                  パスワード
+                </Label>
+                <Input
+                  id="signin-password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={signInData.password}
+                  onChange={(e) =>
+                    setSignInData({ ...signInData, password: e.target.value })
+                  }
+                  required
+                  disabled={isLoading}
+                  className="h-12 rounded-2xl border-gray-200"
+                />
+              </div>
+
+              {error && (
+                <p className="text-sm text-red-500">{error}</p>
+              )}
+
+              <Button
+                type="submit"
+                className="h-12 w-full rounded-full bg-[#8B7355] text-white hover:bg-[#6B5335]"
+                disabled={isLoading}
+              >
+                {isLoading ? 'サインイン中...' : 'サインイン'}
+              </Button>
+
+              <div className="text-center">
+                <p className="text-xs text-gray-500">
+                  アカウントを持っていませんか?{" "}
+                  <button
+                    type="button"
+                    className="font-semibold text-[#8B7355] underline"
+                    onClick={() => setActiveTab('signup')}
+                  >
+                    新規作成
+                  </button>
+                </p>
+              </div>
+            </form>
+          </TabsContent>
+
+          <TabsContent value="signup" className="mt-0">
+            <form onSubmit={handleSignUp} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="signup-email" className="text-sm text-gray-600">
+                  メールアドレス
+                </Label>
+                <Input
+                  id="signup-email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={signUpData.email}
+                  onChange={(e) =>
+                    setSignUpData({ ...signUpData, email: e.target.value })
+                  }
+                  required
+                  disabled={isLoading}
+                  className="h-12 rounded-2xl border-gray-200"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="signup-nickname" className="text-sm text-gray-600">
+                  ニックネーム
+                </Label>
+                <Input
+                  id="signup-nickname"
+                  type="text"
+                  placeholder="あなたの名前"
+                  value={signUpData.nickname}
+                  onChange={(e) =>
+                    setSignUpData({ ...signUpData, nickname: e.target.value })
+                  }
+                  required
+                  disabled={isLoading}
+                  minLength={1}
+                  maxLength={50}
+                  className="h-12 rounded-2xl border-gray-200"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="signup-password" className="text-sm text-gray-600">
+                  パスワード
+                </Label>
+                <Input
+                  id="signup-password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={signUpData.password}
+                  onChange={(e) =>
+                    setSignUpData({ ...signUpData, password: e.target.value })
+                  }
+                  required
+                  disabled={isLoading}
+                  minLength={8}
+                  className="h-12 rounded-2xl border-gray-200"
+                />
+                <p className="text-xs text-gray-500">8文字以上</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="signup-confirm-password" className="text-sm text-gray-600">
+                  パスワード（確認）
+                </Label>
+                <Input
+                  id="signup-confirm-password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={signUpData.confirmPassword}
+                  onChange={(e) =>
+                    setSignUpData({
+                      ...signUpData,
+                      confirmPassword: e.target.value,
+                    })
+                  }
+                  required
+                  disabled={isLoading}
+                  minLength={8}
+                  className="h-12 rounded-2xl border-gray-200"
+                />
+              </div>
+
+              {error && (
+                <p className="text-sm text-red-500">{error}</p>
+              )}
+
+              <Button
+                type="submit"
+                className="h-12 w-full rounded-full bg-[#8B7355] text-white hover:bg-[#6B5335]"
+                disabled={isLoading}
+              >
+                {isLoading ? 'アカウント作成中...' : 'アカウントを作成'}
+              </Button>
+
+              <div className="text-center">
+                <p className="text-xs text-gray-500">
+                  すでにアカウントをお持ちですか?{" "}
+                  <button
+                    type="button"
+                    className="font-semibold text-[#8B7355] underline"
+                    onClick={() => setActiveTab('signin')}
+                  >
+                    サインイン
+                  </button>
+                </p>
+              </div>
+            </form>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  </>
+      )}
+    </>
+  )
+}
