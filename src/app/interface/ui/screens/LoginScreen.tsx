@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "@/app/components/ui/button"
-import { Input } from "@/app/components/ui/input"
-import { Label } from "@/app/components/ui/label"
+import { Button } from "@/app/interface/ui/components/ui/button"
+import { Input } from "@/app/interface/ui/components/ui/input"
+import { Label } from "@/app/interface/ui/components/ui/label"
 import { ChevronLeft } from "lucide-react"
 import { useRegistrationStore } from "../../state/registrationStore"
 
