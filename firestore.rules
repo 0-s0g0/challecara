@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users collection - public read, owner write
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // AccountId index - public read, owner write
+    match /accountIdIndex/{accountId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Social links - public read, owner write
+    match /socialLinks/{linkId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+    }
+
+    // Blog posts - published posts are public, owner can write
+    match /blogPosts/{postId} {
+      allow read: if resource.data.isPublished == true || (request.auth != null && request.auth.uid == resource.data.userId);
+      allow write: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+    }
+  }
+}

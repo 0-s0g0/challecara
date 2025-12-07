@@ -4,8 +4,9 @@ import type { BlogPost, BlogPostCreateInput } from "../models/blog"
 import { UserModel } from "../models/user"
 
 export interface IUserRepository {
-  create(input: UserCreateInput): Promise<User>
+  create(input: UserCreateInput & { id: string }): Promise<User>
   findByAccountId(accountId: string): Promise<User | null>
+  findByEmail(email: string): Promise<User | null>
 }
 
 export interface ISocialLinkRepository {
@@ -17,11 +18,12 @@ export interface IBlogPostRepository {
 }
 
 export interface IAuthGateway {
-  hashPassword(password: string): Promise<string>
+  createUserWithEmailAndPassword(email: string, password: string): Promise<string>
 }
 
 export interface ProfileCreationInput {
   accountId: string
+  email: string
   password: string
   nickname: string
   bio: string
@@ -40,9 +42,12 @@ export class ProfileCreationUseCase {
   ) {}
 
   async execute(input: ProfileCreationInput): Promise<User> {
-    // Validate business rules
     if (!UserModel.validateAccountId(input.accountId)) {
       throw new Error("アカウントIDは3〜20文字で入力してください")
+    }
+
+    if (!UserModel.validateEmail(input.email)) {
+      throw new Error("有効なメールアドレスを入力してください")
     }
 
     if (!UserModel.validatePassword(input.password)) {
@@ -53,25 +58,28 @@ export class ProfileCreationUseCase {
       throw new Error("ニックネームは1〜50文字で入力してください")
     }
 
-    // Check if account already exists
-    const existingUser = await this.userRepository.findByAccountId(input.accountId)
-    if (existingUser) {
+    const existingAccountId = await this.userRepository.findByAccountId(input.accountId)
+    if (existingAccountId) {
       throw new Error("このアカウントIDは既に使用されています")
     }
 
-    // Hash password
-    const passwordHash = await this.authGateway.hashPassword(input.password)
+    const existingEmail = await this.userRepository.findByEmail(input.email)
+    if (existingEmail) {
+      throw new Error("このメールアドレスは既に使用されています")
+    }
 
-    // Create user
+    const uid = await this.authGateway.createUserWithEmailAndPassword(input.email, input.password)
+
     const user = await this.userRepository.create({
+      id: uid,
       accountId: input.accountId,
-      password: passwordHash,
+      email: input.email,
+      password: input.password,
       nickname: input.nickname,
       bio: input.bio,
       avatarUrl: input.avatarUrl,
     })
 
-    // Create social links
     for (const link of input.socialLinks) {
       await this.socialLinkRepository.create({
         userId: user.id,
@@ -80,7 +88,6 @@ export class ProfileCreationUseCase {
       })
     }
 
-    // Create initial blog post if provided
     if (input.blogTitle && input.blogContent) {
       await this.blogPostRepository.create({
         userId: user.id,
