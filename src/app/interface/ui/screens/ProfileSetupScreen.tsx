@@ -1,11 +1,11 @@
 "use client"
 
-import { useState } from "react"
 import { Button } from "@/app/interface/ui/components/ui/button"
 import { Input } from "@/app/interface/ui/components/ui/input"
 import { Label } from "@/app/interface/ui/components/ui/label"
 import { Textarea } from "@/app/interface/ui/components/ui/textarea"
 import { ChevronLeft, Upload } from "lucide-react"
+import { useState } from "react"
 import { useRegistrationStore } from "../../state/registrationStore"
 
 interface ProfileSetupScreenProps {
@@ -14,7 +14,11 @@ interface ProfileSetupScreenProps {
 }
 
 export function ProfileSetupScreen({ onNext, onBack }: ProfileSetupScreenProps) {
-  const { nickname: storedNickname, bio: storedBio, avatarUrl: storedAvatarUrl } = useRegistrationStore()
+  const {
+    nickname: storedNickname,
+    bio: storedBio,
+    avatarUrl: storedAvatarUrl,
+  } = useRegistrationStore()
   const setProfileData = useRegistrationStore((state) => state.setProfileData)
 
   const [nickname, setNickname] = useState(storedNickname)
@@ -93,7 +97,11 @@ export function ProfileSetupScreen({ onNext, onBack }: ProfileSetupScreenProps) 
               className="flex h-16 w-16 cursor-pointer items-center justify-center rounded-2xl border-2 border-dashed border-border bg-white/80 transition-colors hover:border-primary/50"
             >
               {avatarUrl ? (
-                <img src={avatarUrl} alt="Avatar" className="h-full w-full rounded-2xl object-cover" />
+                <img
+                  src={avatarUrl}
+                  alt="Avatar"
+                  className="h-full w-full rounded-2xl object-cover"
+                />
               ) : (
                 <Upload className="h-6 w-6 text-muted-foreground" />
               )}

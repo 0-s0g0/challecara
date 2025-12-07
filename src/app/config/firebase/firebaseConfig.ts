@@ -1,11 +1,11 @@
-import { initializeApp, getApps, FirebaseApp } from 'firebase/app'
-import { getAuth, Auth } from 'firebase/auth'
-import { getFirestore, Firestore } from 'firebase/firestore'
+import { type FirebaseApp, getApps, initializeApp } from "firebase/app"
+import { type Auth, getAuth } from "firebase/auth"
+import { type Firestore, getFirestore } from "firebase/firestore"
 
 /**
  * 環境変数を取得（デフォルト値付き）
  */
-function getEnv(key: string, defaultValue: string = ''): string {
+function getEnv(key: string, defaultValue = ""): string {
   const value = process.env[key]
   if (!value) {
     console.warn(`⚠️ 環境変数 ${key} が設定されていません。デフォルト値を使用します。`)
@@ -21,13 +21,13 @@ function getOptionalEnv(key: string): string | undefined {
 }
 
 const firebaseConfig = {
-  apiKey: getEnv('NEXT_PUBLIC_FIREBASE_API_KEY', 'AIzaSyClxBGPOhYeOKpQtFkPys1uD2YGyQy2Dak'),
-  authDomain: getEnv('NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN', 'tsunagu-link.firebaseapp.com'),
-  projectId: getEnv('NEXT_PUBLIC_FIREBASE_PROJECT_ID', 'tsunagu-link'),
-  storageBucket: getEnv('NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET', 'tsunagu-link.firebasestorage.app'),
-  messagingSenderId: getEnv('NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID', '156706603796'),
-  appId: getEnv('NEXT_PUBLIC_FIREBASE_APP_ID', '1:156706603796:web:2fed5c75723e2cefc0b801'),
-  measurementId: getOptionalEnv('NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID'),
+  apiKey: getEnv("NEXT_PUBLIC_FIREBASE_API_KEY", "AIzaSyClxBGPOhYeOKpQtFkPys1uD2YGyQy2Dak"),
+  authDomain: getEnv("NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN", "tsunagu-link.firebaseapp.com"),
+  projectId: getEnv("NEXT_PUBLIC_FIREBASE_PROJECT_ID", "tsunagu-link"),
+  storageBucket: getEnv("NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET", "tsunagu-link.firebasestorage.app"),
+  messagingSenderId: getEnv("NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID", "156706603796"),
+  appId: getEnv("NEXT_PUBLIC_FIREBASE_APP_ID", "1:156706603796:web:2fed5c75723e2cefc0b801"),
+  measurementId: getOptionalEnv("NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID"),
 }
 
 // Singleton pattern for Firebase initialization
@@ -63,5 +63,5 @@ export function accountIdToEmail(accountId: string): string {
 
 // Helper to extract accountId from Firebase email
 export function emailToAccountId(email: string): string {
-  return email.replace('@app.internal', '')
+  return email.replace("@app.internal", "")
 }

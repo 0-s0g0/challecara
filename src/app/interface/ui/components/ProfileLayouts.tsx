@@ -1,9 +1,9 @@
 "use client"
 
-import type React from "react"
-import Image from "next/image"
 import { Card } from "@/app/interface/ui/components/ui/card"
-import { FaXTwitter, FaInstagram, FaFacebook } from "react-icons/fa6"
+import Image from "next/image"
+import type React from "react"
+import { FaFacebook, FaInstagram, FaXTwitter } from "react-icons/fa6"
 
 interface ProfileData {
   nickname: string
@@ -148,7 +148,9 @@ export function Layout4({ data }: LayoutProps) {
           </div>
           <div className="flex-1">
             <h2 className="text-2xl font-bold text-gray-800">{data.nickname || "ユーザー名"}</h2>
-            <p className="mt-2 text-sm text-gray-600">{data.bio || "自己紹介がここに表示されます"}</p>
+            <p className="mt-2 text-sm text-gray-600">
+              {data.bio || "自己紹介がここに表示されます"}
+            </p>
           </div>
         </div>
 
@@ -173,16 +175,16 @@ function SocialIcon({ type }: { type: "instagram" | "x" | "facebook" }) {
   const config = {
     instagram: {
       bg: "bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]",
-      icon: <FaInstagram className="h-4 w-4 text-white" />
+      icon: <FaInstagram className="h-4 w-4 text-white" />,
     },
     x: {
       bg: "bg-[#000000]",
-      icon: <FaXTwitter className="h-4 w-4 text-white" />
+      icon: <FaXTwitter className="h-4 w-4 text-white" />,
     },
     facebook: {
       bg: "bg-[#1877F2]",
-      icon: <FaFacebook className="h-4 w-4 text-white" />
-    }
+      icon: <FaFacebook className="h-4 w-4 text-white" />,
+    },
   }
 
   return (
@@ -196,13 +198,13 @@ function SocialIconSmall({ type }: { type: "instagram" | "x" | "facebook" }) {
   const icons = {
     instagram: <FaInstagram className="h-3 w-3 text-white" />,
     x: <FaXTwitter className="h-3 w-3 text-white" />,
-    facebook: <FaFacebook className="h-3 w-3 text-white" />
+    facebook: <FaFacebook className="h-3 w-3 text-white" />,
   }
 
   const config = {
     instagram: "bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]",
     x: "bg-[#000000]",
-    facebook: "bg-[#1877F2]"
+    facebook: "bg-[#1877F2]",
   }
 
   return (
@@ -216,13 +218,13 @@ function SocialIconLarge({ type }: { type: "instagram" | "x" | "facebook" }) {
   const icons = {
     instagram: <FaInstagram className="h-6 w-6 text-white" />,
     x: <FaXTwitter className="h-6 w-6 text-white" />,
-    facebook: <FaFacebook className="h-6 w-6 text-white" />
+    facebook: <FaFacebook className="h-6 w-6 text-white" />,
   }
 
   const config = {
     instagram: "bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]",
     x: "bg-[#000000]",
-    facebook: "bg-[#1877F2]"
+    facebook: "bg-[#1877F2]",
   }
 
   return (

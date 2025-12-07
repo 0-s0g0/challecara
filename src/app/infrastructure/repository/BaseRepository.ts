@@ -1,7 +1,7 @@
-import { Firestore, collection, Collection } from 'firebase/firestore'
-import { FirebaseError } from 'firebase/app'
-import { getFirebaseDb } from '../../config/firebase/firebaseConfig'
-import { RepositoryError } from '../../domain/errors/DomainErrors'
+import type { FirebaseError } from "firebase/app"
+import { type Collection, type Firestore, collection } from "firebase/firestore"
+import { getFirebaseDb } from "../../config/firebase/firebaseConfig"
+import { RepositoryError } from "../../domain/errors/DomainErrors"
 
 /**
  * リポジトリの基底クラス
@@ -21,10 +21,7 @@ export abstract class BaseRepository<T> {
    */
   protected handleError(error: unknown, operation: string): never {
     if (this.isFirebaseError(error)) {
-      throw new RepositoryError(
-        `${operation}に失敗しました: ${error.message}`,
-        'FIRESTORE_ERROR'
-      )
+      throw new RepositoryError(`${operation}に失敗しました: ${error.message}`, "FIRESTORE_ERROR")
     }
     if (error instanceof Error) {
       throw new RepositoryError(`${operation}に失敗しました: ${error.message}`)
@@ -37,10 +34,10 @@ export abstract class BaseRepository<T> {
    */
   protected isFirebaseError(error: unknown): error is FirebaseError {
     return (
-      typeof error === 'object' &&
+      typeof error === "object" &&
       error !== null &&
-      'code' in error &&
-      typeof (error as FirebaseError).code === 'string'
+      "code" in error &&
+      typeof (error as FirebaseError).code === "string"
     )
   }
 }

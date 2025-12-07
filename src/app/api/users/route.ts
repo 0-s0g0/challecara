@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from "next/server"
 
 /**
  * @swagger
@@ -30,22 +30,22 @@ export async function GET(request: NextRequest) {
     // For now, return mock data
     const users = [
       {
-        id: '1',
-        accountId: 'demo_user',
-        nickname: 'Demo User',
-        bio: 'This is a demo user',
-        avatarUrl: 'https://example.com/avatar.jpg',
+        id: "1",
+        accountId: "demo_user",
+        nickname: "Demo User",
+        bio: "This is a demo user",
+        avatarUrl: "https://example.com/avatar.jpg",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },
-    ];
+    ]
 
-    return NextResponse.json(users, { status: 200 });
+    return NextResponse.json(users, { status: 200 })
   } catch (error) {
     return NextResponse.json(
-      { error: 'Failed to fetch users', code: 'INTERNAL_ERROR' },
+      { error: "Failed to fetch users", code: "INTERNAL_ERROR" },
       { status: 500 }
-    );
+    )
   }
 }
 
@@ -85,17 +85,17 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = await request.json()
 
     // TODO: Implement profileCreationUseCase integration
     // For now, validate and return mock response
-    const { accountId, password, nickname, bio, avatarUrl } = body;
+    const { accountId, password, nickname, bio, avatarUrl } = body
 
     if (!accountId || !password || !nickname || !bio || !avatarUrl) {
       return NextResponse.json(
-        { error: 'Missing required fields', code: 'INVALID_INPUT' },
+        { error: "Missing required fields", code: "INVALID_INPUT" },
         { status: 400 }
-      );
+      )
     }
 
     // Mock created user
@@ -107,13 +107,13 @@ export async function POST(request: NextRequest) {
       avatarUrl,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    };
+    }
 
-    return NextResponse.json(newUser, { status: 201 });
+    return NextResponse.json(newUser, { status: 201 })
   } catch (error) {
     return NextResponse.json(
-      { error: 'Failed to create user', code: 'INTERNAL_ERROR' },
+      { error: "Failed to create user", code: "INTERNAL_ERROR" },
       { status: 500 }
-    );
+    )
   }
 }

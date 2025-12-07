@@ -1,7 +1,7 @@
 "use server"
 
+import { cookies } from "next/headers"
 import { UseCaseFactory } from "../../config/factories/useCaseFactory"
-import { cookies } from 'next/headers'
 
 export async function login(accountId: string, password: string) {
   try {
@@ -10,12 +10,12 @@ export async function login(accountId: string, password: string) {
 
     // Store token in HTTP-only cookie for security
     const cookieStore = await cookies()
-    cookieStore.set('authToken', result.token, {
+    cookieStore.set("authToken", result.token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       maxAge: 60 * 60 * 24 * 7, // 7 days
-      path: '/',
+      path: "/",
     })
 
     return {
@@ -41,7 +41,7 @@ export async function login(accountId: string, password: string) {
 export async function logout() {
   try {
     const cookieStore = await cookies()
-    cookieStore.delete('authToken')
+    cookieStore.delete("authToken")
 
     return {
       success: true,
@@ -58,7 +58,7 @@ export async function logout() {
 export async function getCurrentUser() {
   try {
     const cookieStore = await cookies()
-    const token = cookieStore.get('authToken')?.value
+    const token = cookieStore.get("authToken")?.value
 
     if (!token) {
       return { success: false, user: null }

@@ -12,11 +12,11 @@
   --font-mono: var(--font-geist-mono);
 
   /* Pastel colors */
-  --color-pastel-mint: #C8E6E0;
-  --color-pastel-peach: #F5D5C8;
-  --color-pastel-pink: #F5D5E0;
-  --color-pastel-lavender: #E0D5F5;
-  --color-pastel-yellow: #F5F0D5;
+  --color-pastel-mint: #c8e6e0;
+  --color-pastel-peach: #f5d5c8;
+  --color-pastel-pink: #f5d5e0;
+  --color-pastel-lavender: #e0d5f5;
+  --color-pastel-yellow: #f5f0d5;
 }
 
 @media (prefers-color-scheme: dark) {

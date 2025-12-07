@@ -1,20 +1,13 @@
-import {
-  collection,
-  doc,
-  setDoc,
-  getDoc,
-  serverTimestamp,
-  Timestamp
-} from 'firebase/firestore'
-import { getFirebaseDb } from '../../config/firebase/firebaseConfig'
+import { Timestamp, collection, doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore"
+import { getFirebaseDb } from "../../config/firebase/firebaseConfig"
+import { RepositoryError, UserNotFoundError } from "../../domain/errors/DomainErrors"
 import type { User, UserCreateInput } from "../../domain/models/user"
 import type { IUserRepository } from "../../domain/repository/IUserRepository"
-import { UserNotFoundError, RepositoryError } from "../../domain/errors/DomainErrors"
 
 export class UserRepository implements IUserRepository {
   private db = getFirebaseDb()
-  private usersCollection = collection(this.db, 'users')
-  private accountIdIndexCollection = collection(this.db, 'accountIdIndex')
+  private usersCollection = collection(this.db, "users")
+  private accountIdIndexCollection = collection(this.db, "accountIdIndex")
 
   /**
    * Creates a new user in Firestore
@@ -52,7 +45,7 @@ export class UserRepository implements IUserRepository {
         updatedAt: now.toDate(),
       }
     } catch (error) {
-      throw new RepositoryError('ユーザーの作成に失敗しました')
+      throw new RepositoryError("ユーザーの作成に失敗しました")
     }
   }
 
@@ -93,7 +86,7 @@ export class UserRepository implements IUserRepository {
         updatedAt: data.updatedAt?.toDate() || new Date(),
       }
     } catch (error) {
-      throw new RepositoryError('ユーザーの取得に失敗しました')
+      throw new RepositoryError("ユーザーの取得に失敗しました")
     }
   }
 
@@ -104,10 +97,14 @@ export class UserRepository implements IUserRepository {
     try {
       const userRef = doc(this.usersCollection, id)
 
-      await setDoc(userRef, {
-        ...data,
-        updatedAt: serverTimestamp(),
-      }, { merge: true })
+      await setDoc(
+        userRef,
+        {
+          ...data,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true }
+      )
 
       const updated = await this.findById(id)
       if (!updated) {
@@ -119,7 +116,7 @@ export class UserRepository implements IUserRepository {
       if (error instanceof UserNotFoundError) {
         throw error
       }
-      throw new RepositoryError('ユーザーの更新に失敗しました')
+      throw new RepositoryError("ユーザーの更新に失敗しました")
     }
   }
 }

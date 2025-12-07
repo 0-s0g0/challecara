@@ -1,23 +1,23 @@
 import {
+  Timestamp,
   addDoc,
-  query,
-  where,
-  getDocs,
-  getDoc,
-  doc,
-  setDoc,
   deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
   orderBy,
+  query,
   serverTimestamp,
-  Timestamp
-} from 'firebase/firestore'
+  setDoc,
+  where,
+} from "firebase/firestore"
 import type { BlogPost, BlogPostCreateInput } from "../../domain/models/blog"
 import type { IBlogPostRepository } from "../../domain/repository/IBlogPostRepository"
 import { BaseRepository } from "./BaseRepository"
 
 export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlogPostRepository {
   constructor() {
-    super('blogPosts')
+    super("blogPosts")
   }
 
   async create(input: BlogPostCreateInput): Promise<BlogPost> {
@@ -42,20 +42,16 @@ export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlo
         updatedAt: now.toDate(),
       }
     } catch (error) {
-      this.handleError(error, 'ブログ投稿の作成')
+      this.handleError(error, "ブログ投稿の作成")
     }
   }
 
   async findByUserId(userId: string): Promise<BlogPost[]> {
     try {
-      const q = query(
-        this.collection,
-        where('userId', '==', userId),
-        orderBy('createdAt', 'desc')
-      )
+      const q = query(this.collection, where("userId", "==", userId), orderBy("createdAt", "desc"))
       const querySnapshot = await getDocs(q)
 
-      return querySnapshot.docs.map(doc => ({
+      return querySnapshot.docs.map((doc) => ({
         id: doc.id,
         userId: doc.data().userId,
         title: doc.data().title,
@@ -65,7 +61,7 @@ export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlo
         updatedAt: doc.data().updatedAt?.toDate() || new Date(),
       }))
     } catch (error) {
-      this.handleError(error, 'ブログ投稿の取得')
+      this.handleError(error, "ブログ投稿の取得")
     }
   }
 
@@ -88,26 +84,30 @@ export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlo
         updatedAt: data.updatedAt?.toDate() || new Date(),
       }
     } catch (error) {
-      this.handleError(error, 'ブログ投稿の取得')
+      this.handleError(error, "ブログ投稿の取得")
     }
   }
 
   async update(id: string, data: Partial<BlogPost>): Promise<BlogPost> {
     try {
       const postRef = doc(this.collection, id)
-      await setDoc(postRef, {
-        ...data,
-        updatedAt: serverTimestamp(),
-      }, { merge: true })
+      await setDoc(
+        postRef,
+        {
+          ...data,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true }
+      )
 
       // 更新後のデータを取得
       const updated = await this.findById(id)
       if (!updated) {
-        throw new Error('ブログ投稿が見つかりません')
+        throw new Error("ブログ投稿が見つかりません")
       }
       return updated
     } catch (error) {
-      this.handleError(error, 'ブログ投稿の更新')
+      this.handleError(error, "ブログ投稿の更新")
     }
   }
 
@@ -116,7 +116,7 @@ export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlo
       const postRef = doc(this.collection, id)
       await deleteDoc(postRef)
     } catch (error) {
-      this.handleError(error, 'ブログ投稿の削除')
+      this.handleError(error, "ブログ投稿の削除")
     }
   }
 }

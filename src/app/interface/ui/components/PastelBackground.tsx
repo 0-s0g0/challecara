@@ -35,12 +35,7 @@ export function PastelBackground() {
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <path
-          d="M 250 200 Q 350 400 450 600"
-          stroke="#8B7355"
-          strokeWidth="2"
-          fill="none"
-        />
+        <path d="M 250 200 Q 350 400 450 600" stroke="#8B7355" strokeWidth="2" fill="none" />
       </svg>
 
       {/* Center bottom - pink circle */}

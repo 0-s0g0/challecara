@@ -113,15 +113,11 @@ export function AnalyticsScreen() {
             <div className="space-y-3">
               <div className="flex items-start gap-3">
                 <div className="mt-0.5 h-2 w-2 rounded-full bg-purple-500" />
-                <p className="text-sm text-gray-700">
-                  金曜日のアクセス数が最も多い傾向があります
-                </p>
+                <p className="text-sm text-gray-700">金曜日のアクセス数が最も多い傾向があります</p>
               </div>
               <div className="flex items-start gap-3">
                 <div className="mt-0.5 h-2 w-2 rounded-full bg-pink-500" />
-                <p className="text-sm text-gray-700">
-                  先週と比較して閲覧数が12.5%増加しています
-                </p>
+                <p className="text-sm text-gray-700">先週と比較して閲覧数が12.5%増加しています</p>
               </div>
               <div className="flex items-start gap-3">
                 <div className="mt-0.5 h-2 w-2 rounded-full bg-blue-500" />

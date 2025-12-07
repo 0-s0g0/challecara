@@ -1,13 +1,13 @@
 "use client"
 
-import { useState } from "react"
 import { Button } from "@/app/interface/ui/components/ui/button"
 import { Input } from "@/app/interface/ui/components/ui/input"
 import { Label } from "@/app/interface/ui/components/ui/label"
 import { Textarea } from "@/app/interface/ui/components/ui/textarea"
 import { ChevronLeft } from "lucide-react"
-import { useRegistrationStore } from "../../state/registrationStore"
+import { useState } from "react"
 import { createProfile } from "../../controller/profileController"
+import { useRegistrationStore } from "../../state/registrationStore"
 
 interface BlogSetupScreenProps {
   onNext: () => void
@@ -32,13 +32,22 @@ export function BlogSetupScreen({ onNext, onBack }: BlogSetupScreenProps) {
     try {
       const socialLinks = []
       if (registrationData.xUsername) {
-        socialLinks.push({ provider: "twitter", url: `https://twitter.com/${registrationData.xUsername}` })
+        socialLinks.push({
+          provider: "twitter",
+          url: `https://twitter.com/${registrationData.xUsername}`,
+        })
       }
       if (registrationData.instagramUsername) {
-        socialLinks.push({ provider: "instagram", url: `https://instagram.com/${registrationData.instagramUsername}` })
+        socialLinks.push({
+          provider: "instagram",
+          url: `https://instagram.com/${registrationData.instagramUsername}`,
+        })
       }
       if (registrationData.facebookUsername) {
-        socialLinks.push({ provider: "facebook", url: `https://facebook.com/${registrationData.facebookUsername}` })
+        socialLinks.push({
+          provider: "facebook",
+          url: `https://facebook.com/${registrationData.facebookUsername}`,
+        })
       }
 
       const result = await createProfile({

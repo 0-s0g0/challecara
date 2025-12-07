@@ -19,15 +19,15 @@ export interface UserCreateInput {
 
 import {
   InvalidAccountIdError,
-  WeakPasswordError,
   InvalidNicknameError,
-} from '../errors/DomainErrors'
+  WeakPasswordError,
+} from "../errors/DomainErrors"
 
 export class UserModel {
   private static readonly ERROR_MESSAGES = {
-    INVALID_ACCOUNT_ID: 'アカウントIDは3〜20文字で入力してください',
-    WEAK_PASSWORD: 'パスワードは8文字以上で入力してください',
-    INVALID_NICKNAME: 'ニックネームは1〜50文字で入力してください',
+    INVALID_ACCOUNT_ID: "アカウントIDは3〜20文字で入力してください",
+    WEAK_PASSWORD: "パスワードは8文字以上で入力してください",
+    INVALID_NICKNAME: "ニックネームは1〜50文字で入力してください",
   }
 
   /**

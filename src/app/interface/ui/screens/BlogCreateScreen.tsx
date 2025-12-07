@@ -1,11 +1,11 @@
 "use client"
 
-import { useState } from "react"
 import { Button } from "@/app/interface/ui/components/ui/button"
 import { Input } from "@/app/interface/ui/components/ui/input"
 import { Label } from "@/app/interface/ui/components/ui/label"
 import { Textarea } from "@/app/interface/ui/components/ui/textarea"
 import { Upload, X } from "lucide-react"
+import { useState } from "react"
 
 export function BlogCreateScreen() {
   const [title, setTitle] = useState("")
@@ -54,11 +54,7 @@ export function BlogCreateScreen() {
             <Label className="text-sm text-gray-700">画像（任意）</Label>
             {image ? (
               <div className="relative">
-                <img
-                  src={image}
-                  alt="Preview"
-                  className="h-48 w-full rounded-2xl object-cover"
-                />
+                <img src={image} alt="Preview" className="h-48 w-full rounded-2xl object-cover" />
                 <button
                   onClick={handleRemoveImage}
                   className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white transition-colors hover:bg-black/70"

@@ -19,7 +19,10 @@ export class ProfileViewModel {
   static transform(profileData: ProfileData): ProfileViewData {
     const socialIconMap: Record<string, { icon: string; color: string }> = {
       twitter: { icon: "twitter", color: "bg-[#000000]" },
-      instagram: { icon: "instagram", color: "bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]" },
+      instagram: {
+        icon: "instagram",
+        color: "bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]",
+      },
       facebook: { icon: "facebook", color: "bg-[#1877F2]" },
       tiktok: { icon: "tiktok", color: "bg-foreground" },
     }

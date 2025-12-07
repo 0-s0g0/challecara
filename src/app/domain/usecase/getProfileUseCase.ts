@@ -1,10 +1,10 @@
-import type { User } from "../models/user"
-import type { SocialLink } from "../models/socialLink"
-import type { BlogPost } from "../models/blog"
-import type { IUserRepository } from "../repository/IUserRepository"
-import type { ISocialLinkRepository } from "../repository/ISocialLinkRepository"
-import type { IBlogPostRepository } from "../repository/IBlogPostRepository"
 import { UserNotFoundError } from "../errors/DomainErrors"
+import type { BlogPost } from "../models/blog"
+import type { SocialLink } from "../models/socialLink"
+import type { User } from "../models/user"
+import type { IBlogPostRepository } from "../repository/IBlogPostRepository"
+import type { ISocialLinkRepository } from "../repository/ISocialLinkRepository"
+import type { IUserRepository } from "../repository/IUserRepository"
 
 export interface ProfileData {
   user: User
@@ -16,7 +16,7 @@ export class GetProfileUseCase {
   constructor(
     private userRepository: IUserRepository,
     private socialLinkRepository: ISocialLinkRepository,
-    private blogPostRepository: IBlogPostRepository,
+    private blogPostRepository: IBlogPostRepository
   ) {}
 
   async execute(userId: string): Promise<ProfileData> {

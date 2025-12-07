@@ -2,11 +2,11 @@
 
 import type React from "react"
 
-import { useState } from "react"
 import { Button } from "@/app/interface/ui/components/ui/button"
 import { Input } from "@/app/interface/ui/components/ui/input"
 import { ChevronLeft } from "lucide-react"
-import { FaXTwitter, FaInstagram, FaFacebook } from "react-icons/fa6"
+import { useState } from "react"
+import { FaFacebook, FaInstagram, FaXTwitter } from "react-icons/fa6"
 import { useRegistrationStore } from "../../state/registrationStore"
 
 interface SocialSetupScreenProps {

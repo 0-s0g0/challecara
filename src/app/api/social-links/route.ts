@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from "next/server"
 
 /**
  * @swagger
@@ -32,28 +32,28 @@ import { NextRequest, NextResponse } from 'next/server';
  */
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
+    const { searchParams } = new URL(request.url)
+    const userId = searchParams.get("userId")
 
     // TODO: Implement social link retrieval use case
     // For now, return mock data
     const socialLinks = [
       {
-        id: '1',
-        userId: userId || '1',
-        provider: 'twitter' as const,
-        url: 'https://twitter.com/example',
+        id: "1",
+        userId: userId || "1",
+        provider: "twitter" as const,
+        url: "https://twitter.com/example",
         isActive: true,
         createdAt: new Date().toISOString(),
       },
-    ];
+    ]
 
-    return NextResponse.json(socialLinks, { status: 200 });
+    return NextResponse.json(socialLinks, { status: 200 })
   } catch (error) {
     return NextResponse.json(
-      { error: 'Failed to fetch social links', code: 'INTERNAL_ERROR' },
+      { error: "Failed to fetch social links", code: "INTERNAL_ERROR" },
       { status: 500 }
-    );
+    )
   }
 }
 
@@ -93,14 +93,14 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { userId, provider, url } = body;
+    const body = await request.json()
+    const { userId, provider, url } = body
 
     if (!userId || !provider || !url) {
       return NextResponse.json(
-        { error: 'Missing required fields', code: 'INVALID_INPUT' },
+        { error: "Missing required fields", code: "INVALID_INPUT" },
         { status: 400 }
-      );
+      )
     }
 
     // TODO: Implement social link creation use case
@@ -111,13 +111,13 @@ export async function POST(request: NextRequest) {
       url,
       isActive: true,
       createdAt: new Date().toISOString(),
-    };
+    }
 
-    return NextResponse.json(newSocialLink, { status: 201 });
+    return NextResponse.json(newSocialLink, { status: 201 })
   } catch (error) {
     return NextResponse.json(
-      { error: 'Failed to create social link', code: 'INTERNAL_ERROR' },
+      { error: "Failed to create social link", code: "INTERNAL_ERROR" },
       { status: 500 }
-    );
+    )
   }
 }

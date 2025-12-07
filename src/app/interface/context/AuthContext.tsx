@@ -1,10 +1,10 @@
 "use client"
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
-import { User as FirebaseUser, onAuthStateChanged } from 'firebase/auth'
-import { getFirebaseAuth } from '../../config/firebase/firebaseConfig'
-import type { User } from '../../domain/models/user'
-import { UseCaseFactory } from '../../config/factories/useCaseFactory'
+import { type User as FirebaseUser, onAuthStateChanged } from "firebase/auth"
+import { type ReactNode, createContext, useContext, useEffect, useState } from "react"
+import { UseCaseFactory } from "../../config/factories/useCaseFactory"
+import { getFirebaseAuth } from "../../config/firebase/firebaseConfig"
+import type { User } from "../../domain/models/user"
 
 interface AuthContextType {
   firebaseUser: FirebaseUser | null
@@ -34,7 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const profileData = await getProfileUseCase.execute(firebaseUser.uid)
           setUser(profileData.user)
         } catch (error) {
-          console.error('Error fetching user data:', error)
+          console.error("Error fetching user data:", error)
           setUser(null)
         }
       } else {
@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext)
   if (context === undefined) {
-    throw new Error('useAuth must be used within AuthProvider')
+    throw new Error("useAuth must be used within AuthProvider")
   }
   return context
 }

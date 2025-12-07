@@ -1,22 +1,25 @@
 import {
-  collection,
+  Timestamp,
   addDoc,
-  query,
-  where,
-  getDocs,
-  doc,
-  setDoc,
+  collection,
   deleteDoc,
+  doc,
+  getDocs,
+  query,
   serverTimestamp,
-  Timestamp
-} from 'firebase/firestore'
+  setDoc,
+  where,
+} from "firebase/firestore"
 import type { SocialLink, SocialLinkCreateInput } from "../../domain/models/socialLink"
 import type { ISocialLinkRepository } from "../../domain/repository/ISocialLinkRepository"
 import { BaseRepository } from "./BaseRepository"
 
-export class SocialLinkRepository extends BaseRepository<SocialLink> implements ISocialLinkRepository {
+export class SocialLinkRepository
+  extends BaseRepository<SocialLink>
+  implements ISocialLinkRepository
+{
   constructor() {
-    super('socialLinks')
+    super("socialLinks")
   }
 
   async create(input: SocialLinkCreateInput): Promise<SocialLink> {
@@ -39,16 +42,16 @@ export class SocialLinkRepository extends BaseRepository<SocialLink> implements 
         createdAt: now.toDate(),
       }
     } catch (error) {
-      this.handleError(error, 'ソーシャルリンクの作成')
+      this.handleError(error, "ソーシャルリンクの作成")
     }
   }
 
   async findByUserId(userId: string): Promise<SocialLink[]> {
     try {
-      const q = query(this.collection, where('userId', '==', userId))
+      const q = query(this.collection, where("userId", "==", userId))
       const querySnapshot = await getDocs(q)
 
-      return querySnapshot.docs.map(doc => ({
+      return querySnapshot.docs.map((doc) => ({
         id: doc.id,
         userId: doc.data().userId,
         provider: doc.data().provider,
@@ -57,16 +60,20 @@ export class SocialLinkRepository extends BaseRepository<SocialLink> implements 
         createdAt: doc.data().createdAt?.toDate() || new Date(),
       }))
     } catch (error) {
-      this.handleError(error, 'ソーシャルリンクの取得')
+      this.handleError(error, "ソーシャルリンクの取得")
     }
   }
 
   async update(id: string, data: Partial<SocialLink>): Promise<SocialLink> {
     try {
       const linkRef = doc(this.collection, id)
-      await setDoc(linkRef, {
-        ...data,
-      }, { merge: true })
+      await setDoc(
+        linkRef,
+        {
+          ...data,
+        },
+        { merge: true }
+      )
 
       // 更新後のデータを返す（簡易実装）
       return {
@@ -74,7 +81,7 @@ export class SocialLinkRepository extends BaseRepository<SocialLink> implements 
         ...data,
       } as SocialLink
     } catch (error) {
-      this.handleError(error, 'ソーシャルリンクの更新')
+      this.handleError(error, "ソーシャルリンクの更新")
     }
   }
 
@@ -83,7 +90,7 @@ export class SocialLinkRepository extends BaseRepository<SocialLink> implements 
       const linkRef = doc(this.collection, id)
       await deleteDoc(linkRef)
     } catch (error) {
-      this.handleError(error, 'ソーシャルリンクの削除')
+      this.handleError(error, "ソーシャルリンクの削除")
     }
   }
 }

@@ -1,18 +1,18 @@
-import type { User, UserCreateInput } from "../models/user"
-import type { SocialLinkCreateInput, SocialProvider } from "../models/socialLink"
-import type { BlogPostCreateInput } from "../models/blog"
-import type { IUserRepository } from "../repository/IUserRepository"
-import type { ISocialLinkRepository } from "../repository/ISocialLinkRepository"
-import type { IBlogPostRepository } from "../repository/IBlogPostRepository"
-import type { IAuthGateway } from "../gateway/IAuthGateway"
-import { UserModel } from "../models/user"
 import {
-  InvalidAccountIdError,
-  WeakPasswordError,
-  InvalidNicknameError,
   DuplicateAccountIdError,
+  InvalidAccountIdError,
+  InvalidNicknameError,
   ValidationError,
+  WeakPasswordError,
 } from "../errors/DomainErrors"
+import type { IAuthGateway } from "../gateway/IAuthGateway"
+import type { BlogPostCreateInput } from "../models/blog"
+import type { SocialLinkCreateInput, SocialProvider } from "../models/socialLink"
+import type { User, UserCreateInput } from "../models/user"
+import { UserModel } from "../models/user"
+import type { IBlogPostRepository } from "../repository/IBlogPostRepository"
+import type { ISocialLinkRepository } from "../repository/ISocialLinkRepository"
+import type { IUserRepository } from "../repository/IUserRepository"
 
 export interface ProfileCreationInput {
   accountId: string
@@ -30,7 +30,7 @@ export class ProfileCreationUseCase {
     private userRepository: IUserRepository,
     private socialLinkRepository: ISocialLinkRepository,
     private blogPostRepository: IBlogPostRepository,
-    private authGateway: IAuthGateway,
+    private authGateway: IAuthGateway
   ) {}
 
   async execute(input: ProfileCreationInput): Promise<User> {
@@ -59,10 +59,10 @@ export class ProfileCreationUseCase {
     })
 
     // Validate and create social links
-    const validProviders: SocialProvider[] = ['twitter', 'instagram', 'facebook', 'tiktok']
+    const validProviders: SocialProvider[] = ["twitter", "instagram", "facebook", "tiktok"]
     for (const link of input.socialLinks) {
       if (!validProviders.includes(link.provider as SocialProvider)) {
-        throw new ValidationError(`無効なプロバイダー: ${link.provider}`, 'provider')
+        throw new ValidationError(`無効なプロバイダー: ${link.provider}`, "provider")
       }
 
       await this.socialLinkRepository.create({

@@ -1,6 +1,6 @@
 "use client"
 
-import { Home, Search, PlusSquare, BarChart3, Settings } from "lucide-react"
+import { BarChart3, Home, PlusSquare, Search, Settings } from "lucide-react"
 
 interface AppFooterProps {
   activeTab: "home" | "search" | "create" | "analytics" | "settings"
@@ -31,9 +31,7 @@ export function AppFooter({ activeTab, onTabChange }: AppFooterProps) {
                 className="flex flex-col items-center gap-1 transition-colors"
               >
                 <Icon
-                  className={`h-6 w-6 ${
-                    isActive ? "text-gray-900" : "text-gray-400"
-                  }`}
+                  className={`h-6 w-6 ${isActive ? "text-gray-900" : "text-gray-400"}`}
                   strokeWidth={isActive ? 2.5 : 2}
                 />
                 <span

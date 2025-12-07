@@ -1,12 +1,12 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
 import { Button } from "@/app/interface/ui/components/ui/button"
 import { ChevronLeft } from "lucide-react"
-import { useRegistrationStore } from "../../state/registrationStore"
-import { createProfile } from "../../controller/profileController"
 import { useRouter } from "next/navigation"
-import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
+import { useRef, useState } from "react"
+import { createProfile } from "../../controller/profileController"
+import { useRegistrationStore } from "../../state/registrationStore"
 
 interface ProfilePreviewScreenProps {
   onBack: () => void
@@ -27,13 +27,13 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
       // Build social links array
       const socialLinks = []
       if (formData.xConnected) {
-        socialLinks.push({ provider: 'twitter', url: '' })
+        socialLinks.push({ provider: "twitter", url: "" })
       }
       if (formData.instagramConnected) {
-        socialLinks.push({ provider: 'instagram', url: '' })
+        socialLinks.push({ provider: "instagram", url: "" })
       }
       if (formData.facebookConnected) {
-        socialLinks.push({ provider: 'facebook', url: '' })
+        socialLinks.push({ provider: "facebook", url: "" })
       }
 
       // Call server action to create profile

@@ -1,13 +1,13 @@
 "use client"
 
-import { useState } from "react"
 import { Button } from "@/app/interface/ui/components/ui/button"
 import { Input } from "@/app/interface/ui/components/ui/input"
 import { Label } from "@/app/interface/ui/components/ui/label"
 import { ChevronLeft } from "lucide-react"
-import { useRegistrationStore } from "../../state/registrationStore"
-import { login } from "../../controller/authController"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { login } from "../../controller/authController"
+import { useRegistrationStore } from "../../state/registrationStore"
 
 interface LoginScreenProps {
   onNext: () => void
@@ -112,10 +112,7 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
             <div className="text-center">
               <p className="text-xs text-gray-500">
                 アカウントを持っていない場合{" "}
-                <button
-                  className="font-semibold text-[#8B7355] underline"
-                  onClick={onNext}
-                >
+                <button className="font-semibold text-[#8B7355] underline" onClick={onNext}>
                   SIGN UP
                 </button>
               </p>
