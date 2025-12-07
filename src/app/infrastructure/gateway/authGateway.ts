@@ -2,10 +2,18 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
-  User as FirebaseUser
+  User as FirebaseUser,
+  AuthError
 } from 'firebase/auth'
 import { getFirebaseAuth, accountIdToEmail } from '../../config/firebase/firebaseConfig'
-import type { IAuthGateway } from '../../domain/usecase/authLoginUseCase'
+import type { IAuthGateway } from '../../domain/gateway/IAuthGateway'
+import {
+  DuplicateAccountIdError,
+  WeakPasswordError,
+  UserNotFoundError,
+  InvalidCredentialsError,
+  AuthenticationError,
+} from '../../domain/errors/DomainErrors'
 
 export class AuthGateway implements IAuthGateway {
   private auth = getFirebaseAuth()
@@ -23,15 +31,17 @@ export class AuthGateway implements IAuthGateway {
         password
       )
       return userCredential.user.uid
-    } catch (error: any) {
-      // Map Firebase errors to user-friendly messages
-      if (error.code === 'auth/email-already-in-use') {
-        throw new Error('このアカウントIDは既に使用されています')
+    } catch (error) {
+      // Map Firebase errors to domain errors
+      if (this.isAuthError(error)) {
+        if (error.code === 'auth/email-already-in-use') {
+          throw new DuplicateAccountIdError()
+        }
+        if (error.code === 'auth/weak-password') {
+          throw new WeakPasswordError()
+        }
       }
-      if (error.code === 'auth/weak-password') {
-        throw new Error('パスワードは8文字以上で入力してください')
-      }
-      throw new Error('アカウント作成に失敗しました')
+      throw new AuthenticationError('アカウント作成に失敗しました')
     }
   }
 
@@ -47,14 +57,16 @@ export class AuthGateway implements IAuthGateway {
         password
       )
       return userCredential.user.uid
-    } catch (error: any) {
-      if (error.code === 'auth/user-not-found') {
-        throw new Error('ユーザーが見つかりません')
+    } catch (error) {
+      if (this.isAuthError(error)) {
+        if (error.code === 'auth/user-not-found') {
+          throw new UserNotFoundError()
+        }
+        if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+          throw new InvalidCredentialsError()
+        }
       }
-      if (error.code === 'auth/wrong-password') {
-        throw new Error('パスワードが正しくありません')
-      }
-      throw new Error('ログインに失敗しました')
+      throw new AuthenticationError('ログインに失敗しました')
     }
   }
 
@@ -73,23 +85,26 @@ export class AuthGateway implements IAuthGateway {
   }
 
   /**
-   * Legacy methods for interface compatibility
-   * These are no longer used with Firebase Auth
+   * Generates an ID token for the current user
    */
-  async hashPassword(password: string): Promise<string> {
-    // Firebase handles password hashing internally
-    return password
-  }
-
-  async verifyPassword(password: string, hash: string): Promise<boolean> {
-    // Firebase handles password verification internally
-    return true
-  }
-
   async generateToken(userId: string): Promise<string> {
     // Firebase handles token generation internally
     const user = this.auth.currentUser
-    if (!user) throw new Error('No authenticated user')
+    if (!user) {
+      throw new AuthenticationError('認証されたユーザーが見つかりません')
+    }
     return await user.getIdToken()
+  }
+
+  /**
+   * Type guard for Firebase AuthError
+   */
+  private isAuthError(error: unknown): error is AuthError {
+    return (
+      typeof error === 'object' &&
+      error !== null &&
+      'code' in error &&
+      typeof (error as AuthError).code === 'string'
+    )
   }
 }

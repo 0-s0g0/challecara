@@ -2,14 +2,33 @@ import { initializeApp, getApps, FirebaseApp } from 'firebase/app'
 import { getAuth, Auth } from 'firebase/auth'
 import { getFirestore, Firestore } from 'firebase/firestore'
 
+/**
+ * 必須の環境変数を取得
+ * @throws Error 環境変数が設定されていない場合
+ */
+function getRequiredEnv(key: string): string {
+  const value = process.env[key]
+  if (!value) {
+    throw new Error(`必須の環境変数が設定されていません: ${key}`)
+  }
+  return value
+}
+
+/**
+ * オプショナルな環境変数を取得
+ */
+function getOptionalEnv(key: string): string | undefined {
+  return process.env[key]
+}
+
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  apiKey: getRequiredEnv('NEXT_PUBLIC_FIREBASE_API_KEY'),
+  authDomain: getRequiredEnv('NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN'),
+  projectId: getRequiredEnv('NEXT_PUBLIC_FIREBASE_PROJECT_ID'),
+  storageBucket: getRequiredEnv('NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET'),
+  messagingSenderId: getRequiredEnv('NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID'),
+  appId: getRequiredEnv('NEXT_PUBLIC_FIREBASE_APP_ID'),
+  measurementId: getOptionalEnv('NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID'), // オプショナル
 }
 
 // Singleton pattern for Firebase initialization

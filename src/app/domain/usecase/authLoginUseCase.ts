@@ -1,17 +1,7 @@
 import type { User } from "../models/user"
-
-export interface IUserRepository {
-  findByAccountId(accountId: string): Promise<User | null>
-  findById(id: string): Promise<User | null>
-  create(user: any): Promise<User>
-}
-
-export interface IAuthGateway {
-  authenticate(accountId: string, password: string): Promise<string> // Returns userId
-  hashPassword(password: string): Promise<string>
-  verifyPassword(password: string, hash: string): Promise<boolean>
-  generateToken(userId: string): Promise<string>
-}
+import type { IUserRepository } from "../repository/IUserRepository"
+import type { IAuthGateway } from "../gateway/IAuthGateway"
+import { UserNotFoundError } from "../errors/DomainErrors"
 
 export class AuthLoginUseCase {
   constructor(
@@ -27,7 +17,7 @@ export class AuthLoginUseCase {
     const user = await this.userRepository.findById(userId)
 
     if (!user) {
-      throw new Error("ユーザーデータが見つかりません")
+      throw new UserNotFoundError("ユーザーデータが見つかりません")
     }
 
     // Generate Firebase token

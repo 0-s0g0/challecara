@@ -1,31 +1,40 @@
 import { ProfileCreationUseCase } from "../../domain/usecase/profileCreationUseCase"
 import { GetProfileUseCase } from "../../domain/usecase/getProfileUseCase"
 import { AuthLoginUseCase } from "../../domain/usecase/authLoginUseCase"
-import { UserRepository } from "../../infrastructure/repository/userRepository"
-import { SocialLinkRepository } from "../../infrastructure/repository/socialLinkRepository"
-import { BlogPostRepository } from "../../infrastructure/repository/blogPostRepository"
-import { AuthGateway } from "../../infrastructure/gateway/authGateway"
+import { container } from "../di/DIContainer"
+import type { IAuthGateway } from "../../domain/gateway/IAuthGateway"
 
-// Singleton repositories (now using Firestore)
-const userRepository = new UserRepository()
-const socialLinkRepository = new SocialLinkRepository()
-const blogPostRepository = new BlogPostRepository()
-const authGateway = new AuthGateway()
-
+/**
+ * UseCaseのファクトリークラス
+ * DIコンテナから依存関係を取得してUseCaseを生成
+ */
 export class UseCaseFactory {
   static createProfileCreationUseCase(): ProfileCreationUseCase {
-    return new ProfileCreationUseCase(userRepository, socialLinkRepository, blogPostRepository, authGateway)
+    const deps = container.getDependencies()
+    return new ProfileCreationUseCase(
+      deps.userRepository,
+      deps.socialLinkRepository,
+      deps.blogPostRepository,
+      deps.authGateway
+    )
   }
 
   static createGetProfileUseCase(): GetProfileUseCase {
-    return new GetProfileUseCase(userRepository, socialLinkRepository, blogPostRepository)
+    const deps = container.getDependencies()
+    return new GetProfileUseCase(
+      deps.userRepository,
+      deps.socialLinkRepository,
+      deps.blogPostRepository
+    )
   }
 
   static createAuthLoginUseCase(): AuthLoginUseCase {
-    return new AuthLoginUseCase(userRepository, authGateway)
+    const deps = container.getDependencies()
+    return new AuthLoginUseCase(deps.userRepository, deps.authGateway)
   }
 
-  static createAuthGateway(): AuthGateway {
-    return authGateway
+  static createAuthGateway(): IAuthGateway {
+    const deps = container.getDependencies()
+    return deps.authGateway
   }
 }

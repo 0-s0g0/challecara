@@ -1,25 +1,18 @@
 import type { User, UserCreateInput } from "../models/user"
-import type { SocialLink, SocialLinkCreateInput } from "../models/socialLink"
-import type { BlogPost, BlogPostCreateInput } from "../models/blog"
+import type { SocialLinkCreateInput, SocialProvider } from "../models/socialLink"
+import type { BlogPostCreateInput } from "../models/blog"
+import type { IUserRepository } from "../repository/IUserRepository"
+import type { ISocialLinkRepository } from "../repository/ISocialLinkRepository"
+import type { IBlogPostRepository } from "../repository/IBlogPostRepository"
+import type { IAuthGateway } from "../gateway/IAuthGateway"
 import { UserModel } from "../models/user"
-
-export interface IUserRepository {
-  create(input: UserCreateInput): Promise<User>
-  findByAccountId(accountId: string): Promise<User | null>
-}
-
-export interface ISocialLinkRepository {
-  create(input: SocialLinkCreateInput): Promise<SocialLink>
-}
-
-export interface IBlogPostRepository {
-  create(input: BlogPostCreateInput): Promise<BlogPost>
-}
-
-export interface IAuthGateway {
-  createAccount(accountId: string, password: string): Promise<string> // Returns userId
-  hashPassword(password: string): Promise<string>
-}
+import {
+  InvalidAccountIdError,
+  WeakPasswordError,
+  InvalidNicknameError,
+  DuplicateAccountIdError,
+  ValidationError,
+} from "../errors/DomainErrors"
 
 export interface ProfileCreationInput {
   accountId: string
@@ -41,23 +34,15 @@ export class ProfileCreationUseCase {
   ) {}
 
   async execute(input: ProfileCreationInput): Promise<User> {
-    // Validate business rules
-    if (!UserModel.validateAccountId(input.accountId)) {
-      throw new Error("アカウントIDは3〜20文字で入力してください")
-    }
-
-    if (!UserModel.validatePassword(input.password)) {
-      throw new Error("パスワードは8文字以上で入力してください")
-    }
-
-    if (!UserModel.validateNickname(input.nickname)) {
-      throw new Error("ニックネームは1〜50文字で入力してください")
-    }
+    // Validate business rules (throws error if invalid)
+    UserModel.validateAccountId(input.accountId)
+    UserModel.validatePassword(input.password)
+    UserModel.validateNickname(input.nickname)
 
     // Check if account already exists (check accountId index)
     const existingUser = await this.userRepository.findByAccountId(input.accountId)
     if (existingUser) {
-      throw new Error("このアカウントIDは既に使用されています")
+      throw new DuplicateAccountIdError()
     }
 
     // Create Firebase Auth account first
@@ -67,17 +52,22 @@ export class ProfileCreationUseCase {
     const user = await this.userRepository.create({
       id: userId, // Use Firebase UID
       accountId: input.accountId,
-      password: '', // Not stored in Firestore
+      password: input.password, // Will be handled by Firebase Auth
       nickname: input.nickname,
       bio: input.bio,
       avatarUrl: input.avatarUrl,
     })
 
-    // Create social links
+    // Validate and create social links
+    const validProviders: SocialProvider[] = ['twitter', 'instagram', 'facebook', 'tiktok']
     for (const link of input.socialLinks) {
+      if (!validProviders.includes(link.provider as SocialProvider)) {
+        throw new ValidationError(`無効なプロバイダー: ${link.provider}`, 'provider')
+      }
+
       await this.socialLinkRepository.create({
         userId: user.id,
-        provider: link.provider as any,
+        provider: link.provider as SocialProvider,
         url: link.url,
       })
     }
