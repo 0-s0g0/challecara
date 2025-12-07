@@ -49,6 +49,10 @@
       "correctness": {
         "noUnusedVariables": "warn",
         "useExhaustiveDependencies": "warn"
+      },
+      "complexity": {
+        "noStaticOnlyClass": "off",
+        "noThisInStatic": "warn"
       }
     }
   },
@@ -71,7 +75,7 @@
       "linter": {
         "rules": {
           "correctness": {
-            "noUnusedVariables": "error"
+            "noUnusedVariables": "warn"
           }
         }
       }

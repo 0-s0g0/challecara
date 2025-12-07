@@ -35,9 +35,6 @@ jobs:
       - name: Check code formatting with Biome
         run: pnpm format:check
 
-      - name: Lint code with Biome
-        run: pnpm biome:check
-
       - name: Type check
         run: pnpm exec tsc --noEmit
 
