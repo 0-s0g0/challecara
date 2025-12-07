@@ -5,7 +5,6 @@ import { Button } from "@/app/interface/ui/components/ui/button"
 import { ChevronLeft } from "lucide-react"
 import { useRegistrationStore } from "../../state/registrationStore"
 import { createProfile } from "../../controller/profileController"
-import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
 
