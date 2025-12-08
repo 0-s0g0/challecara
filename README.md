@@ -123,6 +123,77 @@ pnpm dev
 
 ブラウザで http://localhost:3000 を開く
 
+## ⚡ Makeコマンド
+
+このプロジェクトではMakefileを使用して、よく使うコマンドを簡単に実行できます。
+
+### 基本コマンド
+
+```bash
+# ヘルプを表示（利用可能なコマンド一覧）
+make help
+
+# 依存関係のインストール
+make install
+
+# 開発サーバーの起動
+make dev
+
+# プロダクションビルド
+make build
+
+# プロダクションサーバーの起動
+make start
+```
+
+### テストコマンド
+
+```bash
+# テスト実行
+make test
+
+# Watch mode（変更を監視して自動実行）
+make test-watch
+
+# UIモード（ブラウザでテスト結果を確認）
+make test-ui
+
+# カバレッジ測定
+make test-coverage
+```
+
+### コード品質管理コマンド
+
+```bash
+# ESLint実行
+make lint
+
+# Biomeでフォーマット
+make format
+
+# Biomeでフォーマットチェック（CIで使用）
+make format-check
+
+# Biomeでリント＆フォーマットチェック
+make biome-check
+
+# Biomeでリント＆フォーマット自動修正
+make biome-fix
+```
+
+### その他のコマンド
+
+```bash
+# OpenAPI定義を生成
+make openapi
+
+# ビルド成果物とnode_modulesを削除
+make clean
+
+# CI環境で実行される全チェック（format, lint, type-check, test, build）
+make ci
+```
+
 ## 🧪 テスト
 
 このプロジェクトではVitestを使用しています。
