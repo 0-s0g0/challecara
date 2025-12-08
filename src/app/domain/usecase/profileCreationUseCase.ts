@@ -38,7 +38,7 @@ export class ProfileCreationUseCase {
     // Validate business rules (throws error if invalid)
     UserModel.validateAccountId(input.accountId)
     UserModel.validatePassword(input.password)
-    UserModel.validateNickname(input.nickname)
+    //UserModel.validateNickname(input.nickname)
 
     // Check if account already exists (check accountId index)
     const existingUser = await this.userRepository.findByAccountId(input.accountId)
