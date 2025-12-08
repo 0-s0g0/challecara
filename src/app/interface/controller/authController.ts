@@ -8,22 +8,12 @@ export async function login(email: string, password: string) {
     const useCase = UseCaseFactory.createAuthLoginUseCase()
     const result = await useCase.execute(email, password)
 
-    // Store token in HTTP-only cookie for security
-    const cookieStore = await cookies()
-    cookieStore.set("authToken", result.token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
-      path: "/",
-    })
-
     return {
       success: true,
       token: result.token,
       user: {
         id: result.user.id,
-        accountId: result.user.accountId,
+        email: result.user.email,
         nickname: result.user.nickname,
         bio: result.user.bio,
         avatarUrl: result.user.avatarUrl,
@@ -42,46 +32,27 @@ export async function signup(email: string, password: string, nickname: string) 
   try {
     const useCase = UseCaseFactory.createProfileCreationUseCase()
 
-    // Generate a unique accountId from email
-    // Example: "user@example.com" -> "user_abc123"
-    const emailUsername = email.split("@")[0]
-    const randomSuffix = Math.random().toString(36).substring(2, 8)
-    const accountId = `${emailUsername}_${randomSuffix}`
-
-    // Create user profile with auto-generated accountId
     const user = await useCase.execute({
-      accountId,
       email,
       password,
       nickname,
-      bio: "", // Empty bio initially
-      avatarUrl: "", // Empty avatar initially
-      socialLinks: [], // No social links initially
-      blogTitle: "", // No blog initially
+      bio: "",
+      avatarUrl: "",
+      socialLinks: [],
+      blogTitle: "",
       blogContent: "",
-      blogImageUrl: "", // No blog image initially
+      blogImageUrl: "",
     })
 
-    // Automatically log in the user after signup
     const authUseCase = UseCaseFactory.createAuthLoginUseCase()
     const result = await authUseCase.execute(email, password)
-
-    // Store token in HTTP-only cookie
-    const cookieStore = await cookies()
-    cookieStore.set("authToken", result.token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
-      path: "/",
-    })
 
     return {
       success: true,
       token: result.token,
       user: {
         id: user.id,
-        accountId: user.accountId,
+        email: user.email,
         nickname: user.nickname,
         bio: user.bio,
         avatarUrl: user.avatarUrl,
@@ -121,9 +92,6 @@ export async function getCurrentUser() {
     if (!token) {
       return { success: false, user: null }
     }
-
-    // Token validation would happen here
-    // For now, we rely on Firebase Auth state in client
 
     return { success: true }
   } catch (_error) {

@@ -1,57 +1,28 @@
-import { type FirebaseApp, getApps, initializeApp } from "firebase/app"
-import { type Auth, getAuth } from "firebase/auth"
-import { type Firestore, getFirestore } from "firebase/firestore"
-
-/**
- * 環境変数を取得（デフォルト値付き）
- */
-function getEnv(key: string, defaultValue = ""): string {
-  const value = process.env[key]
-  if (!value) {
-    console.warn(`⚠️ 環境変数 ${key} が設定されていません。デフォルト値を使用します。`)
-  }
-  return value || defaultValue
-}
-
-/**
- * オプショナルな環境変数を取得
- */
-function getOptionalEnv(key: string): string | undefined {
-  return process.env[key]
-}
+import { initializeApp, getApps, type FirebaseApp } from "firebase/app"
+import { getAuth, type Auth } from "firebase/auth"
+import { getFirestore, type Firestore } from "firebase/firestore"
 
 const firebaseConfig = {
-  apiKey: getEnv("NEXT_PUBLIC_FIREBASE_API_KEY", "AIzaSyClxBGPOhYeOKpQtFkPys1uD2YGyQy2Dak"),
-  authDomain: getEnv("NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN", "tsunagu-link.firebaseapp.com"),
-  projectId: getEnv("NEXT_PUBLIC_FIREBASE_PROJECT_ID", "tsunagu-link"),
-  storageBucket: getEnv("NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET", "tsunagu-link.firebasestorage.app"),
-  messagingSenderId: getEnv("NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID", "156706603796"),
-  appId: getEnv("NEXT_PUBLIC_FIREBASE_APP_ID", "1:156706603796:web:2fed5c75723e2cefc0b801"),
-  measurementId: getOptionalEnv("NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID"),
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 }
 
-// Singleton pattern for Firebase initialization
 let app: FirebaseApp
 let auth: Auth
 let db: Firestore
 
-export function getFirebaseApp(): FirebaseApp {
-  if (!app) {
-    app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
-  }
-  return app
+if (getApps().length === 0) {
+  app = initializeApp(firebaseConfig)
+  auth = getAuth(app)
+  db = getFirestore(app)
+} else {
+  app = getApps()[0]
+  auth = getAuth(app)
+  db = getFirestore(app)
 }
 
-export function getFirebaseAuth(): Auth {
-  if (!auth) {
-    auth = getAuth(getFirebaseApp())
-  }
-  return auth
-}
-
-export function getFirebaseDb(): Firestore {
-  if (!db) {
-    db = getFirestore(getFirebaseApp())
-  }
-  return db
-}
+export { app, auth, db }

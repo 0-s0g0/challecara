@@ -1,128 +1,60 @@
 import {
-  Timestamp,
+  collection,
   addDoc,
-  deleteDoc,
-  doc,
-  getDoc,
+  query,
+  where,
   getDocs,
   orderBy,
-  query,
   serverTimestamp,
-  setDoc,
-  where,
+  type Timestamp,
 } from "firebase/firestore"
+import { db } from "../../config/firebase/firebaseConfig"
 import type { BlogPost, BlogPostCreateInput } from "../../domain/models/blog"
 import type { IBlogPostRepository } from "../../domain/repository/IBlogPostRepository"
-import { BaseRepository } from "./BaseRepository"
 
-export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlogPostRepository {
-  constructor() {
-    super("blogPosts")
-  }
-
+export class BlogPostRepository implements IBlogPostRepository {
   async create(input: BlogPostCreateInput): Promise<BlogPost> {
-    try {
-      const now = Timestamp.now()
+    const postDoc = {
+      userId: input.userId,
+      title: input.title,
+      content: input.content,
+      isPublished: input.isPublished,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    }
 
-      const postData = {
-        userId: input.userId,
-        title: input.title,
-        content: input.content,
-        imageUrl: input.imageUrl,
-        isPublished: input.isPublished,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      }
+    const docRef = await addDoc(collection(db, "blogPosts"), postDoc)
 
-      const docRef = await addDoc(this.collectionRef, postData)
-
-      return {
-        id: docRef.id,
-        ...postData,
-        createdAt: now.toDate(),
-        updatedAt: now.toDate(),
-      }
-    } catch (error) {
-      this.handleError(error, "ブログ投稿の作成")
+    return {
+      id: docRef.id,
+      userId: input.userId,
+      title: input.title,
+      content: input.content,
+      isPublished: input.isPublished,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }
   }
 
   async findByUserId(userId: string): Promise<BlogPost[]> {
-    try {
-      const q = query(
-        this.collectionRef,
-        where("userId", "==", userId),
-        orderBy("createdAt", "desc")
-      )
-      const querySnapshot = await getDocs(q)
+    const q = query(
+      collection(db, "blogPosts"),
+      where("userId", "==", userId),
+      orderBy("createdAt", "desc")
+    )
+    const querySnapshot = await getDocs(q)
 
-      return querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        userId: doc.data().userId,
-        title: doc.data().title,
-        content: doc.data().content,
-        isPublished: doc.data().isPublished,
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
-        updatedAt: doc.data().updatedAt?.toDate() || new Date(),
-      }))
-    } catch (error) {
-      this.handleError(error, "ブログ投稿の取得")
-    }
-  }
-
-  async findById(id: string): Promise<BlogPost | null> {
-    try {
-      const postDoc = await getDoc(doc(this.collectionRef, id))
-
-      if (!postDoc.exists()) {
-        return null
-      }
-
-      const data = postDoc.data()
+    return querySnapshot.docs.map((doc) => {
+      const data = doc.data()
       return {
-        id: postDoc.id,
+        id: doc.id,
         userId: data.userId,
         title: data.title,
         content: data.content,
-        imageUrl: data.imageUrl,
         isPublished: data.isPublished,
-        createdAt: data.createdAt?.toDate() || new Date(),
-        updatedAt: data.updatedAt?.toDate() || new Date(),
+        createdAt: (data.createdAt as Timestamp)?.toDate() || new Date(),
+        updatedAt: (data.updatedAt as Timestamp)?.toDate() || new Date(),
       }
-    } catch (error) {
-      this.handleError(error, "ブログ投稿の取得")
-    }
-  }
-
-  async update(id: string, data: Partial<BlogPost>): Promise<BlogPost> {
-    try {
-      const postRef = doc(this.collectionRef, id)
-      await setDoc(
-        postRef,
-        {
-          ...data,
-          updatedAt: serverTimestamp(),
-        },
-        { merge: true }
-      )
-
-      // 更新後のデータを取得
-      const updated = await this.findById(id)
-      if (!updated) {
-        throw new Error("ブログ投稿が見つかりません")
-      }
-      return updated
-    } catch (error) {
-      this.handleError(error, "ブログ投稿の更新")
-    }
-  }
-
-  async delete(id: string): Promise<void> {
-    try {
-      const postRef = doc(this.collectionRef, id)
-      await deleteDoc(postRef)
-    } catch (error) {
-      this.handleError(error, "ブログ投稿の削除")
-    }
+    })
   }
 }

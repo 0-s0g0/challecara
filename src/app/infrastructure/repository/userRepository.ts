@@ -1,24 +1,22 @@
-import { Timestamp, collection, doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore"
-import { getFirebaseDb } from "../../config/firebase/firebaseConfig"
-import { RepositoryError, UserNotFoundError } from "../../domain/errors/DomainErrors"
+import {
+  doc,
+  setDoc,
+  getDoc,
+  query,
+  collection,
+  where,
+  getDocs,
+  serverTimestamp,
+  type Timestamp,
+} from "firebase/firestore"
+import { db } from "../../config/firebase/firebaseConfig"
 import type { User, UserCreateInput } from "../../domain/models/user"
 import type { IUserRepository } from "../../domain/repository/IUserRepository"
 
 export class UserRepository implements IUserRepository {
-  private db = getFirebaseDb()
-  private usersCollection = collection(this.db, "users")
-  private accountIdIndexCollection = collection(this.db, "accountIdIndex")
-
-  /**
-   * Creates a new user in Firestore
-   * Note: Firebase Auth user must be created first (see AuthGateway)
-   */
-  async create(input: UserCreateInput): Promise<User> {
-    const now = Timestamp.now()
-
-    const userData = {
-      id: input.id,
-      accountId: input.accountId,
+  async create(input: UserCreateInput & { id: string }): Promise<User> {
+    const userDoc = {
+      email: input.email,
       nickname: input.nickname,
       bio: input.bio,
       avatarUrl: input.avatarUrl,
@@ -26,97 +24,61 @@ export class UserRepository implements IUserRepository {
       updatedAt: serverTimestamp(),
     }
 
-    try {
-      // Create user document
-      await setDoc(doc(this.usersCollection, input.id), userData)
+    await setDoc(doc(db, "users", input.id), userDoc)
 
-      // Create accountId index for quick lookups
-      await setDoc(doc(this.accountIdIndexCollection, input.accountId), {
-        userId: input.id,
-      })
-
-      return {
-        id: input.id,
-        accountId: input.accountId,
-        nickname: input.nickname,
-        bio: input.bio,
-        avatarUrl: input.avatarUrl,
-        createdAt: now.toDate(),
-        updatedAt: now.toDate(),
-      }
-    } catch (_error) {
-      throw new RepositoryError("ユーザーの作成に失敗しました")
+    return {
+      id: input.id,
+      email: input.email,
+      nickname: input.nickname,
+      bio: input.bio,
+      avatarUrl: input.avatarUrl,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }
   }
 
-  /**
-   * Finds user by accountId using the index
-   */
-  async findByAccountId(accountId: string): Promise<User | null> {
-    // First, lookup userId from accountId index
-    const indexDoc = await getDoc(doc(this.accountIdIndexCollection, accountId))
+  async findByEmail(email: string): Promise<User | null> {
+    const q = query(collection(db, "users"), where("email", "==", email))
+    const querySnapshot = await getDocs(q)
 
-    if (!indexDoc.exists()) {
+    if (querySnapshot.empty) {
       return null
     }
 
-    const userId = indexDoc.data().userId
-    return this.findById(userId)
+    const userData = querySnapshot.docs[0].data()
+    const userId = querySnapshot.docs[0].id
+
+    return {
+      id: userId,
+      email: userData.email,
+      nickname: userData.nickname,
+      bio: userData.bio,
+      avatarUrl: userData.avatarUrl,
+      createdAt: (userData.createdAt as Timestamp)?.toDate() || new Date(),
+      updatedAt: (userData.updatedAt as Timestamp)?.toDate() || new Date(),
+    }
   }
 
   /**
    * Finds user by Firebase UID
    */
   async findById(id: string): Promise<User | null> {
-    try {
-      const userDoc = await getDoc(doc(this.usersCollection, id))
+    const userDoc = await getDoc(doc(db, "users", id))
 
-      if (!userDoc.exists()) {
-        return null
-      }
-
-      const data = userDoc.data()
-      return {
-        id: userDoc.id,
-        accountId: data.accountId,
-        nickname: data.nickname,
-        bio: data.bio,
-        avatarUrl: data.avatarUrl,
-        createdAt: data.createdAt?.toDate() || new Date(),
-        updatedAt: data.updatedAt?.toDate() || new Date(),
-      }
-    } catch (_error) {
-      throw new RepositoryError("ユーザーの取得に失敗しました")
+    if (!userDoc.exists()) {
+      return null
     }
-  }
 
-  /**
-   * Updates user profile
-   */
-  async update(id: string, data: Partial<User>): Promise<User> {
-    try {
-      const userRef = doc(this.usersCollection, id)
+    const userData = userDoc.data()
 
-      await setDoc(
-        userRef,
-        {
-          ...data,
-          updatedAt: serverTimestamp(),
-        },
-        { merge: true }
-      )
-
-      const updated = await this.findById(id)
-      if (!updated) {
-        throw new UserNotFoundError()
-      }
-
-      return updated
-    } catch (error) {
-      if (error instanceof UserNotFoundError) {
-        throw error
-      }
-      throw new RepositoryError("ユーザーの更新に失敗しました")
+    return {
+      id: userDoc.id,
+      email: userData.email,
+      nickname: userData.nickname,
+      bio: userData.bio,
+      avatarUrl: userData.avatarUrl,
+      createdAt: (userData.createdAt as Timestamp)?.toDate() || new Date(),
+      updatedAt: (userData.updatedAt as Timestamp)?.toDate() || new Date(),
     }
   }
 }

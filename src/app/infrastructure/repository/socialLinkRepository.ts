@@ -1,96 +1,44 @@
-import {
-  Timestamp,
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  serverTimestamp,
-  setDoc,
-  where,
-} from "firebase/firestore"
+import { collection, addDoc, query, where, getDocs, serverTimestamp, type Timestamp } from "firebase/firestore"
+import { db } from "../../config/firebase/firebaseConfig"
 import type { SocialLink, SocialLinkCreateInput } from "../../domain/models/socialLink"
 import type { ISocialLinkRepository } from "../../domain/repository/ISocialLinkRepository"
-import { BaseRepository } from "./BaseRepository"
 
-export class SocialLinkRepository
-  extends BaseRepository<SocialLink>
-  implements ISocialLinkRepository
-{
-  constructor() {
-    super("socialLinks")
-  }
-
+export class SocialLinkRepository implements ISocialLinkRepository {
   async create(input: SocialLinkCreateInput): Promise<SocialLink> {
-    try {
-      const now = Timestamp.now()
+    const linkDoc = {
+      userId: input.userId,
+      provider: input.provider,
+      url: input.url,
+      isActive: true,
+      createdAt: serverTimestamp(),
+    }
 
-      const linkData = {
-        userId: input.userId,
-        provider: input.provider,
-        url: input.url,
-        isActive: true,
-        createdAt: serverTimestamp(),
-      }
+    const docRef = await addDoc(collection(db, "socialLinks"), linkDoc)
 
-      const docRef = await addDoc(this.collectionRef, linkData)
-
-      return {
-        id: docRef.id,
-        ...linkData,
-        createdAt: now.toDate(),
-      }
-    } catch (error) {
-      this.handleError(error, "ソーシャルリンクの作成")
+    return {
+      id: docRef.id,
+      userId: input.userId,
+      provider: input.provider,
+      url: input.url,
+      isActive: true,
+      createdAt: new Date(),
     }
   }
 
   async findByUserId(userId: string): Promise<SocialLink[]> {
-    try {
-      const q = query(this.collectionRef, where("userId", "==", userId))
-      const querySnapshot = await getDocs(q)
+    const q = query(collection(db, "socialLinks"), where("userId", "==", userId))
+    const querySnapshot = await getDocs(q)
 
-      return querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        userId: doc.data().userId,
-        provider: doc.data().provider,
-        url: doc.data().url,
-        isActive: doc.data().isActive,
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
-      }))
-    } catch (error) {
-      this.handleError(error, "ソーシャルリンクの取得")
-    }
-  }
-
-  async update(id: string, data: Partial<SocialLink>): Promise<SocialLink> {
-    try {
-      const linkRef = doc(this.collectionRef, id)
-      await setDoc(
-        linkRef,
-        {
-          ...data,
-        },
-        { merge: true }
-      )
-
-      // 更新後のデータを返す（簡易実装）
+    return querySnapshot.docs.map((doc) => {
+      const data = doc.data()
       return {
-        id,
-        ...data,
-      } as SocialLink
-    } catch (error) {
-      this.handleError(error, "ソーシャルリンクの更新")
-    }
-  }
-
-  async delete(id: string): Promise<void> {
-    try {
-      const linkRef = doc(this.collectionRef, id)
-      await deleteDoc(linkRef)
-    } catch (error) {
-      this.handleError(error, "ソーシャルリンクの削除")
-    }
+        id: doc.id,
+        userId: data.userId,
+        provider: data.provider,
+        url: data.url,
+        isActive: data.isActive,
+        createdAt: (data.createdAt as Timestamp)?.toDate() || new Date(),
+      }
+    })
   }
 }

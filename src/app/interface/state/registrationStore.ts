@@ -2,7 +2,7 @@ import { create } from "zustand"
 
 interface RegistrationState {
   // Step 2 data
-  accountId: string
+  email: string
   password: string
 
   // Step 3 data
@@ -27,7 +27,7 @@ interface RegistrationState {
   selectedLayout: number
 
   // Actions
-  setLoginData: (accountId: string, password: string) => void
+  setLoginData: (email: string, password: string) => void
   setProfileData: (nickname: string, bio: string, avatarUrl: string) => void
   setSocialData: (
     x: boolean,
@@ -43,7 +43,7 @@ interface RegistrationState {
 }
 
 export const useRegistrationStore = create<RegistrationState>((set) => ({
-  accountId: "",
+  email: "",
   password: "",
   nickname: "",
   bio: "",
@@ -59,7 +59,7 @@ export const useRegistrationStore = create<RegistrationState>((set) => ({
   blogImageUrl: "",
   selectedLayout: 0,
 
-  setLoginData: (accountId, password) => set({ accountId, password }),
+  setLoginData: (email, password) => set({ email, password }),
   setProfileData: (nickname, bio, avatarUrl) => set({ nickname, bio, avatarUrl }),
   setSocialData: (
     xConnected,
@@ -81,7 +81,7 @@ export const useRegistrationStore = create<RegistrationState>((set) => ({
   setSelectedLayout: (selectedLayout) => set({ selectedLayout }),
   reset: () =>
     set({
-      accountId: "",
+      email: "",
       password: "",
       nickname: "",
       bio: "",
