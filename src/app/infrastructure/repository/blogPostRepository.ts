@@ -48,7 +48,11 @@ export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlo
 
   async findByUserId(userId: string): Promise<BlogPost[]> {
     try {
-      const q = query(this.collectionRef, where("userId", "==", userId), orderBy("createdAt", "desc"))
+      const q = query(
+        this.collectionRef,
+        where("userId", "==", userId),
+        orderBy("createdAt", "desc")
+      )
       const querySnapshot = await getDocs(q)
 
       return querySnapshot.docs.map((doc) => ({

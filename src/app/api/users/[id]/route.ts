@@ -174,7 +174,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const { id } = await params
 

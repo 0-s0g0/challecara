@@ -51,6 +51,7 @@ export function BlogSetupScreen({ onNext, onBack }: BlogSetupScreenProps) {
       }
 
       const result = await createProfile({
+        email: `${registrationData.accountId}@app.internal`,
         accountId: registrationData.accountId,
         password: registrationData.password,
         nickname: registrationData.nickname,

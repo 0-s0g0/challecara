@@ -73,6 +73,7 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
 
       // Call server action to create profile
       const result = await createProfile({
+        email: `${formData.accountId}@app.internal`,
         accountId: formData.accountId,
         password: formData.password,
         nickname: formData.nickname,
