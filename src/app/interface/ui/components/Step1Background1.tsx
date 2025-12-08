@@ -1,8 +1,8 @@
 export function Step1Background() {
   return (
     <div className="absolute inset-0 overflow-hidden bg-[#f2f2ed]">
-      {/* Top left - mint and yellow gradient circle */}
-      <div className="absolute left-20 -top-30 h-[280px] w-[280px] rounded-full bg-gradient-to-br from-[#2DB1C8] to-[#BAD56E] opacity-40" />
+      {/* Top left - mint and yellow linear circle */}
+      <div className="absolute left-20 -top-30 h-[280px] w-[280px] rounded-full bg-linear-to-br from-[#2DB1C8] to-[#BAD56E] opacity-40" />
 
       <div className="absolute inset-0 top-6 flex items-start justify-center">
         <div className="text-amber-950/70 flex items-end" style={{ fontFamily: 'cursive' }}>
@@ -13,7 +13,7 @@ export function Step1Background() {
 
 
       {/* Left middle - peach circle */}
-      <div className="absolute -left-24 top-80 h-[240px] w-[240px] rounded-full bg-gradient-to-br  from-[#2DB1C8] to-[#BAD56E] opacity-30" />
+      <div className="absolute -left-24 top-80 h-[240px] w-[240px] rounded-full bg-linear-to-br  from-[#2DB1C8] to-[#BAD56E] opacity-30" />
 
       <svg
         className="absolute left-0 top-40 h-[400px] w-full"
@@ -25,7 +25,7 @@ export function Step1Background() {
       </svg>
       
       {/* Right bottom - large lavender circle */}
-      <div className="absolute -right-32 bottom-0 h-[400px] w-[400px] rounded-full bg-gradient-to-br from-[#2DB1C8] to-[#BAD56E] opacity-30" />
+      <div className="absolute -right-32 bottom-0 h-[400px] w-[400px] rounded-full bg-linear-to-br from-[#2DB1C8] to-[#BAD56E] opacity-30" />
 
       <svg
         className="absolute bottom-0 right-0 h-[600px] w-full"
