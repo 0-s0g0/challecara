@@ -4,10 +4,10 @@ import { Button } from "@/app/interface/ui/components/ui/button"
 import { Input } from "@/app/interface/ui/components/ui/input"
 import { Label } from "@/app/interface/ui/components/ui/label"
 import { Textarea } from "@/app/interface/ui/components/ui/textarea"
-import { ChevronLeft } from "lucide-react"
 import { useState } from "react"
-import { createProfile } from "../../controller/profileController"
+import { ChevronLeft, Upload, X } from "lucide-react"
 import { useRegistrationStore } from "../../state/registrationStore"
+import {Step3Background} from "@/app/interface/ui/components/Step3Background1"
 
 interface BlogSetupScreenProps {
   onNext: () => void
@@ -15,14 +15,12 @@ interface BlogSetupScreenProps {
 }
 
 export function BlogSetupScreen({ onNext, onBack }: BlogSetupScreenProps) {
-  const { blogTitle: storedTitle, blogContent: storedContent } = useRegistrationStore()
+  const { blogTitle: storedTitle, blogContent: storedContent, blogImageUrl: storedImageUrl } = useRegistrationStore()
   const setBlogData = useRegistrationStore((state) => state.setBlogData)
-  const registrationData = useRegistrationStore()
 
   const [blogTitle, setBlogTitle] = useState(storedTitle)
   const [blogContent, setBlogContent] = useState(storedContent)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState("")
+  const [blogImageUrl, setBlogImageUrl] = useState(storedImageUrl)
 
   const handleSubmit = async () => {
     setBlogData(blogTitle, blogContent)
@@ -49,6 +47,9 @@ export function BlogSetupScreen({ onNext, onBack }: BlogSetupScreenProps) {
           url: `https://facebook.com/${registrationData.facebookUsername}`,
         })
       }
+      reader.readAsDataURL(file)
+    }
+  }
 
       const result = await createProfile({
         email: `${registrationData.accountId}@app.internal`,
@@ -62,33 +63,25 @@ export function BlogSetupScreen({ onNext, onBack }: BlogSetupScreenProps) {
         blogContent,
       })
 
-      if (result.success) {
-        console.log("[v0] Profile created successfully:", result.userId)
-        onNext()
-      } else {
-        setError(result.error || "エラーが発生しました")
-      }
-    } catch (err) {
-      console.error("[v0] Submit error:", err)
-      setError("プロフィールの作成に失敗しました")
-    } finally {
-      setIsSubmitting(false)
-    }
+  const handleSubmit = () => {
+    // Save to store only (no Firestore save yet)
+    setBlogData(blogTitle, blogContent, blogImageUrl)
+
+    // Proceed to next screen
+    onNext()
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-gradient-to-br from-background to-secondary p-8">
-      <div className="absolute left-0 top-20 h-56 w-56 rounded-full bg-pastel-peach/40 blur-3xl" />
-      <div className="absolute bottom-32 right-0 h-48 w-48 rounded-full bg-pastel-mint/30 blur-3xl" />
+       <div className="relative flex min-h-screen flex-col p-8">
+      <Step3Background/>
+      <div className="z-10 mt-35 flex flex-1 flex-col space-y-6 bg-gray-200/30 backdrop-blur-md p-6 rounded-3xl text-amber-950">    
 
-      <div className="mt-8 flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-foreground">ブログを書く</h2>
-        <span className="text-sm text-muted-foreground">3/3</span>
+     <div className="mt-2 text-center">
+        <div className="text-xl text-amber-950">初めに投稿するブログを書こう</div>
       </div>
-
-      <div className="z-10 mt-8 flex flex-1 flex-col space-y-6">
+      
         <div className="space-y-2">
-          <Label htmlFor="title" className="text-sm text-muted-foreground">
+           <Label htmlFor="nickname" className="text-lg text-amber-950">
             タイトル
           </Label>
           <Input
@@ -96,46 +89,81 @@ export function BlogSetupScreen({ onNext, onBack }: BlogSetupScreenProps) {
             type="text"
             value={blogTitle}
             onChange={(e) => setBlogTitle(e.target.value)}
-            className="h-12 rounded-2xl border-border bg-white/80 backdrop-blur-sm"
+           className="h-12 rounded-2xl border-none  bg-[#FF442C]/5 backdrop-blur-sm"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="content" className="text-sm text-muted-foreground">
+          <Label htmlFor="bio" className="text-lg text-amber-950">
             内容
           </Label>
           <Textarea
             id="content"
             value={blogContent}
             onChange={(e) => setBlogContent(e.target.value)}
-            className="min-h-48 rounded-2xl border-border bg-white/80 backdrop-blur-sm"
+           className="min-h-32 rounded-2xl border-none  bg-[#FF442C]/5 backdrop-blur-sm"
           />
         </div>
 
-        {error && <p className="text-sm text-red-500">{error}</p>}
-      </div>
+        <div className="space-y-2">
+          <Label className="text-sm text-amber-950">
+            画像
+          </Label>
+          {blogImageUrl ? (
+            <div className="relative">
+              <img
+                src={blogImageUrl}
+                alt="Blog preview"
+                className="w-full h-48 object-cover rounded-2xl border-border bg-white/80"
+              />
+              <Button
+                type="button"
+                variant="destructive"
+                size="icon"
+                className="absolute top-2 right-2 h-8 w-8 rounded-full"
+                onClick={handleRemoveImage}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
+            <label
+              htmlFor="blog-image"
+              className="flex flex-col h-80 w-80 border-none rounded-2xl bg-[#FF442C]/5 cursor-pointer items-center justify-center   border-border transition-colors hover:border-primary/50"
+            >
+              <Upload className="h-8 w-8 text-muted-foreground mb-2" />
+              <span className="text-sm text-muted-foreground">画像をアップロード</span>
+              <input
+                id="blog-image"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageUpload}
+              />
+            </label>
+          )}
+        </div>
 
-      <div className="z-10 mb-8 flex gap-4">
-        <Button
-          onClick={onBack}
-          variant="outline"
-          disabled={isSubmitting}
-          className="h-12 flex-1 rounded-full border-primary/20 bg-white/80 backdrop-blur-sm hover:bg-white"
-        >
-          <ChevronLeft className="mr-1 h-4 w-4" />
-          戻る
-        </Button>
-        <Button
-          onClick={handleSubmit}
-          disabled={isSubmitting}
-          className="h-12 flex-1 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
-        >
-          {isSubmitting ? "作成中..." : "完了"}
-          <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </Button>
-      </div>
+                <div className="z-10 mb-8 flex w-full gap-4">
+                  <Button
+                    onClick={onBack}
+                    variant="outline"
+                    className="h-12 flex-1 rounded-full  bg-white/80 px-8 backdrop-blur-sm hover:bg-white"
+                  >
+                    <ChevronLeft className="mr-1 h-4 w-4" />
+                      戻る
+                  </Button>
+                  <Button
+                    onClick={handleSubmit}
+                    className="h-12 flex-1 rounded-full bg-[#8B7355] px-8 text-white hover:bg-[#6B5335]"
+                  >
+                    次へ
+                    <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Button>
+                </div>
+            </div>
     </div>
   )
 }

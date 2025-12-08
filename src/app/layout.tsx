@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Tsuna-gu Link",
+  title: "Tsunagu Link",
   description: "あなたらしさを、つなげる",
 }
 

@@ -28,6 +28,7 @@ export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlo
         userId: input.userId,
         title: input.title,
         content: input.content,
+        imageUrl: input.imageUrl,
         isPublished: input.isPublished,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
@@ -77,12 +78,13 @@ export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlo
         return null
       }
 
-      const data = postDoc.data()
+      const data = postDoc.data() as any
       return {
         id: postDoc.id,
         userId: data.userId,
         title: data.title,
         content: data.content,
+        imageUrl: data.imageUrl,
         isPublished: data.isPublished,
         createdAt: data.createdAt?.toDate() || new Date(),
         updatedAt: data.updatedAt?.toDate() || new Date(),

@@ -7,6 +7,7 @@ import { Input } from "@/app/interface/ui/components/ui/input"
 import { Button } from "@/app/interface/ui/components/ui/button"
 import { Label } from "@/app/interface/ui/components/ui/label"
 import { login, signup } from "@/app/interface/controller/authController"
+import { useRegistrationStore } from '@/app/interface/state/registrationStore'
 
 interface SignModalProps {
   open: boolean
@@ -14,7 +15,15 @@ interface SignModalProps {
   onSuccess?: () => void
 }
 
+// Generate random account ID
+const generateAccountId = () => {
+  const prefix = "user"
+  const randomNum = Math.floor(Math.random() * 1000000).toString().padStart(6, '0')
+  return `${prefix}${randomNum}`
+}
+
 export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
+  const setLoginData = useRegistrationStore((state) => state.setLoginData)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState("signin")
@@ -32,6 +41,13 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
     confirmPassword: "",
     nickname: "",
   })
+
+  // Auto-generate accountId when modal opens or switches to signup tab
+  useEffect(() => {
+    if (open && activeTab === 'signup' && !signUpData.accountId) {
+      setSignUpData(prev => ({ ...prev, accountId: generateAccountId() }))
+    }
+  }, [open, activeTab, signUpData.accountId])
 
   // Clear error when switching tabs
   const handleTabChange = (value: string) => {
@@ -85,6 +101,9 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
       return
     }
 
+    // Save to registration store (for tutorial flow)
+    setLoginData(signUpData.accountId, signUpData.password)
+
     try {
       const result = await signup(signUpData.email, signUpData.password, signUpData.nickname)
 
@@ -127,9 +146,13 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
           <div className="fixed inset-x-0 bottom-0 z-50 animate-in slide-in-from-bottom duration-300">
             <div className="mx-auto max-w-md rounded-t-3xl bg-white p-8 pb-12 shadow-2xl">
               <div className="mb-6 text-center">
-                <h2 className="text-2xl font-bold text-[#6B5335]">アカウント</h2>
+                <h2 className="text-2xl font-bold text-[#6B5335]">
+                  {activeTab === 'signin' ? 'ログイン' : '新規作成'}
+                </h2>
                 <p className="mt-2 text-sm text-gray-600">
-                  サインインまたは新規アカウントを作成してください
+                  {activeTab === 'signin'
+                    ? 'メールアドレスとパスワードを入力してください'
+                    : 'アカウントを作成してください'}
                 </p>
               </div>
 

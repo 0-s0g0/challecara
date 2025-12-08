@@ -30,7 +30,7 @@ export class UserNotFoundError extends DomainError {
  * アカウントIDが重複している場合のエラー
  */
 export class DuplicateAccountIdError extends DomainError {
-  constructor(message = "このアカウントIDは既に使用されています") {
+  constructor(message = "このメールアドレスは登録済みです") {
     super(message, "DUPLICATE_ACCOUNT_ID")
   }
 }

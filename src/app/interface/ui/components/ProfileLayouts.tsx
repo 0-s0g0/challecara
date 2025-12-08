@@ -13,6 +13,7 @@ interface ProfileData {
   instagramUsername: string
   facebookUsername: string
   blogTitle: string
+  backgroundColor?: string
 }
 
 interface LayoutProps {
@@ -22,7 +23,7 @@ interface LayoutProps {
 // Layout 1: 縦長カード（現在のデザイン）
 export function Layout1({ data }: LayoutProps) {
   return (
-    <Card className="h-[600px] w-full overflow-hidden rounded-3xl border-0 bg-white shadow-2xl">
+    <Card className="h-[600px] w-full overflow-hidden rounded-3xl border-0 shadow-2xl" style={{ background: data.backgroundColor || "#FFFFFF" }}>
       <div className="relative h-[400px] w-full overflow-hidden">
         <Image
           src={data.avatarUrl || "/placeholder.svg?height=600&width=400"}
@@ -59,7 +60,7 @@ export function Layout1({ data }: LayoutProps) {
 // Layout 2: 横並びカード
 export function Layout2({ data }: LayoutProps) {
   return (
-    <Card className="h-[600px] w-full overflow-hidden rounded-3xl border-0 bg-gradient-to-br from-purple-50 to-pink-50 shadow-2xl">
+    <Card className="h-[600px] w-full overflow-hidden rounded-3xl border-0 shadow-2xl" style={{ background: data.backgroundColor || "#F9F5FF" }}>
       <div className="flex h-full flex-col p-8">
         <div className="mb-6 flex items-center gap-4">
           <div className="relative h-24 w-24 overflow-hidden rounded-full border-4 border-white shadow-lg">
@@ -98,7 +99,7 @@ export function Layout2({ data }: LayoutProps) {
 // Layout 3: ミニマルカード
 export function Layout3({ data }: LayoutProps) {
   return (
-    <Card className="h-[600px] w-full overflow-hidden rounded-3xl border-0 bg-white shadow-2xl">
+    <Card className="h-[600px] w-full overflow-hidden rounded-3xl border-0 shadow-2xl" style={{ background: data.backgroundColor || "#FFFFFF" }}>
       <div className="flex h-full flex-col">
         <div className="relative h-48 w-full overflow-hidden">
           <Image

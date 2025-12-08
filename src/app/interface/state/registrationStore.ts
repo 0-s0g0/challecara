@@ -21,6 +21,7 @@ interface RegistrationState {
   // Step 5 data
   blogTitle: string
   blogContent: string
+  blogImageUrl: string
 
   // Step 6 data
   selectedLayout: number
@@ -36,7 +37,7 @@ interface RegistrationState {
     facebook: boolean,
     facebookUsername: string
   ) => void
-  setBlogData: (title: string, content: string) => void
+  setBlogData: (title: string, content: string, imageUrl: string) => void
   setSelectedLayout: (layout: number) => void
   reset: () => void
 }
@@ -55,6 +56,7 @@ export const useRegistrationStore = create<RegistrationState>((set) => ({
   facebookUsername: "",
   blogTitle: "",
   blogContent: "",
+  blogImageUrl: "",
   selectedLayout: 0,
 
   setLoginData: (accountId, password) => set({ accountId, password }),
@@ -92,6 +94,7 @@ export const useRegistrationStore = create<RegistrationState>((set) => ({
       facebookUsername: "",
       blogTitle: "",
       blogContent: "",
+      blogImageUrl: "",
       selectedLayout: 0,
     }),
 }))
