@@ -2,13 +2,13 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { Step2Background } from "@/app/interface/ui/components/Step2Background1"
 import { Button } from "@/app/interface/ui/components/ui/button"
 import { Input } from "@/app/interface/ui/components/ui/input"
 import { ChevronLeft } from "lucide-react"
-import { FaXTwitter, FaInstagram, FaFacebook } from "react-icons/fa6"
+import { useState } from "react"
+import { FaFacebook, FaInstagram, FaXTwitter } from "react-icons/fa6"
 import { useRegistrationStore } from "../../state/registrationStore"
-import {Step2Background} from "@/app/interface/ui/components/Step2Background1"
 
 interface SocialSetupScreenProps {
   onNext: () => void
@@ -62,89 +62,92 @@ export function SocialSetupScreen({ onNext, onBack }: SocialSetupScreenProps) {
 
   return (
     <div className="relative flex min-h-screen flex-col p-8">
-      <Step2Background/>
+      <Step2Background />
 
-      <div className="z-10 mt-35 flex flex-1 flex-col space-y-6 bg-gray-200/30 backdrop-blur-md p-6 rounded-3xl text-amber-950">    
+      <div className="z-10 mt-35 flex flex-1 flex-col space-y-6 bg-gray-200/30 backdrop-blur-md p-6 rounded-3xl text-amber-950">
+        <div className="mt-2 text-center">
+          <div className="text-xl text-amber-950">表示するSNSのアカウントを選ぼう</div>
+        </div>
 
-     <div className="mt-2 text-center">
-        <div className="text-xl text-amber-950">表示するSNSのアカウントを選ぼう</div>
-      </div>
-      
-      <div className="z-10 mt-6 flex flex-1 flex-col items-center justify-start space-y-6">
-        <SocialButton
-          icon={<FaXTwitter className="h-6 w-6" />}
-          label="X (Twitter)"
-          username={xUsername}
-          isSelected={selectedSocial === "x"}
-          onClick={() => handleSocialClick("x")}
-        />
-
-        {selectedSocial === "x" && (
-          <UsernameInput
-            value={tempUsername}
-            onChange={setTempUsername}
-            onSave={handleSave}
-            onCancel={handleCancel}
+        <div className="z-10 mt-6 flex flex-1 flex-col items-center justify-start space-y-6">
+          <SocialButton
+            icon={<FaXTwitter className="h-6 w-6" />}
+            label="X (Twitter)"
+            username={xUsername}
+            isSelected={selectedSocial === "x"}
+            onClick={() => handleSocialClick("x")}
           />
-        )}
 
-        <SocialButton
-          icon={<FaInstagram className="h-6 w-6" />}
-          label="Instagram"
-          username={instagramUsername}
-          isSelected={selectedSocial === "instagram"}
-          onClick={() => handleSocialClick("instagram")}
-        />
+          {selectedSocial === "x" && (
+            <UsernameInput
+              value={tempUsername}
+              onChange={setTempUsername}
+              onSave={handleSave}
+              onCancel={handleCancel}
+            />
+          )}
 
-        {selectedSocial === "instagram" && (
-          <UsernameInput
-            value={tempUsername}
-            onChange={setTempUsername}
-            onSave={handleSave}
-            onCancel={handleCancel}
+          <SocialButton
+            icon={<FaInstagram className="h-6 w-6" />}
+            label="Instagram"
+            username={instagramUsername}
+            isSelected={selectedSocial === "instagram"}
+            onClick={() => handleSocialClick("instagram")}
           />
-        )}
 
-        <SocialButton
-          icon={<FaFacebook className="h-6 w-6" />}
-          label="Facebook"
-          username={facebookUsername}
-          isSelected={selectedSocial === "facebook"}
-          onClick={() => handleSocialClick("facebook")}
-        />
+          {selectedSocial === "instagram" && (
+            <UsernameInput
+              value={tempUsername}
+              onChange={setTempUsername}
+              onSave={handleSave}
+              onCancel={handleCancel}
+            />
+          )}
 
-        {selectedSocial === "facebook" && (
-          <UsernameInput
-            value={tempUsername}
-            onChange={setTempUsername}
-            onSave={handleSave}
-            onCancel={handleCancel}
+          <SocialButton
+            icon={<FaFacebook className="h-6 w-6" />}
+            label="Facebook"
+            username={facebookUsername}
+            isSelected={selectedSocial === "facebook"}
+            onClick={() => handleSocialClick("facebook")}
           />
-        )}
-        
-        <div className="z-10 mb-8 flex w-full gap-4">
-          <Button
-            onClick={onBack}
-            variant="outline"
-            className="h-12 flex-1 rounded-full  bg-white/80 px-8 backdrop-blur-sm hover:bg-white"
-          >
-            <ChevronLeft className="mr-1 h-4 w-4" />
+
+          {selectedSocial === "facebook" && (
+            <UsernameInput
+              value={tempUsername}
+              onChange={setTempUsername}
+              onSave={handleSave}
+              onCancel={handleCancel}
+            />
+          )}
+
+          <div className="z-10 mb-8 flex w-full gap-4">
+            <Button
+              onClick={onBack}
+              variant="outline"
+              className="h-12 flex-1 rounded-full  bg-white/80 px-8 backdrop-blur-sm hover:bg-white"
+            >
+              <ChevronLeft className="mr-1 h-4 w-4" />
               戻る
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            className="h-12 flex-1 rounded-full bg-[#8B7355] px-8 text-white hover:bg-[#6B5335]"
-          >
-            次へ
-            <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </Button>
+            </Button>
+            <Button
+              onClick={handleSubmit}
+              className="h-12 flex-1 rounded-full bg-[#8B7355] px-8 text-white hover:bg-[#6B5335]"
+            >
+              次へ
+              <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </Button>
+          </div>
         </div>
       </div>
-
     </div>
-  </div>
   )
 }
 

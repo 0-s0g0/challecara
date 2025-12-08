@@ -1,4 +1,4 @@
-import type { SocialLink, SocialLinkCreateInput } from '../models/socialLink'
+import type { SocialLink, SocialLinkCreateInput } from "../models/socialLink"
 
 /**
  * ソーシャルリンクリポジトリのインターフェース

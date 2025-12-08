@@ -1,7 +1,7 @@
 "use client"
 
 import { Card } from "@/app/interface/ui/components/ui/card"
-import { ChevronRight, User, Bell, Lock, Palette, HelpCircle, LogOut } from "lucide-react"
+import { Bell, ChevronRight, HelpCircle, Lock, LogOut, Palette, User } from "lucide-react"
 
 export function SettingsScreen() {
   const settingsGroups = [
@@ -14,21 +14,15 @@ export function SettingsScreen() {
     },
     {
       title: "通知",
-      items: [
-        { icon: Bell, label: "通知設定", description: "いいね、コメント、フォロー" },
-      ],
+      items: [{ icon: Bell, label: "通知設定", description: "いいね、コメント、フォロー" }],
     },
     {
       title: "プライバシーとセキュリティ",
-      items: [
-        { icon: Lock, label: "パスワード変更", description: "アカウントのセキュリティ" },
-      ],
+      items: [{ icon: Lock, label: "パスワード変更", description: "アカウントのセキュリティ" }],
     },
     {
       title: "サポート",
-      items: [
-        { icon: HelpCircle, label: "ヘルプセンター", description: "よくある質問と使い方" },
-      ],
+      items: [{ icon: HelpCircle, label: "ヘルプセンター", description: "よくある質問と使い方" }],
     },
   ]
 

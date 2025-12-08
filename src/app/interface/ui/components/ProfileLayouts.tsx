@@ -1,9 +1,9 @@
 "use client"
 
-import type React from "react"
-import Image from "next/image"
 import { Card } from "@/app/interface/ui/components/ui/card"
-import { FaXTwitter, FaInstagram, FaFacebook } from "react-icons/fa6"
+import Image from "next/image"
+import type React from "react"
+import { FaFacebook, FaInstagram, FaXTwitter } from "react-icons/fa6"
 
 interface ProfileData {
   nickname: string
@@ -23,7 +23,10 @@ interface LayoutProps {
 // Layout 1: 縦長カード（現在のデザイン）
 export function Layout1({ data }: LayoutProps) {
   return (
-    <Card className="h-[600px] w-full overflow-hidden rounded-3xl border-0 shadow-2xl" style={{ background: data.backgroundColor || "#FFFFFF" }}>
+    <Card
+      className="h-[600px] w-full overflow-hidden rounded-3xl border-0 shadow-2xl"
+      style={{ background: data.backgroundColor || "#FFFFFF" }}
+    >
       <div className="relative h-[400px] w-full overflow-hidden">
         <Image
           src={data.avatarUrl || "/placeholder.svg?height=600&width=400"}
@@ -60,7 +63,10 @@ export function Layout1({ data }: LayoutProps) {
 // Layout 2: 横並びカード
 export function Layout2({ data }: LayoutProps) {
   return (
-    <Card className="h-[600px] w-full overflow-hidden rounded-3xl border-0 shadow-2xl" style={{ background: data.backgroundColor || "#F9F5FF" }}>
+    <Card
+      className="h-[600px] w-full overflow-hidden rounded-3xl border-0 shadow-2xl"
+      style={{ background: data.backgroundColor || "#F9F5FF" }}
+    >
       <div className="flex h-full flex-col p-8">
         <div className="mb-6 flex items-center gap-4">
           <div className="relative h-24 w-24 overflow-hidden rounded-full border-4 border-white shadow-lg">
@@ -99,7 +105,10 @@ export function Layout2({ data }: LayoutProps) {
 // Layout 3: ミニマルカード
 export function Layout3({ data }: LayoutProps) {
   return (
-    <Card className="h-[600px] w-full overflow-hidden rounded-3xl border-0 shadow-2xl" style={{ background: data.backgroundColor || "#FFFFFF" }}>
+    <Card
+      className="h-[600px] w-full overflow-hidden rounded-3xl border-0 shadow-2xl"
+      style={{ background: data.backgroundColor || "#FFFFFF" }}
+    >
       <div className="flex h-full flex-col">
         <div className="relative h-48 w-full overflow-hidden">
           <Image
@@ -149,7 +158,9 @@ export function Layout4({ data }: LayoutProps) {
           </div>
           <div className="flex-1">
             <h2 className="text-2xl font-bold text-gray-800">{data.nickname || "ユーザー名"}</h2>
-            <p className="mt-2 text-sm text-gray-600">{data.bio || "自己紹介がここに表示されます"}</p>
+            <p className="mt-2 text-sm text-gray-600">
+              {data.bio || "自己紹介がここに表示されます"}
+            </p>
           </div>
         </div>
 
@@ -174,16 +185,16 @@ function SocialIcon({ type }: { type: "instagram" | "x" | "facebook" }) {
   const config = {
     instagram: {
       bg: "bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]",
-      icon: <FaInstagram className="h-4 w-4 text-white" />
+      icon: <FaInstagram className="h-4 w-4 text-white" />,
     },
     x: {
       bg: "bg-[#000000]",
-      icon: <FaXTwitter className="h-4 w-4 text-white" />
+      icon: <FaXTwitter className="h-4 w-4 text-white" />,
     },
     facebook: {
       bg: "bg-[#1877F2]",
-      icon: <FaFacebook className="h-4 w-4 text-white" />
-    }
+      icon: <FaFacebook className="h-4 w-4 text-white" />,
+    },
   }
 
   return (
@@ -197,13 +208,13 @@ function SocialIconSmall({ type }: { type: "instagram" | "x" | "facebook" }) {
   const icons = {
     instagram: <FaInstagram className="h-3 w-3 text-white" />,
     x: <FaXTwitter className="h-3 w-3 text-white" />,
-    facebook: <FaFacebook className="h-3 w-3 text-white" />
+    facebook: <FaFacebook className="h-3 w-3 text-white" />,
   }
 
   const config = {
     instagram: "bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]",
     x: "bg-[#000000]",
-    facebook: "bg-[#1877F2]"
+    facebook: "bg-[#1877F2]",
   }
 
   return (
@@ -217,13 +228,13 @@ function SocialIconLarge({ type }: { type: "instagram" | "x" | "facebook" }) {
   const icons = {
     instagram: <FaInstagram className="h-6 w-6 text-white" />,
     x: <FaXTwitter className="h-6 w-6 text-white" />,
-    facebook: <FaFacebook className="h-6 w-6 text-white" />
+    facebook: <FaFacebook className="h-6 w-6 text-white" />,
   }
 
   const config = {
     instagram: "bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]",
     x: "bg-[#000000]",
-    facebook: "bg-[#1877F2]"
+    facebook: "bg-[#1877F2]",
   }
 
   return (

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from "next/server"
 
 /**
  * @swagger
@@ -35,31 +35,28 @@ import { NextRequest, NextResponse } from 'next/server';
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params;
+    const { id } = await params
 
     // TODO: Implement getProfileUseCase integration
     // For now, return mock data
     const user = {
       id,
-      accountId: 'demo_user',
-      nickname: 'Demo User',
-      bio: 'This is a demo user',
-      avatarUrl: 'https://example.com/avatar.jpg',
+      accountId: "demo_user",
+      nickname: "Demo User",
+      bio: "This is a demo user",
+      avatarUrl: "https://example.com/avatar.jpg",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    };
+    }
 
-    return NextResponse.json(user, { status: 200 });
-  } catch (error) {
+    return NextResponse.json(user, { status: 200 })
+  } catch (_error) {
     return NextResponse.json(
-      { error: 'Failed to fetch user', code: 'INTERNAL_ERROR' },
+      { error: "Failed to fetch user", code: "INTERNAL_ERROR" },
       { status: 500 }
-    );
+    )
   }
 }
 
@@ -120,32 +117,29 @@ export async function GET(
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params;
-    const body = await request.json();
+    const { id } = await params
+    const body = await request.json()
 
     // TODO: Implement user update use case
     // For now, return mock updated user
     const updatedUser = {
       id,
-      accountId: 'demo_user',
-      nickname: body.nickname || 'Demo User',
-      bio: body.bio || 'This is a demo user',
-      avatarUrl: body.avatarUrl || 'https://example.com/avatar.jpg',
+      accountId: "demo_user",
+      nickname: body.nickname || "Demo User",
+      bio: body.bio || "This is a demo user",
+      avatarUrl: body.avatarUrl || "https://example.com/avatar.jpg",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    };
+    }
 
-    return NextResponse.json(updatedUser, { status: 200 });
-  } catch (error) {
+    return NextResponse.json(updatedUser, { status: 200 })
+  } catch (_error) {
     return NextResponse.json(
-      { error: 'Failed to update user', code: 'INTERNAL_ERROR' },
+      { error: "Failed to update user", code: "INTERNAL_ERROR" },
       { status: 500 }
-    );
+    )
   }
 }
 
@@ -181,19 +175,19 @@ export async function PUT(
  *               $ref: '#/components/schemas/Error'
  */
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params
 
     // TODO: Implement user deletion use case
     // For now, return success
-    return new NextResponse(null, { status: 204 });
-  } catch (error) {
+    return new NextResponse(null, { status: 204 })
+  } catch (_error) {
     return NextResponse.json(
-      { error: 'Failed to delete user', code: 'INTERNAL_ERROR' },
+      { error: "Failed to delete user", code: "INTERNAL_ERROR" },
       { status: 500 }
-    );
+    )
   }
 }

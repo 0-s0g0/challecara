@@ -1,8 +1,8 @@
 "use server"
 
+import { cookies } from "next/headers"
 import { UseCaseFactory } from "../../config/factories/useCaseFactory"
 import type { ProfileCreationInput } from "../../domain/usecase/profileCreationUseCase"
-import { cookies } from 'next/headers'
 
 export async function createProfile(input: ProfileCreationInput) {
   try {
@@ -15,12 +15,12 @@ export async function createProfile(input: ProfileCreationInput) {
 
     // Store token in HTTP-only cookie
     const cookieStore = await cookies()
-    cookieStore.set('authToken', token, {
+    cookieStore.set("authToken", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       maxAge: 60 * 60 * 24 * 7, // 7 days
-      path: '/',
+      path: "/",
     })
 
     return {

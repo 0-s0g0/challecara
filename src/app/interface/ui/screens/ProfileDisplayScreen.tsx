@@ -1,17 +1,19 @@
 "use client"
 
+import { AppFooter } from "@/app/interface/ui/components/AppFooter"
+import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
 import { useState } from "react"
 import { useRegistrationStore } from "../../state/registrationStore"
-import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
-import { AppFooter } from "@/app/interface/ui/components/AppFooter"
-import { SearchScreen } from "./SearchScreen"
-import { BlogCreateScreen } from "./BlogCreateScreen"
 import { AnalyticsScreen } from "./AnalyticsScreen"
+import { BlogCreateScreen } from "./BlogCreateScreen"
+import { SearchScreen } from "./SearchScreen"
 import { SettingsScreen } from "./SettingsScreen"
 
 export function ProfileDisplayScreen() {
   const formData = useRegistrationStore()
-  const [activeTab, setActiveTab] = useState<"home" | "search" | "create" | "analytics" | "settings">("home")
+  const [activeTab, setActiveTab] = useState<
+    "home" | "search" | "create" | "analytics" | "settings"
+  >("home")
 
   const layouts = [Layout1, Layout2, Layout3, Layout4]
   const SelectedLayout = layouts[formData.selectedLayout] || Layout1

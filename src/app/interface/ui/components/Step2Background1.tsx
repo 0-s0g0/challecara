@@ -5,12 +5,11 @@ export function Step2Background() {
       <div className="absolute left-20 -top-30 h-[280px] w-[280px] rounded-full bg-linear-to-br from-[#EC1ADE] to-[#BAD56E] opacity-40" />
 
       <div className="absolute inset-0 top-6 flex items-start justify-center">
-        <div className="text-amber-950/70 flex items-end" style={{ fontFamily: 'cursive' }}>
+        <div className="text-amber-950/70 flex items-end" style={{ fontFamily: "cursive" }}>
           <div className="mb-4 text-8xl font-bold">2</div>
           <div className="mb-4 text-4xl font-bold">/3</div>
         </div>
       </div>
-
 
       {/* Left middle - peach circle */}
       <div className="absolute -left-24 top-80 h-[240px] w-[240px] rounded-full bg-linear-to-br  from-[#EC1ADE]  to-[#BAD56E] opacity-30" />
@@ -23,7 +22,7 @@ export function Step2Background() {
       >
         <circle cx="10" cy="200" r="100" stroke="#8B7355" strokeWidth="1.5" fill="none" />
       </svg>
-      
+
       {/* Right bottom - large lavender circle */}
       <div className="absolute -right-32 bottom-0 h-[400px] w-[400px] rounded-full bg-linear-to-br from-[#EC1ADE]  to-[#BAD56E] opacity-30" />
 

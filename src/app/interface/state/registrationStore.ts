@@ -61,9 +61,23 @@ export const useRegistrationStore = create<RegistrationState>((set) => ({
 
   setLoginData: (accountId, password) => set({ accountId, password }),
   setProfileData: (nickname, bio, avatarUrl) => set({ nickname, bio, avatarUrl }),
-  setSocialData: (xConnected, xUsername, instagramConnected, instagramUsername, facebookConnected, facebookUsername) =>
-    set({ xConnected, xUsername, instagramConnected, instagramUsername, facebookConnected, facebookUsername }),
-  setBlogData: (blogTitle, blogContent, blogImageUrl) => set({ blogTitle, blogContent, blogImageUrl }),
+  setSocialData: (
+    xConnected,
+    xUsername,
+    instagramConnected,
+    instagramUsername,
+    facebookConnected,
+    facebookUsername
+  ) =>
+    set({
+      xConnected,
+      xUsername,
+      instagramConnected,
+      instagramUsername,
+      facebookConnected,
+      facebookUsername,
+    }),
+  setBlogData: (blogTitle, blogContent) => set({ blogTitle, blogContent }),
   setSelectedLayout: (selectedLayout) => set({ selectedLayout }),
   reset: () =>
     set({

@@ -1,7 +1,7 @@
 "use client"
 
-import { Button } from "@/app/interface/ui/components/ui/button"
 import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
+import { Button } from "@/app/interface/ui/components/ui/button"
 
 interface WelcomeScreenProps {
   onNext: () => void
@@ -13,7 +13,7 @@ export function WelcomeScreen({ onNext }: WelcomeScreenProps) {
       <PastelBackground />
 
       <div className="z-10 text-center">
-        <h1 className="mb-4 text-4xl font-bold text-foreground" style={{ fontFamily: 'cursive' }}>
+        <h1 className="mb-4 text-4xl font-bold text-foreground" style={{ fontFamily: "cursive" }}>
           TsunaguLink
         </h1>
         <p className="mb-12 text-sm text-muted-foreground">あなたとみんなを繋ぐリンク</p>
