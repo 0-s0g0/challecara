@@ -1,17 +1,16 @@
 'use client'
 
 import * as React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Tabs,
   TabsContent,
-  TabsList,
-  TabsTrigger,
 } from '@/app/interface/ui/components/ui/tabs'
 import { Input } from '@/app/interface/ui/components/ui/input'
 import { Button } from '@/app/interface/ui/components/ui/button'
 import { Label } from '@/app/interface/ui/components/ui/label'
 import { login, signup } from '@/app/interface/controller/authController'
+import { useRegistrationStore } from '@/app/interface/state/registrationStore'
 
 interface SignModalProps {
   open: boolean
@@ -19,7 +18,15 @@ interface SignModalProps {
   onSuccess?: () => void
 }
 
+// Generate random account ID
+const generateAccountId = () => {
+  const prefix = "user"
+  const randomNum = Math.floor(Math.random() * 1000000).toString().padStart(6, '0')
+  return `${prefix}${randomNum}`
+}
+
 export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
+  const setLoginData = useRegistrationStore((state) => state.setLoginData)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState('signin')
@@ -32,11 +39,19 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
 
   // Sign Up form state
   const [signUpData, setSignUpData] = useState({
+    accountId: generateAccountId(),
     email: '',
     password: '',
     confirmPassword: '',
     nickname: '',
   })
+
+  // Auto-generate accountId when modal opens or switches to signup tab
+  useEffect(() => {
+    if (open && activeTab === 'signup' && !signUpData.accountId) {
+      setSignUpData(prev => ({ ...prev, accountId: generateAccountId() }))
+    }
+  }, [open, activeTab, signUpData.accountId])
 
   // Clear error when switching tabs
   const handleTabChange = (value: string) => {
@@ -78,17 +93,14 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
     setError(null)
 
     // Validation
-    if (signUpData.password !== signUpData.confirmPassword) {
-      setError('パスワードが一致しません')
-      setIsLoading(false)
-      return
-    }
-
     if (signUpData.password.length < 8) {
       setError('パスワードは8文字以上である必要があります')
       setIsLoading(false)
       return
     }
+
+    // Save to registration store (for tutorial flow)
+    setLoginData(signUpData.accountId, signUpData.password)
 
     try {
       const result = await signup(
@@ -100,6 +112,7 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
       if (result.success) {
         onOpenChange(false)
         setSignUpData({
+          accountId: generateAccountId(), // Generate new accountId for next time
           email: '',
           password: '',
           confirmPassword: '',
@@ -136,9 +149,13 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
           <div className="fixed inset-x-0 bottom-0 z-50 animate-in slide-in-from-bottom duration-300">
             <div className="mx-auto max-w-md rounded-t-3xl bg-white p-8 pb-12 shadow-2xl">
               <div className="mb-6 text-center">
-                <h2 className="text-2xl font-bold text-[#6B5335]">アカウント</h2>
+                <h2 className="text-2xl font-bold text-[#6B5335]">
+                  {activeTab === 'signin' ? 'ログイン' : '新規作成'}
+                </h2>
                 <p className="mt-2 text-sm text-gray-600">
-                  サインインまたは新規アカウントを作成してください
+                  {activeTab === 'signin'
+                    ? 'メールアドレスとパスワードを入力してください'
+                    : 'アカウントを作成してください'}
                 </p>
               </div>
 
@@ -154,9 +171,10 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                   type="email"
                   placeholder="you@example.com"
                   value={signInData.email}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setSignInData({ ...signInData, email: e.target.value })
-                  }
+                    setError(null)
+                  }}
                   required
                   disabled={isLoading}
                   className="h-12 rounded-2xl border-gray-200"
@@ -172,9 +190,10 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                   type="password"
                   placeholder="••••••••"
                   value={signInData.password}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setSignInData({ ...signInData, password: e.target.value })
-                  }
+                    setError(null)
+                  }}
                   required
                   disabled={isLoading}
                   className="h-12 rounded-2xl border-gray-200"
@@ -211,6 +230,20 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
           <TabsContent value="signup" className="mt-0">
             <form onSubmit={handleSignUp} className="space-y-6">
               <div className="space-y-2">
+                <Label htmlFor="signup-accountId" className="text-sm text-gray-600">
+                  アカウントID（自動生成）
+                </Label>
+                <Input
+                  id="signup-accountId"
+                  type="text"
+                  value={signUpData.accountId}
+                  readOnly
+                  disabled={isLoading}
+                  className="h-12 rounded-2xl border-gray-200 bg-gray-50 text-gray-600"
+                />
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="signup-email" className="text-sm text-gray-600">
                   メールアドレス
                 </Label>
@@ -219,31 +252,12 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                   type="email"
                   placeholder="you@example.com"
                   value={signUpData.email}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setSignUpData({ ...signUpData, email: e.target.value })
-                  }
+                    setError(null)
+                  }}
                   required
                   disabled={isLoading}
-                  className="h-12 rounded-2xl border-gray-200"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="signup-nickname" className="text-sm text-gray-600">
-                  ニックネーム
-                </Label>
-                <Input
-                  id="signup-nickname"
-                  type="text"
-                  placeholder="あなたの名前"
-                  value={signUpData.nickname}
-                  onChange={(e) =>
-                    setSignUpData({ ...signUpData, nickname: e.target.value })
-                  }
-                  required
-                  disabled={isLoading}
-                  minLength={1}
-                  maxLength={50}
                   className="h-12 rounded-2xl border-gray-200"
                 />
               </div>
@@ -268,28 +282,6 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                 <p className="text-xs text-gray-500">8文字以上</p>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="signup-confirm-password" className="text-sm text-gray-600">
-                  パスワード（確認）
-                </Label>
-                <Input
-                  id="signup-confirm-password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={signUpData.confirmPassword}
-                  onChange={(e) =>
-                    setSignUpData({
-                      ...signUpData,
-                      confirmPassword: e.target.value,
-                    })
-                  }
-                  required
-                  disabled={isLoading}
-                  minLength={8}
-                  className="h-12 rounded-2xl border-gray-200"
-                />
-              </div>
-
               {error && (
                 <p className="text-sm text-red-500">{error}</p>
               )}
@@ -310,7 +302,7 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                     className="font-semibold text-[#8B7355] underline"
                     onClick={() => setActiveTab('signin')}
                   >
-                    サインイン
+                    ログイン
                   </button>
                 </p>
               </div>

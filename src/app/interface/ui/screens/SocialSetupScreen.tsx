@@ -8,6 +8,7 @@ import { Input } from "@/app/interface/ui/components/ui/input"
 import { ChevronLeft } from "lucide-react"
 import { FaXTwitter, FaInstagram, FaFacebook } from "react-icons/fa6"
 import { useRegistrationStore } from "../../state/registrationStore"
+import {Step2Background} from "@/app/interface/ui/components/Step2Background1"
 
 interface SocialSetupScreenProps {
   onNext: () => void
@@ -60,16 +61,16 @@ export function SocialSetupScreen({ onNext, onBack }: SocialSetupScreenProps) {
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-gradient-to-br from-background to-secondary p-8">
-      <div className="absolute right-0 top-20 h-56 w-56 rounded-full bg-pastel-lavender/40 blur-3xl" />
-      <div className="absolute bottom-32 left-0 h-48 w-48 rounded-full bg-pastel-pink/30 blur-3xl" />
+    <div className="relative flex min-h-screen flex-col p-8">
+      <Step2Background/>
 
-      <div className="mt-8 flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-foreground">表示するSNSを選択</h2>
-        <span className="text-sm text-muted-foreground">2/3</span>
+      <div className="z-10 mt-35 flex flex-1 flex-col space-y-6 bg-gray-200/30 backdrop-blur-md p-6 rounded-3xl text-amber-950">    
+
+     <div className="mt-2 text-center">
+        <div className="text-xl text-amber-950">表示するSNSのアカウントを選ぼう</div>
       </div>
-
-      <div className="z-10 mt-12 flex flex-1 flex-col items-center justify-start space-y-6">
+      
+      <div className="z-10 mt-6 flex flex-1 flex-col items-center justify-start space-y-6">
         <SocialButton
           icon={<FaXTwitter className="h-6 w-6" />}
           label="X (Twitter)"
@@ -120,28 +121,30 @@ export function SocialSetupScreen({ onNext, onBack }: SocialSetupScreenProps) {
             onCancel={handleCancel}
           />
         )}
+        
+        <div className="z-10 mb-8 flex w-full gap-4">
+          <Button
+            onClick={onBack}
+            variant="outline"
+            className="h-12 flex-1 rounded-full  bg-white/80 px-8 backdrop-blur-sm hover:bg-white"
+          >
+            <ChevronLeft className="mr-1 h-4 w-4" />
+              戻る
+          </Button>
+          <Button
+            onClick={handleSubmit}
+            className="h-12 flex-1 rounded-full bg-[#8B7355] px-8 text-white hover:bg-[#6B5335]"
+          >
+            次へ
+            <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Button>
+        </div>
       </div>
 
-      <div className="z-10 mb-8 flex gap-4">
-        <Button
-          onClick={onBack}
-          variant="outline"
-          className="h-12 flex-1 rounded-full border-primary/20 bg-white/80 backdrop-blur-sm hover:bg-white"
-        >
-          <ChevronLeft className="mr-1 h-4 w-4" />
-          戻る
-        </Button>
-        <Button
-          onClick={handleSubmit}
-          className="h-12 flex-1 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
-        >
-          次へ
-          <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </Button>
-      </div>
     </div>
+  </div>
   )
 }
 
@@ -161,11 +164,11 @@ function SocialButton({
   return (
     <button
       onClick={onClick}
-      className={`flex w-full max-w-xs items-center justify-center gap-3 rounded-2xl p-4 transition-all ${
+      className={`border-none flex w-full max-w-xs items-center justify-center gap-3 rounded-2xl p-4 transition-all ${
         username
-          ? "bg-primary text-primary-foreground shadow-lg"
-          : "bg-white/80 text-foreground backdrop-blur-sm hover:bg-white"
-      } ${isSelected ? "ring-2 ring-primary ring-offset-2" : ""}`}
+          ? "bg-[#EC1ADE]/10 text-foreground shadow-lg backdrop-blur-sm border-none"
+          : " border-none bg-white/80 text-foreground backdrop-blur-sm hover:bg-white"
+      } ${isSelected ? " border-none ring-2 ring-offset-2" : ""}`}
     >
       {icon}
       <div className="flex flex-col items-start">
@@ -193,19 +196,19 @@ function UsernameInput({
         placeholder="ユーザー名を入力"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-10 rounded-xl border-gray-200"
+        className="h-10 rounded-xl bg-[#EC1ADE]/10 border-none"
       />
       <div className="flex gap-2">
         <Button
           onClick={onCancel}
           variant="outline"
-          className="h-10 flex-1 rounded-full border-gray-300 text-sm hover:bg-gray-50"
+          className="h-10 flex-1 rounded-full  text-sm hover:bg-gray-50"
         >
           取り消し
         </Button>
         <Button
           onClick={onSave}
-          className="h-10 flex-1 rounded-full bg-primary text-sm text-primary-foreground hover:bg-primary/90"
+          className="h-10 flex-1 rounded-full bg-primary text-sm bg-[#8B7355] text-white "
         >
           保存
         </Button>

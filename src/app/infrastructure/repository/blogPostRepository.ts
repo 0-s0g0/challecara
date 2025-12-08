@@ -28,6 +28,7 @@ export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlo
         userId: input.userId,
         title: input.title,
         content: input.content,
+        imageUrl: input.imageUrl,
         isPublished: input.isPublished,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
@@ -55,15 +56,19 @@ export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlo
       )
       const querySnapshot = await getDocs(q)
 
-      return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        userId: doc.data().userId,
-        title: doc.data().title,
-        content: doc.data().content,
-        isPublished: doc.data().isPublished,
-        createdAt: doc.data().createdAt?.toDate() || new Date(),
-        updatedAt: doc.data().updatedAt?.toDate() || new Date(),
-      }))
+      return querySnapshot.docs.map(doc => {
+        const data = doc.data() as any
+        return {
+          id: doc.id,
+          userId: data.userId,
+          title: data.title,
+          content: data.content,
+          imageUrl: data.imageUrl,
+          isPublished: data.isPublished,
+          createdAt: data.createdAt?.toDate() || new Date(),
+          updatedAt: data.updatedAt?.toDate() || new Date(),
+        }
+      })
     } catch (error) {
       this.handleError(error, 'ブログ投稿の取得')
     }
@@ -77,12 +82,13 @@ export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlo
         return null
       }
 
-      const data = postDoc.data()
+      const data = postDoc.data() as any
       return {
         id: postDoc.id,
         userId: data.userId,
         title: data.title,
         content: data.content,
+        imageUrl: data.imageUrl,
         isPublished: data.isPublished,
         createdAt: data.createdAt?.toDate() || new Date(),
         updatedAt: data.updatedAt?.toDate() || new Date(),
