@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
     ]
 
     return NextResponse.json(socialLinks, { status: 200 })
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { error: "Failed to fetch social links", code: "INTERNAL_ERROR" },
       { status: 500 }
@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(newSocialLink, { status: 201 })
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { error: "Failed to create social link", code: "INTERNAL_ERROR" },
       { status: 500 }

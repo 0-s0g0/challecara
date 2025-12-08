@@ -35,7 +35,7 @@ import { type NextRequest, NextResponse } from "next/server"
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
 
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     return NextResponse.json(user, { status: 200 })
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { error: "Failed to fetch user", code: "INTERNAL_ERROR" },
       { status: 500 }
@@ -135,7 +135,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     return NextResponse.json(updatedUser, { status: 200 })
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { error: "Failed to update user", code: "INTERNAL_ERROR" },
       { status: 500 }
@@ -175,7 +175,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
  *               $ref: '#/components/schemas/Error'
  */
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -184,7 +184,7 @@ export async function DELETE(
     // TODO: Implement user deletion use case
     // For now, return success
     return new NextResponse(null, { status: 204 })
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { error: "Failed to delete user", code: "INTERNAL_ERROR" },
       { status: 500 }

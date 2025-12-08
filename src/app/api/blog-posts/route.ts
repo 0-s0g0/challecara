@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
     ]
 
     return NextResponse.json(blogPosts, { status: 200 })
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { error: "Failed to fetch blog posts", code: "INTERNAL_ERROR" },
       { status: 500 }
@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(newBlogPost, { status: 201 })
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { error: "Failed to create blog post", code: "INTERNAL_ERROR" },
       { status: 500 }

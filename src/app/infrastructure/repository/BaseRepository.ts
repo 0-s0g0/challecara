@@ -7,7 +7,7 @@ import { RepositoryError } from "../../domain/errors/DomainErrors"
  * リポジトリの基底クラス
  * 共通のエラーハンドリングとFirestore接続を提供
  */
-export abstract class BaseRepository<T> {
+export abstract class BaseRepository<_T> {
   protected db: Firestore
   protected collectionRef: CollectionReference
 

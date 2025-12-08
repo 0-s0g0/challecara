@@ -44,7 +44,7 @@ export class UserRepository implements IUserRepository {
         createdAt: now.toDate(),
         updatedAt: now.toDate(),
       }
-    } catch (error) {
+    } catch (_error) {
       throw new RepositoryError("ユーザーの作成に失敗しました")
     }
   }
@@ -85,7 +85,7 @@ export class UserRepository implements IUserRepository {
         createdAt: data.createdAt?.toDate() || new Date(),
         updatedAt: data.updatedAt?.toDate() || new Date(),
       }
-    } catch (error) {
+    } catch (_error) {
       throw new RepositoryError("ユーザーの取得に失敗しました")
     }
   }

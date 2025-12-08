@@ -24,7 +24,7 @@ import { type NextRequest, NextResponse } from "next/server"
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // TODO: Implement getProfileUseCase integration
     // For now, return mock data
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     ]
 
     return NextResponse.json(users, { status: 200 })
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { error: "Failed to fetch users", code: "INTERNAL_ERROR" },
       { status: 500 }
@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(newUser, { status: 201 })
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { error: "Failed to create user", code: "INTERNAL_ERROR" },
       { status: 500 }

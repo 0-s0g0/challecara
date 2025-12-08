@@ -1,13 +1,13 @@
 "use client"
 
+import { Step3Background } from "@/app/interface/ui/components/Step3Background1"
 import { Button } from "@/app/interface/ui/components/ui/button"
 import { Input } from "@/app/interface/ui/components/ui/input"
 import { Label } from "@/app/interface/ui/components/ui/label"
 import { Textarea } from "@/app/interface/ui/components/ui/textarea"
-import { useState } from "react"
 import { ChevronLeft, Upload, X } from "lucide-react"
+import { useState } from "react"
 import { useRegistrationStore } from "../../state/registrationStore"
-import {Step3Background} from "@/app/interface/ui/components/Step3Background1"
 
 interface BlogSetupScreenProps {
   onNext: () => void
@@ -15,53 +15,31 @@ interface BlogSetupScreenProps {
 }
 
 export function BlogSetupScreen({ onNext, onBack }: BlogSetupScreenProps) {
-  const { blogTitle: storedTitle, blogContent: storedContent, blogImageUrl: storedImageUrl } = useRegistrationStore()
+  const {
+    blogTitle: storedTitle,
+    blogContent: storedContent,
+    blogImageUrl: storedImageUrl,
+  } = useRegistrationStore()
   const setBlogData = useRegistrationStore((state) => state.setBlogData)
 
   const [blogTitle, setBlogTitle] = useState(storedTitle)
   const [blogContent, setBlogContent] = useState(storedContent)
   const [blogImageUrl, setBlogImageUrl] = useState(storedImageUrl)
 
-  const handleSubmit = async () => {
-    setBlogData(blogTitle, blogContent)
-    setIsSubmitting(true)
-    setError("")
-
-    try {
-      const socialLinks = []
-      if (registrationData.xUsername) {
-        socialLinks.push({
-          provider: "twitter",
-          url: `https://twitter.com/${registrationData.xUsername}`,
-        })
-      }
-      if (registrationData.instagramUsername) {
-        socialLinks.push({
-          provider: "instagram",
-          url: `https://instagram.com/${registrationData.instagramUsername}`,
-        })
-      }
-      if (registrationData.facebookUsername) {
-        socialLinks.push({
-          provider: "facebook",
-          url: `https://facebook.com/${registrationData.facebookUsername}`,
-        })
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setBlogImageUrl(reader.result as string)
       }
       reader.readAsDataURL(file)
     }
   }
 
-      const result = await createProfile({
-        email: `${registrationData.accountId}@app.internal`,
-        accountId: registrationData.accountId,
-        password: registrationData.password,
-        nickname: registrationData.nickname,
-        bio: registrationData.bio,
-        avatarUrl: registrationData.avatarUrl,
-        socialLinks,
-        blogTitle,
-        blogContent,
-      })
+  const handleRemoveImage = () => {
+    setBlogImageUrl("")
+  }
 
   const handleSubmit = () => {
     // Save to store only (no Firestore save yet)
@@ -72,16 +50,15 @@ export function BlogSetupScreen({ onNext, onBack }: BlogSetupScreenProps) {
   }
 
   return (
-       <div className="relative flex min-h-screen flex-col p-8">
-      <Step3Background/>
-      <div className="z-10 mt-35 flex flex-1 flex-col space-y-6 bg-gray-200/30 backdrop-blur-md p-6 rounded-3xl text-amber-950">    
+    <div className="relative flex min-h-screen flex-col p-8">
+      <Step3Background />
+      <div className="z-10 mt-35 flex flex-1 flex-col space-y-6 bg-gray-200/30 backdrop-blur-md p-6 rounded-3xl text-amber-950">
+        <div className="mt-2 text-center">
+          <div className="text-xl text-amber-950">初めに投稿するブログを書こう</div>
+        </div>
 
-     <div className="mt-2 text-center">
-        <div className="text-xl text-amber-950">初めに投稿するブログを書こう</div>
-      </div>
-      
         <div className="space-y-2">
-           <Label htmlFor="nickname" className="text-lg text-amber-950">
+          <Label htmlFor="nickname" className="text-lg text-amber-950">
             タイトル
           </Label>
           <Input
@@ -89,7 +66,7 @@ export function BlogSetupScreen({ onNext, onBack }: BlogSetupScreenProps) {
             type="text"
             value={blogTitle}
             onChange={(e) => setBlogTitle(e.target.value)}
-           className="h-12 rounded-2xl border-none  bg-[#FF442C]/5 backdrop-blur-sm"
+            className="h-12 rounded-2xl border-none  bg-[#FF442C]/5 backdrop-blur-sm"
           />
         </div>
 
@@ -101,14 +78,12 @@ export function BlogSetupScreen({ onNext, onBack }: BlogSetupScreenProps) {
             id="content"
             value={blogContent}
             onChange={(e) => setBlogContent(e.target.value)}
-           className="min-h-32 rounded-2xl border-none  bg-[#FF442C]/5 backdrop-blur-sm"
+            className="min-h-32 rounded-2xl border-none  bg-[#FF442C]/5 backdrop-blur-sm"
           />
         </div>
 
         <div className="space-y-2">
-          <Label className="text-sm text-amber-950">
-            画像
-          </Label>
+          <Label className="text-sm text-amber-950">画像</Label>
           {blogImageUrl ? (
             <div className="relative">
               <img
@@ -144,26 +119,26 @@ export function BlogSetupScreen({ onNext, onBack }: BlogSetupScreenProps) {
           )}
         </div>
 
-                <div className="z-10 mb-8 flex w-full gap-4">
-                  <Button
-                    onClick={onBack}
-                    variant="outline"
-                    className="h-12 flex-1 rounded-full  bg-white/80 px-8 backdrop-blur-sm hover:bg-white"
-                  >
-                    <ChevronLeft className="mr-1 h-4 w-4" />
-                      戻る
-                  </Button>
-                  <Button
-                    onClick={handleSubmit}
-                    className="h-12 flex-1 rounded-full bg-[#8B7355] px-8 text-white hover:bg-[#6B5335]"
-                  >
-                    次へ
-                    <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Button>
-                </div>
-            </div>
+        <div className="z-10 mb-8 flex w-full gap-4">
+          <Button
+            onClick={onBack}
+            variant="outline"
+            className="h-12 flex-1 rounded-full  bg-white/80 px-8 backdrop-blur-sm hover:bg-white"
+          >
+            <ChevronLeft className="mr-1 h-4 w-4" />
+            戻る
+          </Button>
+          <Button
+            onClick={handleSubmit}
+            className="h-12 flex-1 rounded-full bg-[#8B7355] px-8 text-white hover:bg-[#6B5335]"
+          >
+            次へ
+            <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Button>
+        </div>
+      </div>
     </div>
   )
 }

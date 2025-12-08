@@ -59,6 +59,7 @@ export async function signup(email: string, password: string, nickname: string) 
       socialLinks: [], // No social links initially
       blogTitle: "", // No blog initially
       blogContent: "",
+      blogImageUrl: "", // No blog image initially
     })
 
     // Automatically log in the user after signup
@@ -125,7 +126,7 @@ export async function getCurrentUser() {
     // For now, we rely on Firebase Auth state in client
 
     return { success: true }
-  } catch (error) {
+  } catch (_error) {
     return { success: false, user: null }
   }
 }
