@@ -1,4 +1,5 @@
 import { create } from "zustand"
+import type { IdeaTag } from "@/app/domain/models/ideaTags"
 
 interface RegistrationState {
   // Step 2 data
@@ -18,10 +19,10 @@ interface RegistrationState {
   facebookConnected: boolean
   facebookUsername: string
 
-  // Step 5 data
-  blogTitle: string
-  blogContent: string
-  blogImageUrl: string
+  // Step 5 data (アイデア・想いの投稿)
+  ideaTitle: string
+  ideaContent: string
+  ideaTag: IdeaTag | ""
 
   // Step 6 data
   selectedLayout: number
@@ -37,7 +38,7 @@ interface RegistrationState {
     facebook: boolean,
     facebookUsername: string
   ) => void
-  setBlogData: (title: string, content: string, imageUrl: string) => void
+  setIdeaData: (title: string, content: string, tag: IdeaTag) => void
   setSelectedLayout: (layout: number) => void
   reset: () => void
 }
@@ -54,9 +55,9 @@ export const useRegistrationStore = create<RegistrationState>((set) => ({
   instagramUsername: "",
   facebookConnected: false,
   facebookUsername: "",
-  blogTitle: "",
-  blogContent: "",
-  blogImageUrl: "",
+  ideaTitle: "",
+  ideaContent: "",
+  ideaTag: "",
   selectedLayout: 0,
 
   setLoginData: (accountId, password) => set({ accountId, password }),
@@ -77,7 +78,7 @@ export const useRegistrationStore = create<RegistrationState>((set) => ({
       facebookConnected,
       facebookUsername,
     }),
-  setBlogData: (blogTitle, blogContent) => set({ blogTitle, blogContent }),
+  setIdeaData: (ideaTitle, ideaContent, ideaTag) => set({ ideaTitle, ideaContent, ideaTag }),
   setSelectedLayout: (selectedLayout) => set({ selectedLayout }),
   reset: () =>
     set({
@@ -92,9 +93,9 @@ export const useRegistrationStore = create<RegistrationState>((set) => ({
       instagramUsername: "",
       facebookConnected: false,
       facebookUsername: "",
-      blogTitle: "",
-      blogContent: "",
-      blogImageUrl: "",
+      ideaTitle: "",
+      ideaContent: "",
+      ideaTag: "",
       selectedLayout: 0,
     }),
 }))

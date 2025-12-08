@@ -4,6 +4,7 @@ import { Card } from "@/app/interface/ui/components/ui/card"
 import Image from "next/image"
 import type React from "react"
 import { FaFacebook, FaInstagram, FaXTwitter } from "react-icons/fa6"
+import { IDEA_TAGS, type IdeaTag } from "@/app/domain/models/ideaTags"
 
 interface ProfileData {
   nickname: string
@@ -12,7 +13,8 @@ interface ProfileData {
   xUsername: string
   instagramUsername: string
   facebookUsername: string
-  blogTitle: string
+  ideaTitle: string
+  ideaTag: IdeaTag | ""
   backgroundColor?: string
 }
 
@@ -51,9 +53,22 @@ export function Layout1({ data }: LayoutProps) {
       </div>
 
       <div className="bg-white p-6">
-        <div className="text-center">
-          <h3 className="font-semibold text-foreground">{data.blogTitle || "ブログタイトル"}</h3>
-          <p className="text-xs text-muted-foreground">最新の投稿</p>
+        <div className="space-y-2">
+          {data.ideaTag && (
+            <div className="flex justify-center">
+              <span
+                className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-white text-xs font-bold"
+                style={{ background: IDEA_TAGS[data.ideaTag].gradient }}
+              >
+                <span>{IDEA_TAGS[data.ideaTag].icon}</span>
+                <span>{IDEA_TAGS[data.ideaTag].name}</span>
+              </span>
+            </div>
+          )}
+          <h3 className="font-semibold text-foreground text-center">
+            {data.ideaTitle || "アイデア・想い"}
+          </h3>
+          <p className="text-xs text-muted-foreground text-center">最新の投稿</p>
         </div>
       </div>
     </Card>
@@ -93,7 +108,16 @@ export function Layout2({ data }: LayoutProps) {
           </p>
 
           <div className="rounded-xl bg-gradient-to-r from-purple-100 to-pink-100 p-4">
-            <h3 className="font-semibold text-purple-900">{data.blogTitle || "ブログタイトル"}</h3>
+            {data.ideaTag && (
+              <span
+                className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs font-bold mb-2"
+                style={{ background: IDEA_TAGS[data.ideaTag].gradient }}
+              >
+                <span>{IDEA_TAGS[data.ideaTag].icon}</span>
+                <span>{IDEA_TAGS[data.ideaTag].name}</span>
+              </span>
+            )}
+            <h3 className="font-semibold text-purple-900">{data.ideaTitle || "アイデア・想い"}</h3>
             <p className="mt-1 text-xs text-purple-700">最新の投稿をチェック</p>
           </div>
         </div>
@@ -132,8 +156,19 @@ export function Layout3({ data }: LayoutProps) {
             {data.facebookUsername && <SocialIconLarge type="facebook" />}
           </div>
 
-          <div className="mt-8 w-full rounded-2xl bg-gray-50 p-4">
-            <h3 className="font-semibold text-gray-800">{data.blogTitle || "ブログタイトル"}</h3>
+          <div className="mt-8 w-full rounded-2xl bg-gray-50 p-4 space-y-2">
+            {data.ideaTag && (
+              <div className="flex justify-center">
+                <span
+                  className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs font-bold"
+                  style={{ background: IDEA_TAGS[data.ideaTag].gradient }}
+                >
+                  <span>{IDEA_TAGS[data.ideaTag].icon}</span>
+                  <span>{IDEA_TAGS[data.ideaTag].name}</span>
+                </span>
+              </div>
+            )}
+            <h3 className="font-semibold text-gray-800">{data.ideaTitle || "アイデア・想い"}</h3>
             <p className="mt-1 text-xs text-gray-500">最新の投稿</p>
           </div>
         </div>
@@ -165,8 +200,19 @@ export function Layout4({ data }: LayoutProps) {
         </div>
 
         <div className="flex flex-col gap-4">
-          <div className="flex-1 rounded-2xl bg-white p-6 shadow-md">
-            <h3 className="font-semibold text-gray-800">{data.blogTitle || "ブログタイトル"}</h3>
+          <div className="flex-1 rounded-2xl bg-white p-6 shadow-md space-y-2">
+            {data.ideaTag && (
+              <div className="flex justify-start">
+                <span
+                  className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs font-bold"
+                  style={{ background: IDEA_TAGS[data.ideaTag].gradient }}
+                >
+                  <span>{IDEA_TAGS[data.ideaTag].icon}</span>
+                  <span>{IDEA_TAGS[data.ideaTag].name}</span>
+                </span>
+              </div>
+            )}
+            <h3 className="font-semibold text-gray-800">{data.ideaTitle || "アイデア・想い"}</h3>
             <p className="mt-2 text-xs text-gray-500">最新の投稿をチェック</p>
           </div>
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { BlogSetupScreen } from "@/app/interface/ui/screens/BlogSetupScreen"
+import { IdeaSetupScreen } from "@/app/interface/ui/screens/IdeaSetupScreen"
 import { FinalProfileScreen } from "@/app/interface/ui/screens/FinalProfileScreen"
 import { LoginScreen } from "@/app/interface/ui/screens/LoginScreen"
 import { ProfileDisplayScreen } from "@/app/interface/ui/screens/ProfileDisplayScreen"
@@ -41,7 +41,7 @@ export default function Home() {
         {currentScreen === 1 && <WelcomeScreen onNext={handleWelcomeNext} />}
         {currentScreen === 3 && <ProfileSetupScreen onNext={handleNext} onBack={handleBack} />}
         {currentScreen === 4 && <SocialSetupScreen onNext={handleNext} onBack={handleBack} />}
-        {currentScreen === 5 && <BlogSetupScreen onNext={handleNext} onBack={handleBack} />}
+        {currentScreen === 5 && <IdeaSetupScreen onNext={handleNext} onBack={handleBack} />}
         {currentScreen === 6 && <ProfilePreviewScreen onNext={handleNext} onBack={handleBack} />}
         {currentScreen === 7 && <FinalProfileScreen onNext={handleNext} />}
         {currentScreen === 8 && <ProfileDisplayScreen />}
