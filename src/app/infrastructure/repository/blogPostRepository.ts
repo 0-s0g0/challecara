@@ -33,7 +33,7 @@ export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlo
         updatedAt: serverTimestamp(),
       }
 
-      const docRef = await addDoc(this.collection, postData)
+      const docRef = await addDoc(this.collectionRef, postData)
 
       return {
         id: docRef.id,
@@ -48,7 +48,7 @@ export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlo
 
   async findByUserId(userId: string): Promise<BlogPost[]> {
     try {
-      const q = query(this.collection, where("userId", "==", userId), orderBy("createdAt", "desc"))
+      const q = query(this.collectionRef, where("userId", "==", userId), orderBy("createdAt", "desc"))
       const querySnapshot = await getDocs(q)
 
       return querySnapshot.docs.map((doc) => ({
@@ -67,7 +67,7 @@ export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlo
 
   async findById(id: string): Promise<BlogPost | null> {
     try {
-      const postDoc = await getDoc(doc(this.collection, id))
+      const postDoc = await getDoc(doc(this.collectionRef, id))
 
       if (!postDoc.exists()) {
         return null
@@ -90,7 +90,7 @@ export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlo
 
   async update(id: string, data: Partial<BlogPost>): Promise<BlogPost> {
     try {
-      const postRef = doc(this.collection, id)
+      const postRef = doc(this.collectionRef, id)
       await setDoc(
         postRef,
         {
@@ -113,7 +113,7 @@ export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlo
 
   async delete(id: string): Promise<void> {
     try {
-      const postRef = doc(this.collection, id)
+      const postRef = doc(this.collectionRef, id)
       await deleteDoc(postRef)
     } catch (error) {
       this.handleError(error, "ブログ投稿の削除")

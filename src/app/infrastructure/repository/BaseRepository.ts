@@ -1,5 +1,5 @@
 import type { FirebaseError } from "firebase/app"
-import { type Collection, type Firestore, collection } from "firebase/firestore"
+import { type CollectionReference, type Firestore, collection } from "firebase/firestore"
 import { getFirebaseDb } from "../../config/firebase/firebaseConfig"
 import { RepositoryError } from "../../domain/errors/DomainErrors"
 
@@ -9,11 +9,11 @@ import { RepositoryError } from "../../domain/errors/DomainErrors"
  */
 export abstract class BaseRepository<T> {
   protected db: Firestore
-  protected collection: Collection
+  protected collectionRef: CollectionReference
 
   constructor(collectionName: string) {
     this.db = getFirebaseDb()
-    this.collection = collection(this.db, collectionName)
+    this.collectionRef = collection(this.db, collectionName)
   }
 
   /**

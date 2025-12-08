@@ -17,7 +17,42 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
   const formData = useRegistrationStore()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [selectedLayout, setSelectedLayout] = useState(0)
+  const scrollRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
+
+  const layouts = [
+    { id: 1, name: "レイアウト1", component: Layout1 },
+    { id: 2, name: "レイアウト2", component: Layout2 },
+    { id: 3, name: "レイアウト3", component: Layout3 },
+    { id: 4, name: "レイアウト4", component: Layout4 },
+  ]
+
+  const profileData = {
+    nickname: formData.nickname,
+    bio: formData.bio,
+    avatarUrl: formData.avatarUrl,
+    socialLinks: [],
+    blogTitle: formData.blogTitle,
+    blogContent: formData.blogContent,
+    xUsername: "",
+    instagramUsername: "",
+    facebookUsername: "",
+  }
+
+  const handleScroll = () => {
+    if (!scrollRef.current) return
+    const scrollLeft = scrollRef.current.scrollLeft
+    const width = scrollRef.current.clientWidth
+    const index = Math.round(scrollLeft / width)
+    setSelectedLayout(index)
+  }
+
+  const scrollToLayout = (index: number) => {
+    if (!scrollRef.current) return
+    const width = scrollRef.current.clientWidth
+    scrollRef.current.scrollTo({ left: index * width, behavior: "smooth" })
+  }
 
   const handleComplete = async () => {
     setLoading(true)

@@ -35,9 +35,9 @@ import { type NextRequest, NextResponse } from "next/server"
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params
+    const { id } = await params
 
     // TODO: Implement getProfileUseCase integration
     // For now, return mock data
@@ -117,9 +117,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params
+    const { id } = await params
     const body = await request.json()
 
     // TODO: Implement user update use case
@@ -174,9 +174,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params
+    const { id } = await params
 
     // TODO: Implement user deletion use case
     // For now, return success

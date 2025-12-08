@@ -34,7 +34,7 @@ export class SocialLinkRepository
         createdAt: serverTimestamp(),
       }
 
-      const docRef = await addDoc(this.collection, linkData)
+      const docRef = await addDoc(this.collectionRef, linkData)
 
       return {
         id: docRef.id,
@@ -48,7 +48,7 @@ export class SocialLinkRepository
 
   async findByUserId(userId: string): Promise<SocialLink[]> {
     try {
-      const q = query(this.collection, where("userId", "==", userId))
+      const q = query(this.collectionRef, where("userId", "==", userId))
       const querySnapshot = await getDocs(q)
 
       return querySnapshot.docs.map((doc) => ({
@@ -66,7 +66,7 @@ export class SocialLinkRepository
 
   async update(id: string, data: Partial<SocialLink>): Promise<SocialLink> {
     try {
-      const linkRef = doc(this.collection, id)
+      const linkRef = doc(this.collectionRef, id)
       await setDoc(
         linkRef,
         {
@@ -87,7 +87,7 @@ export class SocialLinkRepository
 
   async delete(id: string): Promise<void> {
     try {
-      const linkRef = doc(this.collection, id)
+      const linkRef = doc(this.collectionRef, id)
       await deleteDoc(linkRef)
     } catch (error) {
       this.handleError(error, "ソーシャルリンクの削除")

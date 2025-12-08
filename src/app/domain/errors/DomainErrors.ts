@@ -59,10 +59,9 @@ export class AuthenticationError extends DomainError {
 /**
  * 認証情報が不正な場合のエラー
  */
-export class InvalidCredentialsError extends AuthenticationError {
+export class InvalidCredentialsError extends DomainError {
   constructor(message = "アカウントIDまたはパスワードが正しくありません") {
-    super(message)
-    this.code = "INVALID_CREDENTIALS"
+    super(message, "INVALID_CREDENTIALS")
   }
 }
 
@@ -78,29 +77,26 @@ export class RepositoryError extends DomainError {
 /**
  * パスワードが弱い場合のエラー
  */
-export class WeakPasswordError extends ValidationError {
+export class WeakPasswordError extends DomainError {
   constructor(message = "パスワードは8文字以上で入力してください") {
-    super(message, "password")
-    this.code = "WEAK_PASSWORD"
+    super(message, "WEAK_PASSWORD")
   }
 }
 
 /**
  * アカウントIDが不正な場合のエラー
  */
-export class InvalidAccountIdError extends ValidationError {
+export class InvalidAccountIdError extends DomainError {
   constructor(message = "アカウントIDは3〜20文字で入力してください") {
-    super(message, "accountId")
-    this.code = "INVALID_ACCOUNT_ID"
+    super(message, "INVALID_ACCOUNT_ID")
   }
 }
 
 /**
  * ニックネームが不正な場合のエラー
  */
-export class InvalidNicknameError extends ValidationError {
+export class InvalidNicknameError extends DomainError {
   constructor(message = "ニックネームは1〜50文字で入力してください") {
-    super(message, "nickname")
-    this.code = "INVALID_NICKNAME"
+    super(message, "INVALID_NICKNAME")
   }
 }
