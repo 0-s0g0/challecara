@@ -36,7 +36,7 @@ export class UserModel {
    */
   static validateAccountId(accountId: string): void {
     if (accountId.length < 3 || accountId.length > 20) {
-      throw new InvalidAccountIdError(this.ERROR_MESSAGES.INVALID_ACCOUNT_ID)
+      throw new InvalidAccountIdError(UserModel.ERROR_MESSAGES.INVALID_ACCOUNT_ID)
     }
   }
 
@@ -46,7 +46,7 @@ export class UserModel {
    */
   static validatePassword(password: string): void {
     if (password.length < 8) {
-      throw new WeakPasswordError(this.ERROR_MESSAGES.WEAK_PASSWORD)
+      throw new WeakPasswordError(UserModel.ERROR_MESSAGES.WEAK_PASSWORD)
     }
   }
 
@@ -56,7 +56,7 @@ export class UserModel {
    */
   static validateNickname(nickname: string): void {
     if (nickname.length < 1 || nickname.length > 50) {
-      throw new InvalidNicknameError(this.ERROR_MESSAGES.INVALID_NICKNAME)
+      throw new InvalidNicknameError(UserModel.ERROR_MESSAGES.INVALID_NICKNAME)
     }
   }
 
@@ -64,6 +64,6 @@ export class UserModel {
    * エラーメッセージを取得
    */
   static getErrorMessage(key: keyof typeof UserModel.ERROR_MESSAGES): string {
-    return this.ERROR_MESSAGES[key]
+    return UserModel.ERROR_MESSAGES[key]
   }
 }

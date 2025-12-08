@@ -1,5 +1,5 @@
-export function mapFirebaseError(error: any): string {
-  const errorCode = error.code
+export function mapFirebaseError(error: unknown): string {
+  const errorCode = (error as { code?: string }).code
 
   const errorMessages: Record<string, string> = {
     // Auth errors
@@ -29,5 +29,5 @@ export function mapFirebaseError(error: any): string {
     unauthenticated: "認証が必要です",
   }
 
-  return errorMessages[errorCode] || "エラーが発生しました"
+  return (errorCode && errorMessages[errorCode]) || "エラーが発生しました"
 }

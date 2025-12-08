@@ -2,8 +2,8 @@ import {
   type AuthError,
   type User as FirebaseUser,
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
   signOut as firebaseSignOut,
+  signInWithEmailAndPassword,
 } from "firebase/auth"
 import { getFirebaseAuth } from "../../config/firebase/firebaseConfig"
 import {

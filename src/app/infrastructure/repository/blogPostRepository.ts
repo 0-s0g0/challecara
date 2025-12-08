@@ -78,7 +78,7 @@ export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlo
         return null
       }
 
-      const data = postDoc.data() as any
+      const data = postDoc.data()
       return {
         id: postDoc.id,
         userId: data.userId,

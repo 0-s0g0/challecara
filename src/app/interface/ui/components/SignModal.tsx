@@ -1,13 +1,13 @@
 "use client"
 
-import * as React from "react"
-import { useState } from "react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/interface/ui/components/ui/tabs"
-import { Input } from "@/app/interface/ui/components/ui/input"
-import { Button } from "@/app/interface/ui/components/ui/button"
-import { Label } from "@/app/interface/ui/components/ui/label"
 import { login, signup } from "@/app/interface/controller/authController"
-import { useRegistrationStore } from '@/app/interface/state/registrationStore'
+import { useRegistrationStore } from "@/app/interface/state/registrationStore"
+import { Button } from "@/app/interface/ui/components/ui/button"
+import { Input } from "@/app/interface/ui/components/ui/input"
+import { Label } from "@/app/interface/ui/components/ui/label"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/interface/ui/components/ui/tabs"
+import type * as React from "react"
+import { useEffect, useState } from "react"
 
 interface SignModalProps {
   open: boolean
@@ -18,7 +18,9 @@ interface SignModalProps {
 // Generate random account ID
 const generateAccountId = () => {
   const prefix = "user"
-  const randomNum = Math.floor(Math.random() * 1000000).toString().padStart(6, '0')
+  const randomNum = Math.floor(Math.random() * 1000000)
+    .toString()
+    .padStart(6, "0")
   return `${prefix}${randomNum}`
 }
 
@@ -40,12 +42,13 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
     password: "",
     confirmPassword: "",
     nickname: "",
+    accountId: "",
   })
 
   // Auto-generate accountId when modal opens or switches to signup tab
   useEffect(() => {
-    if (open && activeTab === 'signup' && !signUpData.accountId) {
-      setSignUpData(prev => ({ ...prev, accountId: generateAccountId() }))
+    if (open && activeTab === "signup" && !signUpData.accountId) {
+      setSignUpData((prev) => ({ ...prev, accountId: generateAccountId() }))
     }
   }, [open, activeTab, signUpData.accountId])
 
@@ -114,6 +117,7 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
           password: "",
           confirmPassword: "",
           nickname: "",
+          accountId: "",
         })
 
         // Call success callback if provided, otherwise reload
@@ -147,12 +151,12 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
             <div className="mx-auto max-w-md rounded-t-3xl bg-white p-8 pb-12 shadow-2xl">
               <div className="mb-6 text-center">
                 <h2 className="text-2xl font-bold text-[#6B5335]">
-                  {activeTab === 'signin' ? 'ログイン' : '新規作成'}
+                  {activeTab === "signin" ? "ログイン" : "新規作成"}
                 </h2>
                 <p className="mt-2 text-sm text-gray-600">
-                  {activeTab === 'signin'
-                    ? 'メールアドレスとパスワードを入力してください'
-                    : 'アカウントを作成してください'}
+                  {activeTab === "signin"
+                    ? "メールアドレスとパスワードを入力してください"
+                    : "アカウントを作成してください"}
                 </p>
               </div>
 

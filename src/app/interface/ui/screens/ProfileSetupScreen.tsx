@@ -1,5 +1,6 @@
 "use client"
 
+import { Step1Background } from "@/app/interface/ui/components/Step1Background1"
 import { Button } from "@/app/interface/ui/components/ui/button"
 import { Input } from "@/app/interface/ui/components/ui/input"
 import { Label } from "@/app/interface/ui/components/ui/label"
@@ -7,7 +8,6 @@ import { Textarea } from "@/app/interface/ui/components/ui/textarea"
 import { ChevronLeft, Upload } from "lucide-react"
 import { useState } from "react"
 import { useRegistrationStore } from "../../state/registrationStore"
-import { Step1Background } from "@/app/interface/ui/components/Step1Background1"
 
 interface ProfileSetupScreenProps {
   onNext: () => void
@@ -56,8 +56,8 @@ export function ProfileSetupScreen({ onNext, onBack }: ProfileSetupScreenProps) 
 
   return (
     <div className="relative flex min-h-screen flex-col p-8">
-      <Step1Background/>
-      <div className="z-10 mt-35 flex flex-1 flex-col space-y-6 bg-gray-200/30 backdrop-blur-md p-6 rounded-3xl text-amber-950">    
+      <Step1Background />
+      <div className="z-10 mt-35 flex flex-1 flex-col space-y-6 bg-gray-200/30 backdrop-blur-md p-6 rounded-3xl text-amber-950">
         <div className="space-y-2">
           <Label htmlFor="nickname" className="text-lg text-amber-950">
             ニックネーム
@@ -108,7 +108,6 @@ export function ProfileSetupScreen({ onNext, onBack }: ProfileSetupScreenProps) 
               onChange={handleImageUpload}
               className="hidden border-amber-900 border-2"
             />
-
           </div>
         </div>
 
@@ -120,7 +119,7 @@ export function ProfileSetupScreen({ onNext, onBack }: ProfileSetupScreenProps) 
             className="h-12 flex-1 rounded-full border-primary/20 bg-white/80 backdrop-blur-sm hover:bg-white"
           >
             <ChevronLeft className="mr-1 h-4 w-4" />
-              戻る
+            戻る
           </Button>
           <Button
             onClick={handleSubmit}
@@ -133,8 +132,6 @@ export function ProfileSetupScreen({ onNext, onBack }: ProfileSetupScreenProps) 
           </Button>
         </div>
       </div>
-
-
     </div>
   )
 }

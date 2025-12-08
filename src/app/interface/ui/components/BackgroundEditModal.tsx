@@ -48,9 +48,7 @@ export function BackgroundEditModal({
         <div className="mx-auto max-w-md rounded-t-3xl bg-white p-8 pb-12 shadow-2xl">
           <div className="mb-6 text-center">
             <h2 className="text-2xl font-bold text-[#6B5335]">背景をカスタマイズ</h2>
-            <p className="mt-2 text-sm text-gray-600">
-              お好みの背景を作成してください
-            </p>
+            <p className="mt-2 text-sm text-gray-600">お好みの背景を作成してください</p>
           </div>
 
           <div className="space-y-6">
@@ -61,7 +59,9 @@ export function BackgroundEditModal({
                 <button
                   onClick={() => setBackgroundType("solid")}
                   className={`flex-1 h-12 rounded-xl border-2 transition-all ${
-                    backgroundType === "solid" ? "border-[#8B7355] bg-[#8B7355]/10" : "border-gray-200"
+                    backgroundType === "solid"
+                      ? "border-[#8B7355] bg-[#8B7355]/10"
+                      : "border-gray-200"
                   }`}
                 >
                   単色
@@ -69,7 +69,9 @@ export function BackgroundEditModal({
                 <button
                   onClick={() => setBackgroundType("gradient")}
                   className={`flex-1 h-12 rounded-xl border-2 transition-all ${
-                    backgroundType === "gradient" ? "border-[#8B7355] bg-[#8B7355]/10" : "border-gray-200"
+                    backgroundType === "gradient"
+                      ? "border-[#8B7355] bg-[#8B7355]/10"
+                      : "border-gray-200"
                   }`}
                 >
                   グラデーション
@@ -119,12 +121,13 @@ export function BackgroundEditModal({
                     min="0"
                     max="360"
                     onChange={(e) => {
-                      const hue = parseInt(e.target.value)
+                      const hue = Number.parseInt(e.target.value)
                       setGradientColor1(`hsl(${hue}, 70%, 60%)`)
                     }}
                     className="w-full h-3 rounded-lg appearance-none cursor-pointer"
                     style={{
-                      background: 'linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)'
+                      background:
+                        "linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)",
                     }}
                   />
                 </div>
@@ -149,12 +152,13 @@ export function BackgroundEditModal({
                     min="0"
                     max="360"
                     onChange={(e) => {
-                      const hue = parseInt(e.target.value)
+                      const hue = Number.parseInt(e.target.value)
                       setGradientColor2(`hsl(${hue}, 70%, 60%)`)
                     }}
                     className="w-full h-3 rounded-lg appearance-none cursor-pointer"
                     style={{
-                      background: 'linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)'
+                      background:
+                        "linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)",
                     }}
                   />
                 </div>

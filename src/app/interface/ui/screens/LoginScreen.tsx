@@ -1,9 +1,9 @@
 "use client"
 
+import { SignModal } from "@/app/interface/ui/components/SignModal"
 import { Button } from "@/app/interface/ui/components/ui/button"
 import { Input } from "@/app/interface/ui/components/ui/input"
 import { Label } from "@/app/interface/ui/components/ui/label"
-import { SignModal } from "@/app/interface/ui/components/SignModal"
 import { ChevronLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -19,8 +19,8 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
   const [isModalOpen, setIsModalOpen] = useState(true)
   const [accountId, setAccountId] = useState("")
   const [password, setPassword] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [loading, _setLoading] = useState(false)
+  const [error, _setError] = useState<string | null>(null)
 
   const handleModalClose = (open: boolean) => {
     setIsModalOpen(open)
