@@ -14,7 +14,8 @@ jobs:
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
-          echo "Checking PR title: $PR_TITLE"
+          echo "PR タイトルをチェックしています: $PR_TITLE"
+          echo ""
 
           # 許可されたプレフィックス
           ALLOWED_PREFIXES="feat|fix|docs|chore|refactor|test|style|perf|ci"
@@ -24,33 +25,83 @@ jobs:
           PATTERN="^(${ALLOWED_PREFIXES}): .+$"
 
           if echo "$PR_TITLE" | grep -Eq "$PATTERN"; then
-            echo "✅ PR title follows the naming convention!"
-            echo "Format: $PR_TITLE"
+            echo "✅ PR タイトルは命名規則に従っています！"
+            echo "   タイトル: $PR_TITLE"
             exit 0
-          else
-            echo "❌ PR title does not follow the naming convention!"
-            echo ""
-            echo "Current title: $PR_TITLE"
-            echo ""
-            echo "Expected format: <type>: <description>"
-            echo ""
-            echo "Allowed types:"
-            echo "  - feat:     新機能の追加"
-            echo "  - fix:      バグ修正"
-            echo "  - docs:     ドキュメントの変更"
-            echo "  - chore:    ビルドプロセスや補助ツールの変更"
-            echo "  - refactor: リファクタリング"
-            echo "  - test:     テストの追加・修正"
-            echo "  - style:    コードスタイルの変更"
-            echo "  - perf:     パフォーマンス改善"
-            echo "  - ci:       CI設定の変更"
-            echo ""
-            echo "Examples:"
-            echo "  ✅ feat: ユーザー認証機能を追加"
-            echo "  ✅ fix: ログイン時のエラーを修正"
-            echo "  ✅ docs: READMEを更新"
-            echo "  ❌ feat(api): 新しいAPIを追加 (スコープは許可されていません)"
-            echo "  ❌ feat:説明 (コロンの後に半角スペースが必要です)"
-            echo ""
-            exit 1
           fi
+
+          # エラー: 詳細な診断を開始
+          echo "❌ PR タイトルが命名規則に従っていません"
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "現在のタイトル:"
+          echo "  $PR_TITLE"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+
+          # 詳細な診断
+          echo "🔍 問題の診断:"
+          echo ""
+
+          # スコープが含まれているかチェック
+          if echo "$PR_TITLE" | grep -Eq "^(${ALLOWED_PREFIXES})\([^)]+\):"; then
+            echo "⚠️  スコープ（括弧）が含まれています"
+            echo "    例: feat(api): → feat: に変更してください"
+            echo "    スコープは許可されていません"
+            echo ""
+          fi
+
+          # コロンの後にスペースがないかチェック
+          if echo "$PR_TITLE" | grep -Eq "^(${ALLOWED_PREFIXES}):[^ ]"; then
+            echo "⚠️  コロンの後に半角スペースがありません"
+            echo "    例: feat:説明 → feat: 説明 に変更してください"
+            echo ""
+          fi
+
+          # 許可されていないプレフィックスかチェック
+          if echo "$PR_TITLE" | grep -Eq "^[a-z]+:"; then
+            PREFIX=$(echo "$PR_TITLE" | sed 's/:.*//' | sed 's/(.*//')
+            if ! echo "$ALLOWED_PREFIXES" | grep -qw "$PREFIX"; then
+              echo "⚠️  許可されていないプレフィックスです: '$PREFIX'"
+              echo "    以下のいずれかを使用してください"
+              echo ""
+            fi
+          else
+            echo "⚠️  プレフィックスが見つかりません"
+            echo "    タイトルは '<type>: <説明>' の形式で始める必要があります"
+            echo ""
+          fi
+
+          # 許可されているプレフィックス一覧を表示
+          echo "📋 許可されているプレフィックス:"
+          echo ""
+          echo "  feat:     - 新機能の追加"
+          echo "  fix:      - バグ修正"
+          echo "  docs:     - ドキュメントの変更"
+          echo "  chore:    - ビルドプロセスや補助ツールの変更"
+          echo "  refactor: - リファクタリング"
+          echo "  test:     - テストの追加・修正"
+          echo "  style:    - コードスタイルの変更"
+          echo "  perf:     - パフォーマンス改善"
+          echo "  ci:       - CI設定の変更"
+          echo ""
+
+          # 正しい形式の例
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "✅ 正しい例:"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "  feat: ユーザー認証機能を追加"
+          echo "  fix: ログイン時のエラーを修正"
+          echo "  docs: READMEを更新"
+          echo ""
+          echo "❌ 間違った例:"
+          echo "  feat(api): 新しいAPIを追加  ← スコープは不可"
+          echo "  feat:説明                   ← スペースが必要"
+          echo "  新機能追加                  ← プレフィックスが必要"
+          echo "  feature: 機能追加           ← 'feat:' を使用"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          echo "詳細は README.md の「PR命名規則」セクションを参照してください"
+          echo ""
+
+          exit 1
