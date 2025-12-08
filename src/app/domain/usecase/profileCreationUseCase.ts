@@ -24,6 +24,7 @@ export interface ProfileCreationInput {
   socialLinks: Array<{ provider: string; url: string }>
   blogTitle: string
   blogContent: string
+  blogImageUrl: string
 }
 
 export class ProfileCreationUseCase {
@@ -35,11 +36,7 @@ export class ProfileCreationUseCase {
   ) {}
 
   async execute(input: ProfileCreationInput): Promise<User> {
-    // Validate business rules (throws error if invalid)
-    UserModel.validateAccountId(input.accountId)
-    UserModel.validatePassword(input.password)
-    //UserModel.validateNickname(input.nickname)
-
+    // Validation is already done in the UI screens, so we skip it here
     // Check if account already exists (check accountId index)
     const existingUser = await this.userRepository.findByAccountId(input.accountId)
     if (existingUser) {
@@ -79,6 +76,7 @@ export class ProfileCreationUseCase {
         userId: user.id,
         title: input.blogTitle,
         content: input.blogContent,
+        imageUrl: input.blogImageUrl,
         isPublished: true,
       })
     }

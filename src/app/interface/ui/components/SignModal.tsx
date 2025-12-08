@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Tabs,
   TabsContent,
@@ -10,6 +10,7 @@ import { Input } from '@/app/interface/ui/components/ui/input'
 import { Button } from '@/app/interface/ui/components/ui/button'
 import { Label } from '@/app/interface/ui/components/ui/label'
 import { login, signup } from '@/app/interface/controller/authController'
+import { useRegistrationStore } from '@/app/interface/state/registrationStore'
 
 interface SignModalProps {
   open: boolean
@@ -17,7 +18,15 @@ interface SignModalProps {
   onSuccess?: () => void
 }
 
+// Generate random account ID
+const generateAccountId = () => {
+  const prefix = "user"
+  const randomNum = Math.floor(Math.random() * 1000000).toString().padStart(6, '0')
+  return `${prefix}${randomNum}`
+}
+
 export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
+  const setLoginData = useRegistrationStore((state) => state.setLoginData)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState('signin')
@@ -30,11 +39,19 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
 
   // Sign Up form state
   const [signUpData, setSignUpData] = useState({
+    accountId: generateAccountId(),
     email: '',
     password: '',
     confirmPassword: '',
     nickname: '',
   })
+
+  // Auto-generate accountId when modal opens or switches to signup tab
+  useEffect(() => {
+    if (open && activeTab === 'signup' && !signUpData.accountId) {
+      setSignUpData(prev => ({ ...prev, accountId: generateAccountId() }))
+    }
+  }, [open, activeTab, signUpData.accountId])
 
   // Clear error when switching tabs
   const handleTabChange = (value: string) => {
@@ -82,6 +99,9 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
       return
     }
 
+    // Save to registration store (for tutorial flow)
+    setLoginData(signUpData.accountId, signUpData.password)
+
     try {
       const result = await signup(
         signUpData.email,
@@ -92,6 +112,7 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
       if (result.success) {
         onOpenChange(false)
         setSignUpData({
+          accountId: generateAccountId(), // Generate new accountId for next time
           email: '',
           password: '',
           confirmPassword: '',
@@ -208,6 +229,20 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
 
           <TabsContent value="signup" className="mt-0">
             <form onSubmit={handleSignUp} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="signup-accountId" className="text-sm text-gray-600">
+                  アカウントID（自動生成）
+                </Label>
+                <Input
+                  id="signup-accountId"
+                  type="text"
+                  value={signUpData.accountId}
+                  readOnly
+                  disabled={isLoading}
+                  className="h-12 rounded-2xl border-gray-200 bg-gray-50 text-gray-600"
+                />
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="signup-email" className="text-sm text-gray-600">
                   メールアドレス

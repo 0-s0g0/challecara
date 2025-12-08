@@ -64,10 +64,10 @@ export function SocialSetupScreen({ onNext, onBack }: SocialSetupScreenProps) {
     <div className="relative flex min-h-screen flex-col p-8">
       <Step2Background/>
 
-      <div className="z-10 mt-40 flex flex-1 flex-col space-y-6 bg-gray-200/30 backdrop-blur-md p-6 rounded-3xl text-amber-950">    
+      <div className="z-10 mt-35 flex flex-1 flex-col space-y-6 bg-gray-200/30 backdrop-blur-md p-6 rounded-3xl text-amber-950">    
 
-     <div className="mt-8 text-center">
-        <div className="text-xl text-amber-950">デザインを選ぼう</div>
+     <div className="mt-2 text-center">
+        <div className="text-xl text-amber-950">表示するSNSのアカウントを選ぼう</div>
       </div>
       
       <div className="z-10 mt-6 flex flex-1 flex-col items-center justify-start space-y-6">

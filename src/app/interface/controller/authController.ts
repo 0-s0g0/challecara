@@ -59,6 +59,7 @@ export async function signup(email: string, password: string, nickname: string) 
       socialLinks: [], // No social links initially
       blogTitle: '', // No blog initially
       blogContent: '',
+      blogImageUrl: '', // No blog image initially
     })
 
     // Automatically log in the user after signup
