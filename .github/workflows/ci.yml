@@ -27,18 +27,68 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
+        id: install
         run: pnpm install --frozen-lockfile
+        continue-on-error: true
+
+      - name: エラー - 依存関係のインストールに失敗しました
+        if: steps.install.outcome == 'failure'
+        run: |
+          echo "::error::❌ 依存関係のインストールに失敗しました"
+          echo "::error::pnpm install --frozen-lockfile が失敗しました。"
+          echo "::error::package.json や pnpm-lock.yaml を確認してください。"
+          exit 1
 
       - name: Check code formatting with Biome
+        id: format
         run: pnpm format:check
+        continue-on-error: true
+
+      - name: エラー - コードフォーマットチェックに失敗しました
+        if: steps.format.outcome == 'failure'
+        run: |
+          echo "::error::❌ コードフォーマットチェックに失敗しました"
+          echo "::error::Biomeのフォーマット規則に違反しているファイルがあります。"
+          echo "::error::修正するには 'pnpm format' を実行してください。"
+          exit 1
 
       - name: Type check
+        id: typecheck
         run: pnpm exec tsc --noEmit
+        continue-on-error: true
+
+      - name: エラー - 型チェックに失敗しました
+        if: steps.typecheck.outcome == 'failure'
+        run: |
+          echo "::error::❌ 型チェックに失敗しました"
+          echo "::error::TypeScriptの型エラーが検出されました。"
+          echo "::error::エラー内容を確認して、型定義を修正してください。"
+          exit 1
 
       - name: Run tests
+        id: test
         run: pnpm test
+        continue-on-error: true
+
+      - name: エラー - テストに失敗しました
+        if: steps.test.outcome == 'failure'
+        run: |
+          echo "::error::❌ テストに失敗しました"
+          echo "::error::一部のテストケースが失敗しました。"
+          echo "::error::テスト結果を確認して、コードを修正してください。"
+          exit 1
 
       - name: Build
+        id: build
         run: pnpm build
         env:
           NODE_ENV: production
+        continue-on-error: true
+
+      - name: エラー - ビルドに失敗しました
+        if: steps.build.outcome == 'failure'
+        run: |
+          echo "::error::❌ ビルドに失敗しました"
+          echo "::error::プロダクションビルドの作成に失敗しました。"
+          echo "::error::ビルドエラーを確認して、コードを修正してください。"
+          exit 1
