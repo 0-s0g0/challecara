@@ -1,4 +1,4 @@
-import type { BlogPost, BlogPostCreateInput } from '../models/blog'
+import type { BlogPost, BlogPostCreateInput } from "../models/blog"
 
 /**
  * ブログ投稿リポジトリのインターフェース

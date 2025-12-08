@@ -1,12 +1,12 @@
+import { UserNotFoundError } from "../errors/DomainErrors"
+import type { IAuthGateway } from "../gateway/IAuthGateway"
 import type { User } from "../models/user"
 import type { IUserRepository } from "../repository/IUserRepository"
-import type { IAuthGateway } from "../gateway/IAuthGateway"
-import { UserNotFoundError } from "../errors/DomainErrors"
 
 export class AuthLoginUseCase {
   constructor(
     private userRepository: IUserRepository,
-    private authGateway: IAuthGateway,
+    private authGateway: IAuthGateway
   ) {}
 
   async execute(email: string, password: string): Promise<{ token: string; user: User }> {

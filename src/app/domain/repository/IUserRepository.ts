@@ -1,4 +1,4 @@
-import type { User, UserCreateInput } from '../models/user'
+import type { User, UserCreateInput } from "../models/user"
 
 /**
  * ユーザーリポジトリのインターフェース

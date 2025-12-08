@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from "next/server"
 
 /**
  * @swagger
@@ -37,30 +37,30 @@ import { NextRequest, NextResponse } from 'next/server';
  */
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
-    const isPublished = searchParams.get('isPublished');
+    const { searchParams } = new URL(request.url)
+    const userId = searchParams.get("userId")
+    const isPublished = searchParams.get("isPublished")
 
     // TODO: Implement blog post retrieval use case
     // For now, return mock data
     const blogPosts = [
       {
-        id: '1',
-        userId: userId || '1',
-        title: 'My First Blog Post',
-        content: 'This is the content of my first blog post.',
-        isPublished: isPublished ? isPublished === 'true' : true,
+        id: "1",
+        userId: userId || "1",
+        title: "My First Blog Post",
+        content: "This is the content of my first blog post.",
+        isPublished: isPublished ? isPublished === "true" : true,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },
-    ];
+    ]
 
-    return NextResponse.json(blogPosts, { status: 200 });
-  } catch (error) {
+    return NextResponse.json(blogPosts, { status: 200 })
+  } catch (_error) {
     return NextResponse.json(
-      { error: 'Failed to fetch blog posts', code: 'INTERNAL_ERROR' },
+      { error: "Failed to fetch blog posts", code: "INTERNAL_ERROR" },
       { status: 500 }
-    );
+    )
   }
 }
 
@@ -100,14 +100,14 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { userId, title, content, isPublished } = body;
+    const body = await request.json()
+    const { userId, title, content, isPublished } = body
 
     if (!userId || !title || !content || isPublished === undefined) {
       return NextResponse.json(
-        { error: 'Missing required fields', code: 'INVALID_INPUT' },
+        { error: "Missing required fields", code: "INVALID_INPUT" },
         { status: 400 }
-      );
+      )
     }
 
     // TODO: Implement blog post creation use case
@@ -119,13 +119,13 @@ export async function POST(request: NextRequest) {
       isPublished,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    };
+    }
 
-    return NextResponse.json(newBlogPost, { status: 201 });
-  } catch (error) {
+    return NextResponse.json(newBlogPost, { status: 201 })
+  } catch (_error) {
     return NextResponse.json(
-      { error: 'Failed to create blog post', code: 'INTERNAL_ERROR' },
+      { error: "Failed to create blog post", code: "INTERNAL_ERROR" },
       { status: 500 }
-    );
+    )
   }
 }
