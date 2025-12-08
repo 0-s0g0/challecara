@@ -52,13 +52,8 @@ export function ProfileSetupScreen({ onNext, onBack }: ProfileSetupScreenProps) 
 
   return (
     <div className="relative flex min-h-screen flex-col p-8">
-      
       <Step1Background/>
-
-
-
-      <div className="z-10 mt-40 flex flex-1 flex-col space-y-6 bg-gray-200/30 backdrop-blur-md p-6 rounded-3xl text-amber-950">
-      
+      <div className="z-10 mt-40 flex flex-1 flex-col space-y-6 bg-gray-200/30 backdrop-blur-md p-6 rounded-3xl text-amber-950">    
         <div className="space-y-2">
           <Label htmlFor="nickname" className="text-lg text-muted-foreground">
             ニックネーム
@@ -110,25 +105,25 @@ export function ProfileSetupScreen({ onNext, onBack }: ProfileSetupScreenProps) 
         </div>
 
         {error && <p className="text-sm text-red-500">{error}</p>}
-              <div className="z-10 mb-8 flex gap-4">
-        <Button
-          onClick={onBack}
-          variant="outline"
-          className="h-12 flex-1 rounded-full border-primary/20 bg-white/80 backdrop-blur-sm hover:bg-white"
-        >
-        <ChevronLeft className="mr-1 h-4 w-4" />
-          戻る
-        </Button>
-        <Button
-          onClick={handleSubmit}
-          className="h-12 flex-1 rounded-full bg-[#8B7355] text-white hover:bg-[#6B5335]"
-        >
-          次へ
-          <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </Button>
-      </div>
+        <div className="z-10 mb-8 flex gap-4">
+          <Button
+            onClick={onBack}
+            variant="outline"
+            className="h-12 flex-1 rounded-full border-primary/20 bg-white/80 backdrop-blur-sm hover:bg-white"
+          >
+            <ChevronLeft className="mr-1 h-4 w-4" />
+              戻る
+          </Button>
+          <Button
+            onClick={handleSubmit}
+            className="h-12 flex-1 rounded-full bg-[#8B7355] text-white hover:bg-[#6B5335]"
+          >
+            次へ
+            <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Button>
+        </div>
       </div>
 
 
