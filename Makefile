@@ -1,4 +1,4 @@
-.PHONY: help install dev build start test test-watch test-ui test-coverage lint format format-check biome-check biome-fix clean openapi
+.PHONY: help install dev build start test test-frontend test-backend test-watch test-ui test-coverage lint format format-check biome-check biome-fix clean openapi
 
 help: ## Show this help message
 	@echo 'Usage: make [target]'
@@ -18,8 +18,14 @@ build: ## Build for production
 start: ## Start production server
 	pnpm start
 
-test: ## Run tests
+test: ## Run all tests
 	pnpm test
+
+test-frontend: ## Run frontend tests (UI, components, screens, state)
+	pnpm vitest run src/app/interface src/lib
+
+test-backend: ## Run backend tests (domain, infrastructure, api)
+	pnpm vitest run src/app/domain src/app/infrastructure src/app/api
 
 test-watch: ## Run tests in watch mode
 	pnpm test:watch
