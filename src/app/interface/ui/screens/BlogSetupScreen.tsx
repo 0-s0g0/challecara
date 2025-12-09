@@ -15,10 +15,7 @@ interface BlogSetupScreenProps {
 }
 
 export function BlogSetupScreen({ onNext, onBack }: BlogSetupScreenProps) {
-  const {
-    ideaTitle: storedTitle,
-    ideaContent: storedContent,
-  } = useRegistrationStore()
+  const { ideaTitle: storedTitle, ideaContent: storedContent } = useRegistrationStore()
   const setIdeaData = useRegistrationStore((state) => state.setIdeaData)
 
   const [blogTitle, setBlogTitle] = useState(storedTitle)

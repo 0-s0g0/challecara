@@ -1,5 +1,6 @@
 "use client"
 
+import type { IdeaTag } from "@/app/domain/models/ideaTags"
 import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
 import { Layout1, Layout2, Layout3 } from "@/app/interface/ui/components/ProfileLayouts"
 import { Button } from "@/app/interface/ui/components/ui/button"
@@ -104,7 +105,7 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
         "design",
         "business",
         "tech",
-      ] as any,
+      ] as IdeaTag[],
     }),
     [formData, backgroundColor]
   )

@@ -95,8 +95,9 @@ export function TagBallsPhysics({ tagCounts, width = 400, height = 300 }: TagBal
         })
 
         // ボールにタグ情報を保存
-        ;(ball as any).tagInfo = tagInfo
-        ;(ball as any).tagCount = tagCount.count
+        const ballWithTag = ball as Matter.Body & { tagInfo: typeof tagInfo; tagCount: number }
+        ballWithTag.tagInfo = tagInfo
+        ballWithTag.tagCount = tagCount.count
 
         return ball
       })
