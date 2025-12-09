@@ -34,7 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const profileData = await getProfileUseCase.execute(firebaseUser.uid)
           setUser(profileData.user)
         } catch (error) {
-          console.error("Error fetching user data:", error)
+          console.error("ユーザーデータの取得エラー:", error)
           setUser(null)
         }
       } else {
@@ -45,7 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })
 
     return () => unsubscribe()
-  }, [])
+  }, [auth])
 
   const signOut = async () => {
     await auth.signOut()
@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext)
   if (context === undefined) {
-    throw new Error("useAuth must be used within AuthProvider")
+    throw new Error("useAuthはAuthProvider内で使用する必要があります")
   }
   return context
 }
