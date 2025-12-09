@@ -101,17 +101,16 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
 
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-gradient-to-br from-background to-secondary p-8">
-      
       <PastelBackground />
-
-
 
       {/* URL Display */}
       <div className="z-10 mt-8">
-              <div className="mt-8 text-center">
-        <h2 className="text-2xl font-bold text-foreground">プロフィール完成！</h2>
-        <p className="mt-2 text-sm text-muted-foreground">あなたのプロフィールURLをシェアしよう</p>
-      </div>
+        <div className="mt-8 text-center">
+          <h2 className="text-2xl font-bold text-foreground">プロフィール完成！</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            あなたのプロフィールURLをシェアしよう
+          </p>
+        </div>
         <Card className="overflow-hidden mt-4 rounded-2xl border-0 bg-white shadow-lg">
           <div className="flex items-center gap-3 p-4">
             <div className="flex-1 overflow-hidden">
@@ -149,19 +148,18 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
       {/* Next Button */}
       <div className="z-10 flex mb-8 mt-8">
         <Button
-            onClick={onBack}
-            variant="outline"
-            className="h-12 flex-1 rounded-full border-primary/20 bg-white/80 backdrop-blur-sm hover:bg-white"
-          >
-            <ChevronLeft className="mr-1 h-4 w-4" />
-            戻る
-          </Button>
+          onClick={onBack}
+          variant="outline"
+          className="h-12 flex-1 rounded-full border-primary/20 bg-white/80 backdrop-blur-sm hover:bg-white"
+        >
+          <ChevronLeft className="mr-1 h-4 w-4" />
+          戻る
+        </Button>
         <Button
           onClick={handleCreateProfile}
           disabled={isCreating}
           className="h-12 rounded-full bg-[#8B7355] text-white hover:bg-[#6B5335]"
-          >
-        
+        >
           {isCreating ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
