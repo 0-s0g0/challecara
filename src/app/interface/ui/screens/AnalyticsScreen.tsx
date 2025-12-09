@@ -4,11 +4,11 @@ import { Card } from "@/app/interface/ui/components/ui/card"
 import { Eye, Heart, MessageCircle, TrendingUp } from "lucide-react"
 
 export function AnalyticsScreen() {
-  // Mock analytics data
+  // Mock analytics data - プロフィール閲覧データ
   const stats = {
     totalViews: 1234,
-    totalLikes: 567,
-    totalComments: 89,
+    uniqueVisitors: 892,
+    profileShares: 45,
     weeklyGrowth: 12.5,
   }
 
@@ -42,7 +42,7 @@ export function AnalyticsScreen() {
                   <Eye className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">閲覧数</p>
+                  <p className="text-sm text-gray-500">総閲覧数</p>
                   <p className="text-2xl font-bold text-gray-900">{stats.totalViews}</p>
                 </div>
               </div>
@@ -51,11 +51,11 @@ export function AnalyticsScreen() {
             <Card className="rounded-2xl border-0 bg-white p-4 shadow-sm">
               <div className="flex items-center gap-3">
                 <div className="rounded-full bg-pink-100 p-3">
-                  <Heart className="h-5 w-5 text-pink-600" />
+                  <Eye className="h-5 w-5 text-pink-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">いいね</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.totalLikes}</p>
+                  <p className="text-sm text-gray-500">訪問者数</p>
+                  <p className="text-2xl font-bold text-gray-900">{stats.uniqueVisitors}</p>
                 </div>
               </div>
             </Card>
@@ -63,11 +63,11 @@ export function AnalyticsScreen() {
             <Card className="rounded-2xl border-0 bg-white p-4 shadow-sm">
               <div className="flex items-center gap-3">
                 <div className="rounded-full bg-green-100 p-3">
-                  <MessageCircle className="h-5 w-5 text-green-600" />
+                  <Heart className="h-5 w-5 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">コメント</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.totalComments}</p>
+                  <p className="text-sm text-gray-500">シェア</p>
+                  <p className="text-2xl font-bold text-gray-900">{stats.profileShares}</p>
                 </div>
               </div>
             </Card>
@@ -87,7 +87,7 @@ export function AnalyticsScreen() {
 
           {/* Weekly Chart */}
           <Card className="rounded-2xl border-0 bg-white p-6 shadow-sm">
-            <h2 className="mb-6 font-semibold text-gray-800">週間アクセス数</h2>
+            <h2 className="mb-6 font-semibold text-gray-800">週間プロフィール閲覧数</h2>
             <div className="flex items-end justify-between gap-2" style={{ height: "200px" }}>
               {weeklyViews.map((data, index) => (
                 <div key={index} className="flex flex-1 flex-col items-center gap-2">
@@ -109,20 +109,24 @@ export function AnalyticsScreen() {
 
           {/* Insights */}
           <Card className="rounded-2xl border-0 bg-gradient-to-br from-purple-50 to-pink-50 p-6 shadow-sm">
-            <h2 className="mb-4 font-semibold text-gray-800">インサイト</h2>
+            <h2 className="mb-4 font-semibold text-gray-800">プロフィール分析</h2>
             <div className="space-y-3">
               <div className="flex items-start gap-3">
                 <div className="mt-0.5 h-2 w-2 rounded-full bg-purple-500" />
-                <p className="text-sm text-gray-700">金曜日のアクセス数が最も多い傾向があります</p>
+                <p className="text-sm text-gray-700">
+                  金曜日のプロフィール閲覧数が最も多い傾向があります
+                </p>
               </div>
               <div className="flex items-start gap-3">
                 <div className="mt-0.5 h-2 w-2 rounded-full bg-pink-500" />
-                <p className="text-sm text-gray-700">先週と比較して閲覧数が12.5%増加しています</p>
+                <p className="text-sm text-gray-700">
+                  先週と比較してプロフィール閲覧数が12.5%増加しています
+                </p>
               </div>
               <div className="flex items-start gap-3">
                 <div className="mt-0.5 h-2 w-2 rounded-full bg-blue-500" />
                 <p className="text-sm text-gray-700">
-                  投稿数を増やすことでさらなる成長が期待できます
+                  アイデア投稿を増やすことでさらなる成長が期待できます
                 </p>
               </div>
             </div>

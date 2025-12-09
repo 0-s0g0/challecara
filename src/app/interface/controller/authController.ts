@@ -27,6 +27,7 @@ export async function login(email: string, password: string) {
         nickname: result.user.nickname,
         bio: result.user.bio,
         avatarUrl: result.user.avatarUrl,
+        tutorialCompleted: result.user.tutorialCompleted,
       },
     }
   } catch (error) {
@@ -40,35 +41,16 @@ export async function login(email: string, password: string) {
 
 export async function signup(email: string, password: string, nickname: string) {
   try {
-    const useCase = UseCaseFactory.createProfileCreationUseCase()
+    // Create Firebase Auth account only (no Firestore document)
+    const authGateway = UseCaseFactory.createAuthGateway()
+    const userId = await authGateway.createAccount(email, password)
 
-    // Generate a unique accountId from email
-    // Example: "user@example.com" -> "user_abc123"
-    const emailUsername = email.split("@")[0]
-    const randomSuffix = Math.random().toString(36).substring(2, 8)
-    const accountId = `${emailUsername}_${randomSuffix}`
-
-    // Create user profile with auto-generated accountId
-    const user = await useCase.execute({
-      accountId,
-      email,
-      password,
-      nickname,
-      bio: "", // Empty bio initially
-      avatarUrl: "", // Empty avatar initially
-      socialLinks: [], // No social links initially
-      blogTitle: "", // No blog initially
-      blogContent: "",
-      blogImageUrl: "", // No blog image initially
-    })
-
-    // Automatically log in the user after signup
-    const authUseCase = UseCaseFactory.createAuthLoginUseCase()
-    const result = await authUseCase.execute(email, password)
+    // Generate token for auto-login
+    const token = await authGateway.generateToken(userId)
 
     // Store token in HTTP-only cookie
     const cookieStore = await cookies()
-    cookieStore.set("authToken", result.token, {
+    cookieStore.set("authToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
@@ -78,14 +60,8 @@ export async function signup(email: string, password: string, nickname: string) 
 
     return {
       success: true,
-      token: result.token,
-      user: {
-        id: user.id,
-        accountId: user.accountId,
-        nickname: user.nickname,
-        bio: user.bio,
-        avatarUrl: user.avatarUrl,
-      },
+      token: token,
+      userId: userId,
     }
   } catch (error) {
     console.error("[AuthController] Signup error:", error)

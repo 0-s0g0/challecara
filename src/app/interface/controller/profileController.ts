@@ -26,6 +26,7 @@ export async function createProfile(input: ProfileCreationInput) {
     return {
       success: true,
       userId: user.id,
+      uniqueId: user.uniqueId,
       message: "プロフィールが作成されました",
       user: {
         id: user.id,
@@ -33,6 +34,7 @@ export async function createProfile(input: ProfileCreationInput) {
         nickname: user.nickname,
         bio: user.bio,
         avatarUrl: user.avatarUrl,
+        uniqueId: user.uniqueId,
       },
     }
   } catch (error) {

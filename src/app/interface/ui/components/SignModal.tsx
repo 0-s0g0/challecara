@@ -66,15 +66,19 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
     try {
       const result = await login(signInData.email, signInData.password)
 
-      if (result.success) {
+      if (result.success && result.user) {
         onOpenChange(false)
         setSignInData({ email: "", password: "" })
 
-        // Call success callback if provided, otherwise reload
-        if (onSuccess) {
-          onSuccess()
+        // Check tutorial completion status
+        if (result.user.tutorialCompleted) {
+          // チュートリアル完了済み → ダッシュボードへ
+          window.location.href = "/dashboard"
         } else {
-          window.location.reload()
+          // チュートリアル未完了 → 続きから（onSuccessで処理）
+          if (onSuccess) {
+            onSuccess()
+          }
         }
       } else {
         setError(result.error || "サインインに失敗しました")
@@ -105,29 +109,23 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
     }
 
     // Save to registration store (for tutorial flow)
-    setLoginData(signUpData.accountId, signUpData.password)
+    setLoginData(signUpData.email, signUpData.accountId, signUpData.password)
 
     try {
-      const result = await signup(signUpData.email, signUpData.password, signUpData.nickname)
+      // Note: We're NOT calling signup() here anymore
+      // Instead, we just save to store and proceed to tutorial
+      onOpenChange(false)
+      setSignUpData({
+        email: "",
+        password: "",
+        confirmPassword: "",
+        nickname: "",
+        accountId: "",
+      })
 
-      if (result.success) {
-        onOpenChange(false)
-        setSignUpData({
-          email: "",
-          password: "",
-          confirmPassword: "",
-          nickname: "",
-          accountId: "",
-        })
-
-        // Call success callback if provided, otherwise reload
-        if (onSuccess) {
-          onSuccess()
-        } else {
-          window.location.reload()
-        }
-      } else {
-        setError(result.error || "サインアップに失敗しました")
+      // Call success callback to proceed to tutorial
+      if (onSuccess) {
+        onSuccess()
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "サインアップに失敗しました")

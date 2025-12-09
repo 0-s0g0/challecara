@@ -29,6 +29,7 @@ export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlo
         title: input.title,
         content: input.content,
         imageUrl: input.imageUrl,
+        ideaTag: input.ideaTag,
         isPublished: input.isPublished,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
@@ -61,12 +62,39 @@ export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlo
         userId: doc.data().userId,
         title: doc.data().title,
         content: doc.data().content,
+        imageUrl: doc.data().imageUrl,
+        ideaTag: doc.data().ideaTag,
         isPublished: doc.data().isPublished,
         createdAt: doc.data().createdAt?.toDate() || new Date(),
         updatedAt: doc.data().updatedAt?.toDate() || new Date(),
       }))
     } catch (error) {
       this.handleError(error, "ブログ投稿の取得")
+    }
+  }
+
+  async findAllPublished(): Promise<BlogPost[]> {
+    try {
+      const q = query(
+        this.collectionRef,
+        where("isPublished", "==", true),
+        orderBy("createdAt", "desc")
+      )
+      const querySnapshot = await getDocs(q)
+
+      return querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        userId: doc.data().userId,
+        title: doc.data().title,
+        content: doc.data().content,
+        imageUrl: doc.data().imageUrl,
+        ideaTag: doc.data().ideaTag,
+        isPublished: doc.data().isPublished,
+        createdAt: doc.data().createdAt?.toDate() || new Date(),
+        updatedAt: doc.data().updatedAt?.toDate() || new Date(),
+      }))
+    } catch (error) {
+      this.handleError(error, "公開ブログ投稿の取得")
     }
   }
 
@@ -85,6 +113,7 @@ export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlo
         title: data.title,
         content: data.content,
         imageUrl: data.imageUrl,
+        ideaTag: data.ideaTag,
         isPublished: data.isPublished,
         createdAt: data.createdAt?.toDate() || new Date(),
         updatedAt: data.updatedAt?.toDate() || new Date(),

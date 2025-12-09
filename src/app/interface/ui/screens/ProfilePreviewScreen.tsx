@@ -1,5 +1,6 @@
 "use client"
 
+import type { IdeaTag } from "@/app/domain/models/ideaTags"
 import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
 import { Layout1, Layout2, Layout3 } from "@/app/interface/ui/components/ProfileLayouts"
 import { Button } from "@/app/interface/ui/components/ui/button"
@@ -91,8 +92,20 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
       xUsername: formData.xUsername,
       instagramUsername: formData.instagramUsername,
       facebookUsername: formData.facebookUsername,
-      blogTitle: formData.blogTitle,
+      ideaTitle: formData.ideaTitle,
+      ideaTag: formData.ideaTag,
       backgroundColor: backgroundColor,
+      // デモ用：複数投稿をシミュレート（実際はFirestoreから取得）
+      ideaTags: [
+        "tech",
+        "tech",
+        "tech",
+        "entrepreneur",
+        "entrepreneur",
+        "design",
+        "business",
+        "tech",
+      ] as IdeaTag[],
     }),
     [formData, backgroundColor]
   )

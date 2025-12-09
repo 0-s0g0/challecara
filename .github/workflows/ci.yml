@@ -6,15 +6,69 @@ on:
       - main
       - develop
   pull_request:
-    branches:
-      - main
-      - develop
 
 jobs:
-  test:
-    name: Test and Lint
+  lint:
+    name: Lint and Type Check
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        id: install
+        run: pnpm install --frozen-lockfile
+        continue-on-error: true
+
+      - name: エラー - 依存関係のインストールに失敗しました
+        if: steps.install.outcome == 'failure'
+        run: |
+          echo "::error::❌ 依存関係のインストールに失敗しました"
+          echo "::error::pnpm install --frozen-lockfile が失敗しました。"
+          echo "::error::package.json や pnpm-lock.yaml を確認してください。"
+          exit 1
+
+      - name: Check code formatting with Biome
+        id: format
+        run: pnpm format:check
+        continue-on-error: true
+
+      - name: エラー - コードフォーマットチェックに失敗しました
+        if: steps.format.outcome == 'failure'
+        run: |
+          echo "::error::❌ コードフォーマットチェックに失敗しました"
+          echo "::error::Biomeのフォーマット規則に違反しているファイルがあります。"
+          echo "::error::修正するには 'pnpm format' を実行してください。"
+          exit 1
+
+      - name: Type check
+        id: typecheck
+        run: pnpm exec tsc --noEmit
+        continue-on-error: true
+
+      - name: エラー - 型チェックに失敗しました
+        if: steps.typecheck.outcome == 'failure'
+        run: |
+          echo "::error::❌ 型チェックに失敗しました"
+          echo "::error::TypeScriptの型エラーが検出されました。"
+          echo "::error::エラー内容を確認して、型定義を修正してください。"
+          exit 1
+
+  test-frontend:
+    name: Frontend Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: Checkout code
@@ -32,16 +86,86 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Check code formatting with Biome
-        run: pnpm format:check
+      - name: Run Frontend Tests
+        id: test-fe
+        run: pnpm vitest run src/app/interface src/lib
+        continue-on-error: true
 
-      - name: Type check
-        run: pnpm exec tsc --noEmit
+      - name: エラー - フロントエンドテストに失敗しました
+        if: steps.test-fe.outcome == 'failure'
+        run: |
+          echo "::error::❌ フロントエンドテストに失敗しました"
+          echo "::error::UIコンポーネント、画面、または状態管理のテストが失敗しました。"
+          echo "::error::テスト結果を確認して、コードを修正してください。"
+          exit 1
 
-      - name: Run tests
-        run: pnpm test
+  test-backend:
+    name: Backend Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run Backend Tests
+        id: test-be
+        run: pnpm vitest run src/app/domain src/app/infrastructure src/app/api
+        continue-on-error: true
+
+      - name: エラー - バックエンドテストに失敗しました
+        if: steps.test-be.outcome == 'failure'
+        run: |
+          echo "::error::❌ バックエンドテストに失敗しました"
+          echo "::error::Domain層、Infrastructure層、またはAPIのテストが失敗しました。"
+          echo "::error::テスト結果を確認して、コードを修正してください。"
+          exit 1
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [lint, test-frontend, test-backend]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Build
+        id: build
         run: pnpm build
         env:
           NODE_ENV: production
+        continue-on-error: true
+
+      - name: エラー - ビルドに失敗しました
+        if: steps.build.outcome == 'failure'
+        run: |
+          echo "::error::❌ ビルドに失敗しました"
+          echo "::error::プロダクションビルドの作成に失敗しました。"
+          echo "::error::ビルドエラーを確認して、コードを修正してください。"
+          exit 1

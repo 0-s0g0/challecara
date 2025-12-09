@@ -1,9 +1,12 @@
+import type { IdeaTag } from "./ideaTags"
+
 export interface BlogPost {
   id: string
   userId: string
   title: string
   content: string
   imageUrl?: string
+  ideaTag?: IdeaTag | ""
   isPublished: boolean
   createdAt: Date
   updatedAt: Date
@@ -14,5 +17,6 @@ export interface BlogPostCreateInput {
   title: string
   content: string
   imageUrl?: string
+  ideaTag?: IdeaTag | ""
   isPublished: boolean
 }
