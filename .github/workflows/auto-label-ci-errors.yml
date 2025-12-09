@@ -1,0 +1,225 @@
+name: Auto Label CI Errors
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+
+jobs:
+  label-ci-errors:
+    name: Label CI Errors
+    runs-on: ubuntu-latest
+    # PRに対してのみ実行
+    if: github.event.workflow_run.event == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
+      actions: read
+
+    steps:
+      - name: Get PR number
+        id: pr
+        run: |
+          # PRの番号を取得
+          PR_NUMBER=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}" \
+            --jq '.pull_requests[0].number')
+
+          echo "PR番号: $PR_NUMBER"
+          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+
+          if [ -z "$PR_NUMBER" ] || [ "$PR_NUMBER" = "null" ]; then
+            echo "⚠️  このワークフロー実行にPRが関連付けられていません"
+            exit 0
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Get CI job results
+        id: jobs
+        if: steps.pr.outputs.pr_number != ''
+        run: |
+          # CIワークフローの各ジョブの結果を取得
+          JOBS_JSON=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}/jobs")
+
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "📊 CIジョブの結果"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+
+          # 各ジョブの結果を確認
+          LINT_STATUS=$(echo "$JOBS_JSON" | jq -r '.jobs[] | select(.name == "Lint and Type Check") | .conclusion')
+          TEST_FE_STATUS=$(echo "$JOBS_JSON" | jq -r '.jobs[] | select(.name == "Frontend Unit Tests") | .conclusion')
+          TEST_BE_STATUS=$(echo "$JOBS_JSON" | jq -r '.jobs[] | select(.name == "Backend Unit Tests") | .conclusion')
+          BUILD_STATUS=$(echo "$JOBS_JSON" | jq -r '.jobs[] | select(.name == "Build") | .conclusion')
+
+          echo "Lint and Type Check: $LINT_STATUS"
+          echo "Frontend Unit Tests: $TEST_FE_STATUS"
+          echo "Backend Unit Tests:  $TEST_BE_STATUS"
+          echo "Build:               $BUILD_STATUS"
+          echo ""
+
+          # 結果を環境変数に保存
+          echo "lint_status=$LINT_STATUS" >> $GITHUB_OUTPUT
+          echo "test_fe_status=$TEST_FE_STATUS" >> $GITHUB_OUTPUT
+          echo "test_be_status=$TEST_BE_STATUS" >> $GITHUB_OUTPUT
+          echo "build_status=$BUILD_STATUS" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Create error labels if not exist
+        if: steps.pr.outputs.pr_number != ''
+        run: |
+          echo "🏷️  エラーラベルを準備中..."
+          echo ""
+
+          # エラーラベルを作成（赤色）
+          gh label create "error:lint" \
+            --description "Lintまたは型チェックでエラーが発生" \
+            --color "d73a4a" \
+            --force 2>/dev/null || echo "✓ error:lint ラベルは既に存在します"
+
+          gh label create "error:test-fe" \
+            --description "フロントエンドテストでエラーが発生" \
+            --color "d73a4a" \
+            --force 2>/dev/null || echo "✓ error:test-fe ラベルは既に存在します"
+
+          gh label create "error:test-be" \
+            --description "バックエンドテストでエラーが発生" \
+            --color "d73a4a" \
+            --force 2>/dev/null || echo "✓ error:test-be ラベルは既に存在します"
+
+          gh label create "error:build" \
+            --description "ビルドでエラーが発生" \
+            --color "d73a4a" \
+            --force 2>/dev/null || echo "✓ error:build ラベルは既に存在します"
+
+          echo ""
+          echo "✅ エラーラベルの準備が完了しました"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Update Lint labels
+        if: steps.pr.outputs.pr_number != '' && steps.jobs.outputs.lint_status != ''
+        run: |
+          PR_NUMBER="${{ steps.pr.outputs.pr_number }}"
+          STATUS="${{ steps.jobs.outputs.lint_status }}"
+
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "🔍 Lint ラベルの更新"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+          if [ "$STATUS" = "failure" ]; then
+            echo "❌ Lintエラーが検出されました"
+            echo "   'error:lint' ラベルを追加します"
+            gh pr edit "$PR_NUMBER" --add-label "error:lint"
+            echo "✅ ラベルを追加しました"
+          elif [ "$STATUS" = "success" ]; then
+            echo "✅ Lintチェックが成功しました"
+            echo "   'error:lint' ラベルを削除します（存在する場合）"
+            gh pr edit "$PR_NUMBER" --remove-label "error:lint" 2>/dev/null || echo "   （ラベルは付いていませんでした）"
+          else
+            echo "⚠️  Lint: 不明な状態 ($STATUS)"
+          fi
+          echo ""
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Update Frontend Test labels
+        if: steps.pr.outputs.pr_number != '' && steps.jobs.outputs.test_fe_status != ''
+        run: |
+          PR_NUMBER="${{ steps.pr.outputs.pr_number }}"
+          STATUS="${{ steps.jobs.outputs.test_fe_status }}"
+
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "🧪 Frontend Test ラベルの更新"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+          if [ "$STATUS" = "failure" ]; then
+            echo "❌ フロントエンドテストエラーが検出されました"
+            echo "   'error:test-fe' ラベルを追加します"
+            gh pr edit "$PR_NUMBER" --add-label "error:test-fe"
+            echo "✅ ラベルを追加しました"
+          elif [ "$STATUS" = "success" ]; then
+            echo "✅ フロントエンドテストが成功しました"
+            echo "   'error:test-fe' ラベルを削除します（存在する場合）"
+            gh pr edit "$PR_NUMBER" --remove-label "error:test-fe" 2>/dev/null || echo "   （ラベルは付いていませんでした）"
+          else
+            echo "⚠️  Frontend Test: 不明な状態 ($STATUS)"
+          fi
+          echo ""
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Update Backend Test labels
+        if: steps.pr.outputs.pr_number != '' && steps.jobs.outputs.test_be_status != ''
+        run: |
+          PR_NUMBER="${{ steps.pr.outputs.pr_number }}"
+          STATUS="${{ steps.jobs.outputs.test_be_status }}"
+
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "🧪 Backend Test ラベルの更新"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+          if [ "$STATUS" = "failure" ]; then
+            echo "❌ バックエンドテストエラーが検出されました"
+            echo "   'error:test-be' ラベルを追加します"
+            gh pr edit "$PR_NUMBER" --add-label "error:test-be"
+            echo "✅ ラベルを追加しました"
+          elif [ "$STATUS" = "success" ]; then
+            echo "✅ バックエンドテストが成功しました"
+            echo "   'error:test-be' ラベルを削除します（存在する場合）"
+            gh pr edit "$PR_NUMBER" --remove-label "error:test-be" 2>/dev/null || echo "   （ラベルは付いていませんでした）"
+          else
+            echo "⚠️  Backend Test: 不明な状態 ($STATUS)"
+          fi
+          echo ""
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Update Build labels
+        if: steps.pr.outputs.pr_number != '' && steps.jobs.outputs.build_status != ''
+        run: |
+          PR_NUMBER="${{ steps.pr.outputs.pr_number }}"
+          STATUS="${{ steps.jobs.outputs.build_status }}"
+
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "🔨 Build ラベルの更新"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+          if [ "$STATUS" = "failure" ]; then
+            echo "❌ ビルドエラーが検出されました"
+            echo "   'error:build' ラベルを追加します"
+            gh pr edit "$PR_NUMBER" --add-label "error:build"
+            echo "✅ ラベルを追加しました"
+          elif [ "$STATUS" = "success" ]; then
+            echo "✅ ビルドが成功しました"
+            echo "   'error:build' ラベルを削除します（存在する場合）"
+            gh pr edit "$PR_NUMBER" --remove-label "error:build" 2>/dev/null || echo "   （ラベルは付いていませんでした）"
+          else
+            echo "⚠️  Build: 不明な状態 ($STATUS)"
+          fi
+          echo ""
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Summary
+        if: steps.pr.outputs.pr_number != ''
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "📊 CI エラーラベル更新完了"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          echo "PR #${{ steps.pr.outputs.pr_number }} のラベルを更新しました"
+          echo ""
+          echo "ジョブの結果:"
+          echo "  Lint:         ${{ steps.jobs.outputs.lint_status }}"
+          echo "  Frontend Test: ${{ steps.jobs.outputs.test_fe_status }}"
+          echo "  Backend Test:  ${{ steps.jobs.outputs.test_be_status }}"
+          echo "  Build:        ${{ steps.jobs.outputs.build_status }}"
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
