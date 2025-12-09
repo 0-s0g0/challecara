@@ -13,6 +13,7 @@ export const createMockUserRepository = (overrides?: Partial<IUserRepository>): 
   return {
     findById: vi.fn().mockResolvedValue(null),
     findByAccountId: vi.fn().mockResolvedValue(null),
+    findByUniqueId: vi.fn().mockResolvedValue(null),
     create: vi.fn().mockImplementation((input: UserCreateInput): Promise<User> => {
       return Promise.resolve({
         id: input.id,
@@ -20,6 +21,8 @@ export const createMockUserRepository = (overrides?: Partial<IUserRepository>): 
         nickname: input.nickname,
         bio: input.bio,
         avatarUrl: input.avatarUrl,
+        uniqueId: input.uniqueId,
+        tutorialCompleted: false,
         createdAt: new Date(),
         updatedAt: new Date(),
       })
@@ -31,6 +34,8 @@ export const createMockUserRepository = (overrides?: Partial<IUserRepository>): 
         nickname: "Test User",
         bio: "Test bio",
         avatarUrl: "https://example.com/avatar.jpg",
+        uniqueId: "testuser123",
+        tutorialCompleted: false,
         createdAt: new Date(),
         updatedAt: new Date(),
         ...data,
@@ -84,6 +89,7 @@ export const createMockBlogPostRepository = (
 ): IBlogPostRepository => {
   return {
     findByUserId: vi.fn().mockResolvedValue([]),
+    findAllPublished: vi.fn().mockResolvedValue([]),
     findById: vi.fn().mockResolvedValue(null),
     create: vi.fn().mockImplementation((input: BlogPostCreateInput): Promise<BlogPost> => {
       return Promise.resolve({

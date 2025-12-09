@@ -73,6 +73,31 @@ export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlo
     }
   }
 
+  async findAllPublished(): Promise<BlogPost[]> {
+    try {
+      const q = query(
+        this.collectionRef,
+        where("isPublished", "==", true),
+        orderBy("createdAt", "desc")
+      )
+      const querySnapshot = await getDocs(q)
+
+      return querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        userId: doc.data().userId,
+        title: doc.data().title,
+        content: doc.data().content,
+        imageUrl: doc.data().imageUrl,
+        ideaTag: doc.data().ideaTag,
+        isPublished: doc.data().isPublished,
+        createdAt: doc.data().createdAt?.toDate() || new Date(),
+        updatedAt: doc.data().updatedAt?.toDate() || new Date(),
+      }))
+    } catch (error) {
+      this.handleError(error, "公開ブログ投稿の取得")
+    }
+  }
+
   async findById(id: string): Promise<BlogPost | null> {
     try {
       const postDoc = await getDoc(doc(this.collectionRef, id))

@@ -11,6 +11,7 @@ describe("useRegistrationStore", () => {
     it("すべてのフィールドがデフォルト値である", () => {
       const state = useRegistrationStore.getState()
 
+      expect(state.email).toBe("")
       expect(state.accountId).toBe("")
       expect(state.password).toBe("")
       expect(state.nickname).toBe("")
@@ -22,10 +23,11 @@ describe("useRegistrationStore", () => {
       expect(state.instagramUsername).toBe("")
       expect(state.facebookConnected).toBe(false)
       expect(state.facebookUsername).toBe("")
-      expect(state.blogTitle).toBe("")
-      expect(state.blogContent).toBe("")
-      expect(state.blogImageUrl).toBe("")
+      expect(state.ideaTitle).toBe("")
+      expect(state.ideaContent).toBe("")
+      expect(state.ideaTag).toBe("")
       expect(state.selectedLayout).toBe(0)
+      expect(state.uniqueId).toBe("")
     })
   })
 
@@ -33,9 +35,10 @@ describe("useRegistrationStore", () => {
     it("ログインデータを設定できる", () => {
       const { setLoginData } = useRegistrationStore.getState()
 
-      setLoginData("testuser", "password123")
+      setLoginData("test@example.com", "testuser", "password123")
 
       const state = useRegistrationStore.getState()
+      expect(state.email).toBe("test@example.com")
       expect(state.accountId).toBe("testuser")
       expect(state.password).toBe("password123")
     })
@@ -84,15 +87,16 @@ describe("useRegistrationStore", () => {
     })
   })
 
-  describe("setBlogData", () => {
-    it("ブログデータを設定できる", () => {
-      const { setBlogData } = useRegistrationStore.getState()
+  describe("setIdeaData", () => {
+    it("アイデアデータを設定できる", () => {
+      const { setIdeaData } = useRegistrationStore.getState()
 
-      setBlogData("My Blog Title", "This is my blog content", "https://example.com/blog.jpg")
+      setIdeaData("My Idea Title", "This is my idea content", "tech")
 
       const state = useRegistrationStore.getState()
-      expect(state.blogTitle).toBe("My Blog Title")
-      expect(state.blogContent).toBe("This is my blog content")
+      expect(state.ideaTitle).toBe("My Idea Title")
+      expect(state.ideaContent).toBe("This is my idea content")
+      expect(state.ideaTag).toBe("tech")
     })
   })
 
@@ -109,14 +113,14 @@ describe("useRegistrationStore", () => {
 
   describe("reset", () => {
     it("すべての状態を初期値にリセットできる", () => {
-      const { setLoginData, setProfileData, setSocialData, setBlogData, setSelectedLayout, reset } =
+      const { setLoginData, setProfileData, setSocialData, setIdeaData, setSelectedLayout, reset } =
         useRegistrationStore.getState()
 
       // データを設定
-      setLoginData("testuser", "password123")
+      setLoginData("test@example.com", "testuser", "password123")
       setProfileData("Test User", "Test bio", "https://example.com/avatar.jpg")
       setSocialData(true, "x_user", true, "insta_user", true, "fb_user")
-      setBlogData("Blog Title", "Blog Content", "https://example.com/blog.jpg")
+      setIdeaData("Idea Title", "Idea Content", "tech")
       setSelectedLayout(3)
 
       // リセット
@@ -124,6 +128,7 @@ describe("useRegistrationStore", () => {
 
       // すべてが初期値に戻っているか確認
       const state = useRegistrationStore.getState()
+      expect(state.email).toBe("")
       expect(state.accountId).toBe("")
       expect(state.password).toBe("")
       expect(state.nickname).toBe("")
@@ -135,22 +140,24 @@ describe("useRegistrationStore", () => {
       expect(state.instagramUsername).toBe("")
       expect(state.facebookConnected).toBe(false)
       expect(state.facebookUsername).toBe("")
-      expect(state.blogTitle).toBe("")
-      expect(state.blogContent).toBe("")
-      expect(state.blogImageUrl).toBe("")
+      expect(state.ideaTitle).toBe("")
+      expect(state.ideaContent).toBe("")
+      expect(state.ideaTag).toBe("")
       expect(state.selectedLayout).toBe(0)
+      expect(state.uniqueId).toBe("")
     })
   })
 
   describe("複数のアクションを連続して実行", () => {
     it("複数のステップを経てデータを蓄積できる", () => {
-      const { setLoginData, setProfileData, setSocialData, setBlogData, setSelectedLayout } =
+      const { setLoginData, setProfileData, setSocialData, setIdeaData, setSelectedLayout } =
         useRegistrationStore.getState()
 
       // Step 2: Login
-      setLoginData("testuser", "password123")
+      setLoginData("test@example.com", "testuser", "password123")
 
       let state = useRegistrationStore.getState()
+      expect(state.email).toBe("test@example.com")
       expect(state.accountId).toBe("testuser")
       expect(state.password).toBe("password123")
 
@@ -168,11 +175,11 @@ describe("useRegistrationStore", () => {
       expect(state.xConnected).toBe(true)
       expect(state.nickname).toBe("Test User") // 前のステップのデータも保持
 
-      // Step 5: Blog
-      setBlogData("Blog Title", "Blog Content", "https://example.com/blog.jpg")
+      // Step 5: Idea
+      setIdeaData("Idea Title", "Idea Content", "tech")
 
       state = useRegistrationStore.getState()
-      expect(state.blogTitle).toBe("Blog Title")
+      expect(state.ideaTitle).toBe("Idea Title")
       expect(state.xConnected).toBe(true) // 前のステップのデータも保持
 
       // Step 6: Layout
@@ -180,7 +187,7 @@ describe("useRegistrationStore", () => {
 
       state = useRegistrationStore.getState()
       expect(state.selectedLayout).toBe(2)
-      expect(state.blogTitle).toBe("Blog Title") // 前のステップのデータも保持
+      expect(state.ideaTitle).toBe("Idea Title") // 前のステップのデータも保持
     })
   })
 })

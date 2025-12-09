@@ -1,4 +1,5 @@
 import type { IAuthGateway } from "../../domain/gateway/IAuthGateway"
+import type { IBlogPostRepository } from "../../domain/repository/IBlogPostRepository"
 import { AuthLoginUseCase } from "../../domain/usecase/authLoginUseCase"
 import { GetProfileUseCase } from "../../domain/usecase/getProfileUseCase"
 import { ProfileCreationUseCase } from "../../domain/usecase/profileCreationUseCase"
@@ -36,5 +37,15 @@ export class UseCaseFactory {
   static createAuthGateway(): IAuthGateway {
     const deps = container.getDependencies()
     return deps.authGateway
+  }
+
+  static createBlogPostRepository(): IBlogPostRepository {
+    const deps = container.getDependencies()
+    return deps.blogPostRepository
+  }
+
+  static createUserRepository() {
+    const deps = container.getDependencies()
+    return deps.userRepository
   }
 }
