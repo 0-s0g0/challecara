@@ -18,6 +18,27 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Create labels if not exist
+        run: |
+          echo "🏷️  必要なラベルを作成中..."
+
+          # Frontend (青)
+          gh label create "frontend" --description "フロントエンド関連の変更" --color "1d76db" --force 2>/dev/null || echo "✓ frontend ラベルは既に存在します"
+
+          # Backend (赤)
+          gh label create "backend" --description "バックエンド関連の変更" --color "d73a4a" --force 2>/dev/null || echo "✓ backend ラベルは既に存在します"
+
+          # CI (黄色)
+          gh label create "ci" --description "CI/CD関連の変更" --color "fbca04" --force 2>/dev/null || echo "✓ ci ラベルは既に存在します"
+
+          # Test (黄色)
+          gh label create "test" --description "テスト関連の変更" --color "fbbf24" --force 2>/dev/null || echo "✓ test ラベルは既に存在します"
+
+          echo ""
+          echo "✅ ラベルの準備が完了しました"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
       - name: Get changed files
         id: changed-files
         run: |
