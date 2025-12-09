@@ -10,6 +10,11 @@ export interface IBlogPostRepository {
   findByUserId(userId: string): Promise<BlogPost[]>
 
   /**
+   * 公開されているブログ投稿をすべて取得
+   */
+  findAllPublished(): Promise<BlogPost[]>
+
+  /**
    * ブログ投稿IDで検索
    */
   findById(id: string): Promise<BlogPost | null>

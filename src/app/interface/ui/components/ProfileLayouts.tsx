@@ -5,7 +5,7 @@ import Image from "next/image"
 import type React from "react"
 import { FaFacebook, FaInstagram, FaXTwitter } from "react-icons/fa6"
 import { IDEA_TAGS, type IdeaTag } from "@/app/domain/models/ideaTags"
-import { TagBallsPhysics } from "./TagBallsPhysics"
+import { TagBallsCSS } from "./TagBallsCSS"
 
 interface ProfileData {
   nickname: string
@@ -61,7 +61,7 @@ export function Layout1({ data }: LayoutProps) {
         </div>
         {true ? (
           <div className="relative z-20 flex justify-center">
-            <TagBallsPhysics
+            <TagBallsCSS
               tagCounts={
                 // タグを集計
                 (data.ideaTags || []).reduce(

@@ -2,21 +2,43 @@
 
 import { AppFooter } from "@/app/interface/ui/components/AppFooter"
 import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRegistrationStore } from "../../state/registrationStore"
 import { AnalyticsScreen } from "./AnalyticsScreen"
 import { BlogCreateScreen } from "./BlogCreateScreen"
 import { SearchScreen } from "./SearchScreen"
 import { SettingsScreen } from "./SettingsScreen"
+import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
+import { getUserBlogPosts } from "../../controller/blogController"
+import type { IdeaTag } from "@/app/domain/models/ideaTags"
 
 export function ProfileDisplayScreen() {
   const formData = useRegistrationStore()
   const [activeTab, setActiveTab] = useState<
     "home" | "search" | "create" | "analytics" | "settings"
   >("home")
+  const [ideaTags, setIdeaTags] = useState<IdeaTag[]>([])
 
   const layouts = [Layout1, Layout2, Layout3, Layout4]
   const SelectedLayout = layouts[formData.selectedLayout] || Layout1
+
+  // Fetch blog posts to get idea tags
+  useEffect(() => {
+    const fetchBlogPosts = async () => {
+      if (formData.uniqueId) {
+        const result = await getUserBlogPosts(formData.uniqueId)
+        if (result.success && result.blogPosts) {
+          const tags = result.blogPosts
+            .map((post: { ideaTag?: IdeaTag | "" }) => post.ideaTag)
+            .filter(
+              (tag: IdeaTag | "" | undefined): tag is IdeaTag => tag !== undefined && tag !== ""
+            )
+          setIdeaTags(tags)
+        }
+      }
+    }
+    fetchBlogPosts()
+  }, [formData.uniqueId, activeTab]) // Refetch when switching tabs
 
   const profileData = {
     nickname: formData.nickname,
@@ -27,14 +49,15 @@ export function ProfileDisplayScreen() {
     facebookUsername: formData.facebookUsername,
     ideaTitle: formData.ideaTitle,
     ideaTag: formData.ideaTag,
-    ideaTags: formData.ideaTag ? [formData.ideaTag] : [],
+    ideaTags: ideaTags,
     backgroundColor: "#FFFFFF",
   }
 
   return (
     <div className="relative flex min-h-screen flex-col">
       {/* Content Area */}
-      <div className="flex-1 overflow-auto">
+      <PastelBackground />
+      <div className="flex-1 overflow-auto pb-20">
         {activeTab === "home" && (
           <div className="bg-gradient-to-br from-background to-secondary">
             <div className="flex min-h-screen items-center justify-center p-8">
@@ -52,7 +75,7 @@ export function ProfileDisplayScreen() {
       </div>
 
       {/* Footer Navigation */}
-      <AppFooter activeTab={activeTab} onTabChange={setActiveTab} />
+      <AppFooter />
     </div>
   )
 }

@@ -1,33 +1,32 @@
 "use client"
 
 import { BarChart3, Home, PlusSquare, Search, Settings } from "lucide-react"
+import { useRouter, usePathname } from "next/navigation"
 
-interface AppFooterProps {
-  activeTab: "home" | "search" | "create" | "analytics" | "settings"
-  onTabChange: (tab: "home" | "search" | "create" | "analytics" | "settings") => void
-}
+export function AppFooter() {
+  const router = useRouter()
+  const pathname = usePathname()
 
-export function AppFooter({ activeTab, onTabChange }: AppFooterProps) {
   const tabs = [
-    { id: "home" as const, icon: Home, label: "ホーム" },
-    { id: "search" as const, icon: Search, label: "検索" },
-    { id: "create" as const, icon: PlusSquare, label: "投稿" },
-    { id: "analytics" as const, icon: BarChart3, label: "分析" },
-    { id: "settings" as const, icon: Settings, label: "設定" },
+    { id: "home", path: "/dashboard", icon: Home, label: "ホーム" },
+    { id: "search", path: "/dashboard/search", icon: Search, label: "検索" },
+    { id: "create", path: "/dashboard/create", icon: PlusSquare, label: "投稿" },
+    { id: "analytics", path: "/dashboard/analytics", icon: BarChart3, label: "分析" },
+    { id: "settings", path: "/dashboard/settings", icon: Settings, label: "設定" },
   ]
 
   return (
-    <footer className="border-t border-gray-200 bg-white">
+    <footer className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white shadow-lg">
       <div className="mx-auto max-w-md">
         <nav className="flex items-center justify-around px-4 py-3">
           {tabs.map((tab) => {
             const Icon = tab.icon
-            const isActive = activeTab === tab.id
+            const isActive = pathname === tab.path
 
             return (
               <button
                 key={tab.id}
-                onClick={() => onTabChange(tab.id)}
+                onClick={() => router.push(tab.path)}
                 className="flex flex-col items-center gap-1 transition-colors"
               >
                 <Icon

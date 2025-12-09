@@ -27,9 +27,8 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
   const SelectedLayout = layouts[formData.selectedLayout] || Layout1
 
   // Profile URL will be set after creation
-  const profileUrl = uniqueId
-    ? `${window.location.origin}/profile/${uniqueId}`
-    : "プロフィールを作成中..."
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin
+  const profileUrl = uniqueId ? `${baseUrl}/profile/${uniqueId}` : "プロフィールを作成中..."
 
   const handleCopyUrl = () => {
     if (uniqueId) {

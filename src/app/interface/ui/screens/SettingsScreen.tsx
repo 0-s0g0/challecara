@@ -20,7 +20,10 @@ export function SettingsScreen() {
   const uniqueId = useRegistrationStore((state) => state.uniqueId)
   const [copied, setCopied] = useState(false)
 
-  const profileUrl = uniqueId ? `${window.location.origin}/profile/${uniqueId}` : ""
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    (typeof window !== "undefined" ? window.location.origin : "")
+  const profileUrl = uniqueId ? `${baseUrl}/profile/${uniqueId}` : ""
 
   const handleCopyUrl = () => {
     if (profileUrl) {
