@@ -6,7 +6,7 @@ on:
 
 jobs:
   label-changes:
-    name: Detect and Label FE/BE Changes
+    name: Detect and Label Changes
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -47,8 +47,6 @@ jobs:
             "^next\.config\."
             "^tailwind\.config\."
             "^postcss\.config\."
-            "^vitest\.config\."
-            "^vitest\.setup\."
           )
 
           echo "🔍 フロントエンド変更を検出中..."
@@ -108,6 +106,75 @@ jobs:
             echo "be_changed=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Detect CI changes
+        id: detect-ci
+        run: |
+          CI_CHANGED=false
+
+          # CI関連のパスパターン
+          CI_PATTERNS=(
+            "^\.github/workflows/"
+            "^Makefile$"
+            "^\.github/"
+            "^scripts/"
+          )
+
+          echo "🔍 CI変更を検出中..."
+          echo ""
+
+          while IFS= read -r file; do
+            for pattern in "${CI_PATTERNS[@]}"; do
+              if echo "$file" | grep -E "$pattern" > /dev/null; then
+                echo "✅ CI: $file"
+                CI_CHANGED=true
+              fi
+            done
+          done <<< "$CHANGED_FILES"
+
+          echo ""
+          if [ "$CI_CHANGED" = true ]; then
+            echo "⚙️  CI/CDの変更が検出されました"
+            echo "ci_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "⚙️  CI/CDの変更はありません"
+            echo "ci_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Detect Test changes
+        id: detect-test
+        run: |
+          TEST_CHANGED=false
+
+          # テスト関連のパスパターン
+          TEST_PATTERNS=(
+            "^src/test/"
+            "\.test\.ts$"
+            "\.test\.tsx$"
+            "^vitest\.config\."
+            "^vitest\.setup\."
+          )
+
+          echo "🔍 テスト変更を検出中..."
+          echo ""
+
+          while IFS= read -r file; do
+            for pattern in "${TEST_PATTERNS[@]}"; do
+              if echo "$file" | grep -E "$pattern" > /dev/null; then
+                echo "✅ TEST: $file"
+                TEST_CHANGED=true
+              fi
+            done
+          done <<< "$CHANGED_FILES"
+
+          echo ""
+          if [ "$TEST_CHANGED" = true ]; then
+            echo "🧪 テストの変更が検出されました"
+            echo "test_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "🧪 テストの変更はありません"
+            echo "test_changed=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Add Frontend label
         if: steps.detect-fe.outputs.fe_changed == 'true'
         run: |
@@ -124,6 +191,22 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
 
+      - name: Add CI label
+        if: steps.detect-ci.outputs.ci_changed == 'true'
+        run: |
+          echo "🏷️ CIラベルを追加中..."
+          gh pr edit ${{ github.event.pull_request.number }} --add-label "ci"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Add Test label
+        if: steps.detect-test.outputs.test_changed == 'true'
+        run: |
+          echo "🏷️ テストラベルを追加中..."
+          gh pr edit ${{ github.event.pull_request.number }} --add-label "test"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
       - name: Summary
         run: |
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -132,19 +215,35 @@ jobs:
           echo ""
           echo "Frontend: ${{ steps.detect-fe.outputs.fe_changed }}"
           echo "Backend:  ${{ steps.detect-be.outputs.be_changed }}"
+          echo "CI/CD:    ${{ steps.detect-ci.outputs.ci_changed }}"
+          echo "Test:     ${{ steps.detect-test.outputs.test_changed }}"
           echo ""
+
+          LABELS_ADDED=false
 
           if [ "${{ steps.detect-fe.outputs.fe_changed }}" = "true" ]; then
             echo "✅ 'frontend' ラベルを追加しました"
+            LABELS_ADDED=true
           fi
 
           if [ "${{ steps.detect-be.outputs.be_changed }}" = "true" ]; then
             echo "✅ 'backend' ラベルを追加しました"
+            LABELS_ADDED=true
           fi
 
-          if [ "${{ steps.detect-fe.outputs.fe_changed }}" = "false" ] && [ "${{ steps.detect-be.outputs.be_changed }}" = "false" ]; then
-            echo "ℹ️  FE/BEに関連する変更は検出されませんでした"
-            echo "   （設定ファイル、ドキュメント、テストなどの可能性があります）"
+          if [ "${{ steps.detect-ci.outputs.ci_changed }}" = "true" ]; then
+            echo "✅ 'ci' ラベルを追加しました"
+            LABELS_ADDED=true
+          fi
+
+          if [ "${{ steps.detect-test.outputs.test_changed }}" = "true" ]; then
+            echo "✅ 'test' ラベルを追加しました"
+            LABELS_ADDED=true
+          fi
+
+          if [ "$LABELS_ADDED" = "false" ]; then
+            echo "ℹ️  関連する変更は検出されませんでした"
+            echo "   （ドキュメント、その他の設定ファイルなどの可能性があります）"
           fi
           echo ""
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
