@@ -29,10 +29,6 @@ export function SearchScreen() {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchBlogPosts()
-  }, [selectedTag])
-
   const fetchBlogPosts = async () => {
     setLoading(true)
     const result = await getPublishedBlogPosts({
@@ -44,6 +40,11 @@ export function SearchScreen() {
     }
     setLoading(false)
   }
+
+  useEffect(() => {
+    fetchBlogPosts()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTag])
 
   const handleSearch = () => {
     fetchBlogPosts()

@@ -63,14 +63,17 @@ describe("ProfileCreationUseCase", () => {
     expect(result).toEqual(mockUser)
     expect(mockUserRepository.findByAccountId).toHaveBeenCalledWith("testuser")
     expect(mockAuthGateway.createAccount).toHaveBeenCalledWith("test@example.com", "password123")
-    expect(mockUserRepository.create).toHaveBeenCalledWith({
-      id: "test-user-id-123",
-      accountId: "testuser",
-      password: "password123",
-      nickname: "Test User",
-      bio: "This is a test bio",
-      avatarUrl: "https://example.com/avatar.jpg",
-    })
+    expect(mockUserRepository.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: "test-user-id-123",
+        accountId: "testuser",
+        password: "password123",
+        nickname: "Test User",
+        bio: "This is a test bio",
+        avatarUrl: "https://example.com/avatar.jpg",
+        uniqueId: expect.any(String),
+      })
+    )
     expect(mockSocialLinkRepository.create).toHaveBeenCalledTimes(2)
     expect(mockBlogPostRepository.create).toHaveBeenCalledTimes(1)
   })

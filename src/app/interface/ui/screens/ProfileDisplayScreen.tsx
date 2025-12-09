@@ -14,9 +14,7 @@ import type { IdeaTag } from "@/app/domain/models/ideaTags"
 
 export function ProfileDisplayScreen() {
   const formData = useRegistrationStore()
-  const [activeTab, setActiveTab] = useState<
-    "home" | "search" | "create" | "analytics" | "settings"
-  >("home")
+  const [activeTab] = useState<"home" | "search" | "create" | "analytics" | "settings">("home")
   const [ideaTags, setIdeaTags] = useState<IdeaTag[]>([])
 
   const layouts = [Layout1, Layout2, Layout3, Layout4]
@@ -38,7 +36,7 @@ export function ProfileDisplayScreen() {
       }
     }
     fetchBlogPosts()
-  }, [formData.uniqueId, activeTab]) // Refetch when switching tabs
+  }, [formData.uniqueId])
 
   const profileData = {
     nickname: formData.nickname,

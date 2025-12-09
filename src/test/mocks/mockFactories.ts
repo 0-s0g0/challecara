@@ -22,6 +22,8 @@ export const createMockUser = (overrides?: Partial<User>): User => {
     nickname: "テストユーザー",
     bio: "これはテストユーザーです",
     avatarUrl: "https://example.com/avatar.jpg",
+    uniqueId: "testuser123",
+    tutorialCompleted: false,
     createdAt: now,
     updatedAt: now,
     ...overrides,
@@ -41,6 +43,7 @@ export const createMockUserCreateInput = (
     nickname: "テストユーザー",
     bio: "これはテストユーザーです",
     avatarUrl: "https://example.com/avatar.jpg",
+    uniqueId: "testuser123",
     ...overrides,
   }
 }
