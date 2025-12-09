@@ -15,5 +15,10 @@ export default function TutorialIdeaPage() {
     router.push("/tutorial/social")
   }
 
-  return( <><PastelBackground/><IdeaSetupScreen onNext={handleNext} onBack={handleBack} /></>)
+  return (
+    <>
+      <PastelBackground />
+      <IdeaSetupScreen onNext={handleNext} onBack={handleBack} />
+    </>
+  )
 }
