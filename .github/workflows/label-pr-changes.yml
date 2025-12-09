@@ -1,0 +1,270 @@
+name: Label PR Changes
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  label-changes:
+    name: Detect and Label Changes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create labels if not exist
+        run: |
+          echo "🏷️  必要なラベルを作成中..."
+
+          # Frontend (青)
+          gh label create "frontend" --description "フロントエンド関連の変更" --color "1d76db" --force 2>/dev/null || echo "✓ frontend ラベルは既に存在します"
+
+          # Backend (赤)
+          gh label create "backend" --description "バックエンド関連の変更" --color "d73a4a" --force 2>/dev/null || echo "✓ backend ラベルは既に存在します"
+
+          # CI (黄色)
+          gh label create "ci" --description "CI/CD関連の変更" --color "fbca04" --force 2>/dev/null || echo "✓ ci ラベルは既に存在します"
+
+          # Test (黄色)
+          gh label create "test" --description "テスト関連の変更" --color "fbbf24" --force 2>/dev/null || echo "✓ test ラベルは既に存在します"
+
+          echo ""
+          echo "✅ ラベルの準備が完了しました"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Get changed files
+        id: changed-files
+        run: |
+          # ベースブランチとの差分を取得
+          git fetch origin ${{ github.event.pull_request.base.ref }}
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD)
+
+          echo "変更されたファイル:"
+          echo "$CHANGED_FILES"
+          echo ""
+
+          # 変更ファイルを環境変数に保存
+          echo "CHANGED_FILES<<EOF" >> $GITHUB_ENV
+          echo "$CHANGED_FILES" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Detect Frontend changes
+        id: detect-fe
+        run: |
+          FE_CHANGED=false
+
+          # フロントエンド関連のパスパターン
+          FE_PATTERNS=(
+            "^src/app/interface/"
+            "^src/lib/"
+            "^public/"
+            "^next\.config\."
+            "^tailwind\.config\."
+            "^postcss\.config\."
+          )
+
+          echo "🔍 フロントエンド変更を検出中..."
+          echo ""
+
+          while IFS= read -r file; do
+            for pattern in "${FE_PATTERNS[@]}"; do
+              if echo "$file" | grep -E "$pattern" > /dev/null; then
+                echo "✅ FE: $file"
+                FE_CHANGED=true
+              fi
+            done
+          done <<< "$CHANGED_FILES"
+
+          echo ""
+          if [ "$FE_CHANGED" = true ]; then
+            echo "📦 フロントエンドの変更が検出されました"
+            echo "fe_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "📦 フロントエンドの変更はありません"
+            echo "fe_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Detect Backend changes
+        id: detect-be
+        run: |
+          BE_CHANGED=false
+
+          # バックエンド関連のパスパターン
+          BE_PATTERNS=(
+            "^src/app/domain/"
+            "^src/app/infrastructure/"
+            "^src/app/api/"
+            "^src/app/config/"
+            "^firestore\.rules"
+            "^firestore\.indexes\.json"
+          )
+
+          echo "🔍 バックエンド変更を検出中..."
+          echo ""
+
+          while IFS= read -r file; do
+            for pattern in "${BE_PATTERNS[@]}"; do
+              if echo "$file" | grep -E "$pattern" > /dev/null; then
+                echo "✅ BE: $file"
+                BE_CHANGED=true
+              fi
+            done
+          done <<< "$CHANGED_FILES"
+
+          echo ""
+          if [ "$BE_CHANGED" = true ]; then
+            echo "🔧 バックエンドの変更が検出されました"
+            echo "be_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "🔧 バックエンドの変更はありません"
+            echo "be_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Detect CI changes
+        id: detect-ci
+        run: |
+          CI_CHANGED=false
+
+          # CI関連のパスパターン
+          CI_PATTERNS=(
+            "^\.github/workflows/"
+            "^Makefile$"
+            "^\.github/"
+            "^scripts/"
+          )
+
+          echo "🔍 CI変更を検出中..."
+          echo ""
+
+          while IFS= read -r file; do
+            for pattern in "${CI_PATTERNS[@]}"; do
+              if echo "$file" | grep -E "$pattern" > /dev/null; then
+                echo "✅ CI: $file"
+                CI_CHANGED=true
+              fi
+            done
+          done <<< "$CHANGED_FILES"
+
+          echo ""
+          if [ "$CI_CHANGED" = true ]; then
+            echo "⚙️  CI/CDの変更が検出されました"
+            echo "ci_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "⚙️  CI/CDの変更はありません"
+            echo "ci_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Detect Test changes
+        id: detect-test
+        run: |
+          TEST_CHANGED=false
+
+          # テスト関連のパスパターン
+          TEST_PATTERNS=(
+            "^src/test/"
+            "\.test\.ts$"
+            "\.test\.tsx$"
+            "^vitest\.config\."
+            "^vitest\.setup\."
+          )
+
+          echo "🔍 テスト変更を検出中..."
+          echo ""
+
+          while IFS= read -r file; do
+            for pattern in "${TEST_PATTERNS[@]}"; do
+              if echo "$file" | grep -E "$pattern" > /dev/null; then
+                echo "✅ TEST: $file"
+                TEST_CHANGED=true
+              fi
+            done
+          done <<< "$CHANGED_FILES"
+
+          echo ""
+          if [ "$TEST_CHANGED" = true ]; then
+            echo "🧪 テストの変更が検出されました"
+            echo "test_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "🧪 テストの変更はありません"
+            echo "test_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Add Frontend label
+        if: steps.detect-fe.outputs.fe_changed == 'true'
+        run: |
+          echo "🏷️ フロントエンドラベルを追加中..."
+          gh pr edit ${{ github.event.pull_request.number }} --add-label "frontend"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Add Backend label
+        if: steps.detect-be.outputs.be_changed == 'true'
+        run: |
+          echo "🏷️ バックエンドラベルを追加中..."
+          gh pr edit ${{ github.event.pull_request.number }} --add-label "backend"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Add CI label
+        if: steps.detect-ci.outputs.ci_changed == 'true'
+        run: |
+          echo "🏷️ CIラベルを追加中..."
+          gh pr edit ${{ github.event.pull_request.number }} --add-label "ci"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Add Test label
+        if: steps.detect-test.outputs.test_changed == 'true'
+        run: |
+          echo "🏷️ テストラベルを追加中..."
+          gh pr edit ${{ github.event.pull_request.number }} --add-label "test"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Summary
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "📊 変更検知結果"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          echo "Frontend: ${{ steps.detect-fe.outputs.fe_changed }}"
+          echo "Backend:  ${{ steps.detect-be.outputs.be_changed }}"
+          echo "CI/CD:    ${{ steps.detect-ci.outputs.ci_changed }}"
+          echo "Test:     ${{ steps.detect-test.outputs.test_changed }}"
+          echo ""
+
+          LABELS_ADDED=false
+
+          if [ "${{ steps.detect-fe.outputs.fe_changed }}" = "true" ]; then
+            echo "✅ 'frontend' ラベルを追加しました"
+            LABELS_ADDED=true
+          fi
+
+          if [ "${{ steps.detect-be.outputs.be_changed }}" = "true" ]; then
+            echo "✅ 'backend' ラベルを追加しました"
+            LABELS_ADDED=true
+          fi
+
+          if [ "${{ steps.detect-ci.outputs.ci_changed }}" = "true" ]; then
+            echo "✅ 'ci' ラベルを追加しました"
+            LABELS_ADDED=true
+          fi
+
+          if [ "${{ steps.detect-test.outputs.test_changed }}" = "true" ]; then
+            echo "✅ 'test' ラベルを追加しました"
+            LABELS_ADDED=true
+          fi
+
+          if [ "$LABELS_ADDED" = "false" ]; then
+            echo "ℹ️  関連する変更は検出されませんでした"
+            echo "   （ドキュメント、その他の設定ファイルなどの可能性があります）"
+          fi
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
