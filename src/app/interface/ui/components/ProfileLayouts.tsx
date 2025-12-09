@@ -83,17 +83,24 @@ export function Layout1({ data }: LayoutProps) {
           </div>
         ) : (
           <div className="space-y-2">
-            {data.ideaTag && (
-              <div className="flex justify-center">
-                <span
-                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-white text-xs font-bold"
-                  style={{ background: IDEA_TAGS[data.ideaTag].gradient }}
-                >
-                  <span>{IDEA_TAGS[data.ideaTag].icon}</span>
-                  <span>{IDEA_TAGS[data.ideaTag].name}</span>
-                </span>
-              </div>
-            )}
+            {(() => {
+              const tag = data.ideaTag as IdeaTag | ""
+              if (tag && tag !== "") {
+                const validTag = tag as IdeaTag
+                return (
+                  <div className="flex justify-center">
+                    <span
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-white text-xs font-bold"
+                      style={{ background: IDEA_TAGS[validTag].gradient }}
+                    >
+                      <span>{IDEA_TAGS[validTag].icon}</span>
+                      <span>{IDEA_TAGS[validTag].name}</span>
+                    </span>
+                  </div>
+                )
+              }
+              return null
+            })()}
             <h3 className="font-semibold text-foreground text-center">
               {data.ideaTitle || "アイデア・想い"}
             </h3>

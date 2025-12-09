@@ -25,7 +25,10 @@ export function ProfileDisplayScreen() {
     xUsername: formData.xUsername,
     instagramUsername: formData.instagramUsername,
     facebookUsername: formData.facebookUsername,
-    blogTitle: formData.blogTitle,
+    ideaTitle: formData.ideaTitle,
+    ideaTag: formData.ideaTag,
+    ideaTags: formData.ideaTag ? [formData.ideaTag] : [],
+    backgroundColor: "#FFFFFF",
   }
 
   return (

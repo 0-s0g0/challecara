@@ -42,7 +42,7 @@ interface RegistrationState {
     facebook: boolean,
     facebookUsername: string
   ) => void
-  setIdeaData: (title: string, content: string, tag: IdeaTag) => void
+  setIdeaData: (title: string, content: string, tag: IdeaTag | "") => void
   setSelectedLayout: (layout: number) => void
   setUniqueId: (uniqueId: string) => void
   reset: () => void

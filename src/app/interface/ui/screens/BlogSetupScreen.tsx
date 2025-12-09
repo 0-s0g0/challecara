@@ -16,15 +16,14 @@ interface BlogSetupScreenProps {
 
 export function BlogSetupScreen({ onNext, onBack }: BlogSetupScreenProps) {
   const {
-    blogTitle: storedTitle,
-    blogContent: storedContent,
-    blogImageUrl: storedImageUrl,
+    ideaTitle: storedTitle,
+    ideaContent: storedContent,
   } = useRegistrationStore()
-  const setBlogData = useRegistrationStore((state) => state.setBlogData)
+  const setIdeaData = useRegistrationStore((state) => state.setIdeaData)
 
   const [blogTitle, setBlogTitle] = useState(storedTitle)
   const [blogContent, setBlogContent] = useState(storedContent)
-  const [blogImageUrl, setBlogImageUrl] = useState(storedImageUrl)
+  const [blogImageUrl, setBlogImageUrl] = useState("")
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -43,7 +42,7 @@ export function BlogSetupScreen({ onNext, onBack }: BlogSetupScreenProps) {
 
   const handleSubmit = () => {
     // Save to store only (no Firestore save yet)
-    setBlogData(blogTitle, blogContent, blogImageUrl)
+    setIdeaData(blogTitle, blogContent, "")
 
     // Proceed to next screen
     onNext()
