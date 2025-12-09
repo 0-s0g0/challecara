@@ -1,57 +1,57 @@
 .PHONY: help install dev build start test test-watch test-ui test-coverage lint format format-check biome-check biome-fix clean openapi
 
-help: ## Show this help message
-	@echo 'Usage: make [target]'
+help: ## ヘルプメッセージを表示
+	@echo '使い方: make [コマンド]'
 	@echo ''
-	@echo 'Available targets:'
+	@echo '利用可能なコマンド:'
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
-install: ## Install dependencies
+install: ## 依存パッケージをインストール
 	pnpm install
 
-dev: ## Start development server
+dev: ## 開発サーバーを起動
 	pnpm dev
 
-build: ## Build for production
+build: ## 本番用にビルド
 	pnpm build
 
-start: ## Start production server
+start: ## 本番サーバーを起動
 	pnpm start
 
-test: ## Run tests
+test: ## テストを実行
 	pnpm test
 
-test-watch: ## Run tests in watch mode
+test-watch: ## テストを監視モードで実行（コード変更時に自動再実行）
 	pnpm test:watch
 
-test-ui: ## Open Vitest UI
+test-ui: ## Vitest UIを開く（ブラウザでテスト結果を確認）
 	pnpm test:ui
 
-test-coverage: ## Run tests with coverage
+test-coverage: ## カバレッジ付きでテストを実行（テストのカバー率を確認）
 	pnpm test:coverage
 
-lint: ## Run ESLint
+lint: ## ESLintでコードをチェック
 	pnpm lint
 
-format: ## Format code with Biome
+format: ## Biomeでコードを自動整形
 	pnpm format
 
-format-check: ## Check code formatting with Biome
+format-check: ## コードの整形状態をチェック（変更はしない）
 	pnpm format:check
 
-biome-check: ## Check code with Biome (lint + format)
+biome-check: ## Biomeでコードをチェック（lint + format）
 	pnpm biome:check
 
-biome-fix: ## Fix code issues with Biome (lint + format)
+biome-fix: ## Biomeでコードの問題を自動修正（lint + format）
 	pnpm biome:fix
 
-openapi: ## Generate OpenAPI documentation
+openapi: ## OpenAPIドキュメントを生成
 	pnpm openapi:generate
 
-clean: ## Clean build artifacts and dependencies
+clean: ## ビルド成果物と依存パッケージを削除
 	rm -rf .next out dist node_modules
 
-ci: ## Run CI checks (format, lint, type-check, test, build)
+ci: ## CI チェックを実行（format, lint, type-check, test, build）
 	pnpm format:check
 	pnpm biome:check
 	pnpm exec tsc --noEmit
