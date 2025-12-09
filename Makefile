@@ -1,4 +1,4 @@
-.PHONY: help install dev build start test test-watch test-ui test-coverage lint format format-check biome-check biome-fix clean openapi
+.PHONY: help install dev build start test test-frontend test-backend test-watch test-ui test-coverage lint format format-check biome-check biome-fix clean openapi
 
 help: ## ヘルプメッセージを表示
 	@echo '使い方: make [コマンド]'
@@ -18,10 +18,16 @@ build: ## 本番用にビルド
 start: ## 本番サーバーを起動
 	pnpm start
 
-test: ## テストを実行
+test: ## Run all tests
 	pnpm test
 
-test-watch: ## テストを監視モードで実行（コード変更時に自動再実行）
+test-frontend: ## Run frontend tests (UI, components, screens, state)
+	pnpm vitest run src/app/interface src/lib
+
+test-backend: ## Run backend tests (domain, infrastructure, api)
+	pnpm vitest run src/app/domain src/app/infrastructure src/app/api
+
+test-watch: ## Run tests in watch mode
 	pnpm test:watch
 
 test-ui: ## Vitest UIを開く（ブラウザでテスト結果を確認）

@@ -8,10 +8,10 @@ on:
   pull_request:
 
 jobs:
-  test:
-    name: Test and Lint
+  lint:
+    name: Lint and Type Check
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
 
     steps:
       - name: Checkout code
@@ -65,18 +65,95 @@ jobs:
           echo "::error::エラー内容を確認して、型定義を修正してください。"
           exit 1
 
-      - name: Run tests
-        id: test
-        run: pnpm test
+  test-frontend:
+    name: Frontend Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run Frontend Tests
+        id: test-fe
+        run: pnpm vitest run src/app/interface src/lib
         continue-on-error: true
 
-      - name: エラー - テストに失敗しました
-        if: steps.test.outcome == 'failure'
+      - name: エラー - フロントエンドテストに失敗しました
+        if: steps.test-fe.outcome == 'failure'
         run: |
-          echo "::error::❌ テストに失敗しました"
-          echo "::error::一部のテストケースが失敗しました。"
+          echo "::error::❌ フロントエンドテストに失敗しました"
+          echo "::error::UIコンポーネント、画面、または状態管理のテストが失敗しました。"
           echo "::error::テスト結果を確認して、コードを修正してください。"
           exit 1
+
+  test-backend:
+    name: Backend Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run Backend Tests
+        id: test-be
+        run: pnpm vitest run src/app/domain src/app/infrastructure src/app/api
+        continue-on-error: true
+
+      - name: エラー - バックエンドテストに失敗しました
+        if: steps.test-be.outcome == 'failure'
+        run: |
+          echo "::error::❌ バックエンドテストに失敗しました"
+          echo "::error::Domain層、Infrastructure層、またはAPIのテストが失敗しました。"
+          echo "::error::テスト結果を確認して、コードを修正してください。"
+          exit 1
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [lint, test-frontend, test-backend]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Build
         id: build

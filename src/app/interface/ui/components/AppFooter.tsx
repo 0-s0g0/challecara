@@ -27,6 +27,7 @@ export function AppFooter({ activeTab, onTabChange }: AppFooterProps) {
             return (
               <button
                 key={tab.id}
+                type="button"
                 onClick={() => onTabChange(tab.id)}
                 className="flex flex-col items-center gap-1 transition-colors"
               >
