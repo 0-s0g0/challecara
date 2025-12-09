@@ -100,3 +100,21 @@ export class InvalidNicknameError extends DomainError {
     super(message, "INVALID_NICKNAME")
   }
 }
+
+/**
+ * 画像が不正な場合のエラー
+ */
+export class InvalidImageError extends DomainError {
+  constructor(message = "画像が不正です") {
+    super(message, "INVALID_IMAGE")
+  }
+}
+
+/**
+ * 画像サイズが大きすぎる場合のエラー
+ */
+export class ImageSizeExceededError extends DomainError {
+  constructor(message = "画像サイズが大きすぎます") {
+    super(message, "IMAGE_SIZE_EXCEEDED")
+  }
+}

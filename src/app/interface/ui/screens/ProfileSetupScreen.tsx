@@ -5,9 +5,11 @@ import { Button } from "@/app/interface/ui/components/ui/button"
 import { Input } from "@/app/interface/ui/components/ui/input"
 import { Label } from "@/app/interface/ui/components/ui/label"
 import { Textarea } from "@/app/interface/ui/components/ui/textarea"
-import { ChevronLeft, Upload } from "lucide-react"
+import { ChevronLeft, Upload, Loader2 } from "lucide-react"
 import { useState } from "react"
 import { useRegistrationStore } from "../../state/registrationStore"
+import { ImageValidator } from "@/app/utils/imageValidator"
+import { ImageConverter } from "@/app/utils/imageConverter"
 
 interface ProfileSetupScreenProps {
   onNext: () => void
@@ -27,14 +29,36 @@ export function ProfileSetupScreen({ onNext, onBack }: ProfileSetupScreenProps) 
   const [avatarUrl, setAvatarUrl] = useState(storedAvatarUrl)
   const [error, setError] = useState("")
   const [fileName, setFileName] = useState("")
+  const [isProcessingImage, setIsProcessingImage] = useState(false)
+  const [imageError, setImageError] = useState("")
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file) {
+    if (!file) return
+
+    setIsProcessingImage(true)
+    setImageError("")
+
+    try {
+      // 1. バリデーション
+      const validation = ImageValidator.validate(file)
+      if (!validation.isValid) {
+        setImageError(validation.error || "画像が不正です")
+        setIsProcessingImage(false)
+        return
+      }
+
+      // 2. Base64変換
+      const base64Image = await ImageConverter.toBase64(file)
+
+      // 3. state更新
       setFileName(file.name)
-      // Create a local URL for the uploaded image
-      const imageUrl = URL.createObjectURL(file)
-      setAvatarUrl(imageUrl)
+      setAvatarUrl(base64Image) // Base64文字列を保存
+    } catch (error) {
+      console.error("Image processing error:", error)
+      setImageError("画像の処理に失敗しました")
+    } finally {
+      setIsProcessingImage(false)
     }
   }
 
@@ -49,7 +73,8 @@ export function ProfileSetupScreen({ onNext, onBack }: ProfileSetupScreenProps) 
       return
     }
 
-    setProfileData(nickname, bio, avatarUrl || "/placeholder.svg?height=400&width=400")
+    // プレースホルダーではなく空文字列を使用
+    setProfileData(nickname, bio, avatarUrl || "")
     setError("")
     onNext()
   }
@@ -85,11 +110,20 @@ export function ProfileSetupScreen({ onNext, onBack }: ProfileSetupScreenProps) 
 
         <div className="space-y-2">
           <Label className="text-lg text-amber-950">メイン画像</Label>
-          <div className=" gap-3">
+          <div className="gap-3">
             <span className="text-xs text-muted-foreground">{fileName || "画像を選択"}</span>
+
+            {/* 処理中表示 */}
+            {isProcessingImage && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>画像を処理中...</span>
+              </div>
+            )}
+
             <label
               htmlFor="avatar-upload"
-              className="flex h-80 w-80 border-none rounded-2xl bg-[#BAD56E]/20 cursor-pointer items-center justify-center   border-border transition-colors hover:border-primary/50"
+              className="flex h-80 w-80 border-none rounded-2xl bg-[#BAD56E]/20 cursor-pointer items-center justify-center border-border transition-colors hover:border-primary/50"
             >
               {avatarUrl ? (
                 <img
@@ -104,11 +138,14 @@ export function ProfileSetupScreen({ onNext, onBack }: ProfileSetupScreenProps) 
             <input
               id="avatar-upload"
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/webp"
               onChange={handleImageUpload}
               className="hidden border-amber-900 border-2"
             />
           </div>
+
+          {/* 画像エラー表示 */}
+          {imageError && <p className="text-sm text-red-500">{imageError}</p>}
         </div>
 
         {error && <p className="text-sm text-red-500">{error}</p>}
@@ -123,7 +160,8 @@ export function ProfileSetupScreen({ onNext, onBack }: ProfileSetupScreenProps) 
           </Button>
           <Button
             onClick={handleSubmit}
-            className="h-12 flex-1 rounded-full bg-[#8B7355] text-white hover:bg-[#6B5335]"
+            disabled={isProcessingImage}
+            className="h-12 flex-1 rounded-full bg-[#8B7355] text-white hover:bg-[#6B5335] disabled:opacity-50"
           >
             次へ
             <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

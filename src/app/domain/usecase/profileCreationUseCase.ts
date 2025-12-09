@@ -4,6 +4,8 @@ import {
   InvalidNicknameError,
   ValidationError,
   WeakPasswordError,
+  InvalidImageError,
+  ImageSizeExceededError,
 } from "../errors/DomainErrors"
 import type { IAuthGateway } from "../gateway/IAuthGateway"
 import type { BlogPostCreateInput } from "../models/blog"
@@ -45,6 +47,18 @@ export class ProfileCreationUseCase {
     const existingUser = await this.userRepository.findByAccountId(input.accountId)
     if (existingUser) {
       throw new DuplicateAccountIdError()
+    }
+
+    // アバター画像のバリデーション
+    if (input.avatarUrl) {
+      try {
+        UserModel.validateAvatarUrl(input.avatarUrl)
+      } catch (error) {
+        if (error instanceof InvalidImageError || error instanceof ImageSizeExceededError) {
+          throw error
+        }
+        throw new ValidationError("アバター画像が不正です", "avatarUrl")
+      }
     }
 
     // Create Firebase Auth account first using email
