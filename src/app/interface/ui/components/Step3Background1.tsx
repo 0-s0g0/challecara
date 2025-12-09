@@ -6,7 +6,7 @@ export function Step3Background() {
 
       <div className="absolute inset-0 top-6 flex items-start justify-center">
         <div className="text-amber-950/70 flex items-end" style={{ fontFamily: "cursive" }}>
-          <div className="mb-4 text-8xl font-bold">1</div>
+          <div className="mb-4 text-8xl font-bold">3</div>
           <div className="mb-4 text-4xl font-bold">/3</div>
         </div>
       </div>

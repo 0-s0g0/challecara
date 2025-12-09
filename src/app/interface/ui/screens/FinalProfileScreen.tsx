@@ -3,17 +3,19 @@
 import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
 import { Button } from "@/app/interface/ui/components/ui/button"
 import { Card } from "@/app/interface/ui/components/ui/card"
-import { Check, Copy, Loader2 } from "lucide-react"
+import { Check, ChevronLeft, Copy, Loader2 } from "lucide-react"
 import { useState } from "react"
 import { useRegistrationStore } from "../../state/registrationStore"
 import { createProfile } from "../../controller/profileController"
 import { useRouter } from "next/navigation"
+import { PastelBackground } from "../components/PastelBackground"
 
 interface FinalProfileScreenProps {
   onNext: () => void
+  onBack: () => void
 }
 
-export function FinalProfileScreen({ onNext }: FinalProfileScreenProps) {
+export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) {
   const formData = useRegistrationStore()
   const setUniqueIdInStore = useRegistrationStore((state) => state.setUniqueId)
   const router = useRouter()
@@ -99,17 +101,18 @@ export function FinalProfileScreen({ onNext }: FinalProfileScreenProps) {
 
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-gradient-to-br from-background to-secondary p-8">
-      <div className="absolute right-0 top-20 h-56 w-56 rounded-full bg-pastel-lavender/40 blur-3xl" />
-      <div className="absolute bottom-32 left-0 h-48 w-48 rounded-full bg-pastel-pink/30 blur-3xl" />
+      
+      <PastelBackground />
 
-      <div className="mt-8 text-center">
-        <h2 className="text-2xl font-bold text-foreground">プロフィール完成！</h2>
-        <p className="mt-2 text-sm text-muted-foreground">あなたのプロフィールURLをシェアしよう</p>
-      </div>
+
 
       {/* URL Display */}
       <div className="z-10 mt-8">
-        <Card className="overflow-hidden rounded-2xl border-0 bg-white shadow-lg">
+              <div className="mt-8 text-center">
+        <h2 className="text-2xl font-bold text-foreground">プロフィール完成！</h2>
+        <p className="mt-2 text-sm text-muted-foreground">あなたのプロフィールURLをシェアしよう</p>
+      </div>
+        <Card className="overflow-hidden mt-4 rounded-2xl border-0 bg-white shadow-lg">
           <div className="flex items-center gap-3 p-4">
             <div className="flex-1 overflow-hidden">
               <p className="truncate text-sm font-medium text-primary">{profileUrl}</p>
@@ -144,12 +147,21 @@ export function FinalProfileScreen({ onNext }: FinalProfileScreenProps) {
       </div>
 
       {/* Next Button */}
-      <div className="z-10 mb-8 mt-8">
+      <div className="z-10 flex mb-8 mt-8">
+        <Button
+            onClick={onBack}
+            variant="outline"
+            className="h-12 flex-1 rounded-full border-primary/20 bg-white/80 backdrop-blur-sm hover:bg-white"
+          >
+            <ChevronLeft className="mr-1 h-4 w-4" />
+            戻る
+          </Button>
         <Button
           onClick={handleCreateProfile}
           disabled={isCreating}
-          className="h-12 w-full rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
-        >
+          className="h-12 rounded-full bg-[#8B7355] text-white hover:bg-[#6B5335]"
+          >
+        
           {isCreating ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
