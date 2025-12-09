@@ -1,0 +1,33 @@
+name = "challecara"
+compatibility_date = "2024-12-09"
+pages_build_output_dir = ".vercel/output/static"
+
+# Development configuration
+[env.development]
+# Uncomment and set your environment variables
+# vars = { }
+
+# Preview configuration
+[env.preview]
+# vars = { }
+
+# Production configuration
+[env.production]
+# vars = { }
+
+# Local development settings
+[dev]
+ip = "0.0.0.0"
+port = 8788
+local_protocol = "http"
+
+# Asset configuration for static files
+[[rules]]
+type = "Text"
+globs = ["**/*.html", "**/*.txt"]
+fallthrough = false
+
+[[rules]]
+type = "Data"
+globs = ["**/*.jpg", "**/*.png", "**/*.gif", "**/*.webp", "**/*.svg", "**/*.ico"]
+fallthrough = false
