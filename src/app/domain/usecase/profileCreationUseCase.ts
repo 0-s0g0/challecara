@@ -54,10 +54,7 @@ export class ProfileCreationUseCase {
       try {
         UserModel.validateAvatarUrl(input.avatarUrl)
       } catch (error) {
-        if (
-          error instanceof InvalidImageError ||
-          error instanceof ImageSizeExceededError
-        ) {
+        if (error instanceof InvalidImageError || error instanceof ImageSizeExceededError) {
           throw error
         }
         throw new ValidationError("アバター画像が不正です", "avatarUrl")
