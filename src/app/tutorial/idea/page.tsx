@@ -2,6 +2,7 @@
 
 import { IdeaSetupScreen } from "@/app/interface/ui/screens/IdeaSetupScreen"
 import { useRouter } from "next/navigation"
+import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
 
 export default function TutorialIdeaPage() {
   const router = useRouter()
@@ -14,5 +15,10 @@ export default function TutorialIdeaPage() {
     router.push("/tutorial/social")
   }
 
-  return <IdeaSetupScreen onNext={handleNext} onBack={handleBack} />
+  return (
+    <>
+      <PastelBackground />
+      <IdeaSetupScreen onNext={handleNext} onBack={handleBack} />
+    </>
+  )
 }
