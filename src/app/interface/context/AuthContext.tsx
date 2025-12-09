@@ -45,7 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })
 
     return () => unsubscribe()
-  }, [])
+  }, [auth])
 
   const signOut = async () => {
     await auth.signOut()

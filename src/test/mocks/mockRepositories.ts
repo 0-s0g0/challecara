@@ -1,9 +1,6 @@
 import { vi } from "vitest"
 import type { BlogPost, BlogPostCreateInput } from "../../app/domain/models/blog"
-import type {
-  type SocialLink,
-  type SocialLinkCreateInput,
-} from "../../app/domain/models/socialLink"
+import type { SocialLink, SocialLinkCreateInput } from "../../app/domain/models/socialLink"
 import type { User, UserCreateInput } from "../../app/domain/models/user"
 import type { IBlogPostRepository } from "../../app/domain/repository/IBlogPostRepository"
 import type { ISocialLinkRepository } from "../../app/domain/repository/ISocialLinkRepository"

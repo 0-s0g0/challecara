@@ -1,7 +1,7 @@
 import type { BlogPost, BlogPostCreateInput } from "../../app/domain/models/blog"
 import type {
-  type SocialLink,
-  type SocialLinkCreateInput,
+  SocialLink,
+  SocialLinkCreateInput,
   SocialProvider,
 } from "../../app/domain/models/socialLink"
 import type { User, UserCreateInput } from "../../app/domain/models/user"

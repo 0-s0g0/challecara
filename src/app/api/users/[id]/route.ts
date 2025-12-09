@@ -179,7 +179,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params
+    const { id: _id } = await params
 
     // TODO: Implement user deletion use case
     // For now, return success
