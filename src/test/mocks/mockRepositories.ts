@@ -12,9 +12,7 @@ import type { IUserRepository } from "../../app/domain/repository/IUserRepositor
 /**
  * モックユーザーリポジトリを作成
  */
-export const createMockUserRepository = (
-  overrides?: Partial<IUserRepository>
-): IUserRepository => {
+export const createMockUserRepository = (overrides?: Partial<IUserRepository>): IUserRepository => {
   return {
     findById: vi.fn().mockResolvedValue(null),
     findByAccountId: vi.fn().mockResolvedValue(null),
@@ -53,18 +51,16 @@ export const createMockSocialLinkRepository = (
 ): ISocialLinkRepository => {
   return {
     findByUserId: vi.fn().mockResolvedValue([]),
-    create: vi
-      .fn()
-      .mockImplementation((input: SocialLinkCreateInput): Promise<SocialLink> => {
-        return Promise.resolve({
-          id: "test-social-id-123",
-          userId: input.userId,
-          provider: input.provider,
-          url: input.url,
-          isActive: true,
-          createdAt: new Date(),
-        })
-      }),
+    create: vi.fn().mockImplementation((input: SocialLinkCreateInput): Promise<SocialLink> => {
+      return Promise.resolve({
+        id: "test-social-id-123",
+        userId: input.userId,
+        provider: input.provider,
+        url: input.url,
+        isActive: true,
+        createdAt: new Date(),
+      })
+    }),
     update: vi
       .fn()
       .mockImplementation((id: string, data: Partial<SocialLink>): Promise<SocialLink> => {
@@ -92,35 +88,31 @@ export const createMockBlogPostRepository = (
   return {
     findByUserId: vi.fn().mockResolvedValue([]),
     findById: vi.fn().mockResolvedValue(null),
-    create: vi
-      .fn()
-      .mockImplementation((input: BlogPostCreateInput): Promise<BlogPost> => {
-        return Promise.resolve({
-          id: "test-blog-id-123",
-          userId: input.userId,
-          title: input.title,
-          content: input.content,
-          imageUrl: input.imageUrl,
-          isPublished: input.isPublished,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        })
-      }),
-    update: vi
-      .fn()
-      .mockImplementation((id: string, data: Partial<BlogPost>): Promise<BlogPost> => {
-        return Promise.resolve({
-          id,
-          userId: "test-user-id",
-          title: "Test Blog",
-          content: "Test content",
-          imageUrl: "https://example.com/image.jpg",
-          isPublished: true,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          ...data,
-        })
-      }),
+    create: vi.fn().mockImplementation((input: BlogPostCreateInput): Promise<BlogPost> => {
+      return Promise.resolve({
+        id: "test-blog-id-123",
+        userId: input.userId,
+        title: input.title,
+        content: input.content,
+        imageUrl: input.imageUrl,
+        isPublished: input.isPublished,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+    }),
+    update: vi.fn().mockImplementation((id: string, data: Partial<BlogPost>): Promise<BlogPost> => {
+      return Promise.resolve({
+        id,
+        userId: "test-user-id",
+        title: "Test Blog",
+        content: "Test content",
+        imageUrl: "https://example.com/image.jpg",
+        isPublished: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        ...data,
+      })
+    }),
     delete: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   }

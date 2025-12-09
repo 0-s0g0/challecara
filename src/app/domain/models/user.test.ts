@@ -56,9 +56,7 @@ describe("UserModel", () => {
         UserModel.validatePassword("1234567")
       } catch (error) {
         expect(error).toBeInstanceOf(WeakPasswordError)
-        expect((error as WeakPasswordError).message).toBe(
-          "パスワードは8文字以上で入力してください"
-        )
+        expect((error as WeakPasswordError).message).toBe("パスワードは8文字以上で入力してください")
       }
     })
   })

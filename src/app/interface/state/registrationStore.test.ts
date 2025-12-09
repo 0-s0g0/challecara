@@ -144,13 +144,8 @@ describe("useRegistrationStore", () => {
 
   describe("複数のアクションを連続して実行", () => {
     it("複数のステップを経てデータを蓄積できる", () => {
-      const {
-        setLoginData,
-        setProfileData,
-        setSocialData,
-        setBlogData,
-        setSelectedLayout,
-      } = useRegistrationStore.getState()
+      const { setLoginData, setProfileData, setSocialData, setBlogData, setSelectedLayout } =
+        useRegistrationStore.getState()
 
       // Step 2: Login
       setLoginData("testuser", "password123")
