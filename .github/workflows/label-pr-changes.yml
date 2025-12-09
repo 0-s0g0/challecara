@@ -1,0 +1,150 @@
+name: Label PR Changes
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  label-changes:
+    name: Detect and Label FE/BE Changes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files
+        run: |
+          # ベースブランチとの差分を取得
+          git fetch origin ${{ github.event.pull_request.base.ref }}
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD)
+
+          echo "変更されたファイル:"
+          echo "$CHANGED_FILES"
+          echo ""
+
+          # 変更ファイルを環境変数に保存
+          echo "CHANGED_FILES<<EOF" >> $GITHUB_ENV
+          echo "$CHANGED_FILES" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Detect Frontend changes
+        id: detect-fe
+        run: |
+          FE_CHANGED=false
+
+          # フロントエンド関連のパスパターン
+          FE_PATTERNS=(
+            "^src/app/interface/"
+            "^src/lib/"
+            "^public/"
+            "^next\.config\."
+            "^tailwind\.config\."
+            "^postcss\.config\."
+            "^vitest\.config\."
+            "^vitest\.setup\."
+          )
+
+          echo "🔍 フロントエンド変更を検出中..."
+          echo ""
+
+          while IFS= read -r file; do
+            for pattern in "${FE_PATTERNS[@]}"; do
+              if echo "$file" | grep -E "$pattern" > /dev/null; then
+                echo "✅ FE: $file"
+                FE_CHANGED=true
+              fi
+            done
+          done <<< "$CHANGED_FILES"
+
+          echo ""
+          if [ "$FE_CHANGED" = true ]; then
+            echo "📦 フロントエンドの変更が検出されました"
+            echo "fe_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "📦 フロントエンドの変更はありません"
+            echo "fe_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Detect Backend changes
+        id: detect-be
+        run: |
+          BE_CHANGED=false
+
+          # バックエンド関連のパスパターン
+          BE_PATTERNS=(
+            "^src/app/domain/"
+            "^src/app/infrastructure/"
+            "^src/app/api/"
+            "^src/app/config/"
+            "^firestore\.rules"
+            "^firestore\.indexes\.json"
+          )
+
+          echo "🔍 バックエンド変更を検出中..."
+          echo ""
+
+          while IFS= read -r file; do
+            for pattern in "${BE_PATTERNS[@]}"; do
+              if echo "$file" | grep -E "$pattern" > /dev/null; then
+                echo "✅ BE: $file"
+                BE_CHANGED=true
+              fi
+            done
+          done <<< "$CHANGED_FILES"
+
+          echo ""
+          if [ "$BE_CHANGED" = true ]; then
+            echo "🔧 バックエンドの変更が検出されました"
+            echo "be_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "🔧 バックエンドの変更はありません"
+            echo "be_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Add Frontend label
+        if: steps.detect-fe.outputs.fe_changed == 'true'
+        run: |
+          echo "🏷️ フロントエンドラベルを追加中..."
+          gh pr edit ${{ github.event.pull_request.number }} --add-label "frontend"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Add Backend label
+        if: steps.detect-be.outputs.be_changed == 'true'
+        run: |
+          echo "🏷️ バックエンドラベルを追加中..."
+          gh pr edit ${{ github.event.pull_request.number }} --add-label "backend"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Summary
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "📊 変更検知結果"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          echo "Frontend: ${{ steps.detect-fe.outputs.fe_changed }}"
+          echo "Backend:  ${{ steps.detect-be.outputs.be_changed }}"
+          echo ""
+
+          if [ "${{ steps.detect-fe.outputs.fe_changed }}" = "true" ]; then
+            echo "✅ 'frontend' ラベルを追加しました"
+          fi
+
+          if [ "${{ steps.detect-be.outputs.be_changed }}" = "true" ]; then
+            echo "✅ 'backend' ラベルを追加しました"
+          fi
+
+          if [ "${{ steps.detect-fe.outputs.fe_changed }}" = "false" ] && [ "${{ steps.detect-be.outputs.be_changed }}" = "false" ]; then
+            echo "ℹ️  FE/BEに関連する変更は検出されませんでした"
+            echo "   （設定ファイル、ドキュメント、テストなどの可能性があります）"
+          fi
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
