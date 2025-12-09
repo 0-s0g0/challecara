@@ -3,9 +3,11 @@
 import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
 import { Button } from "@/app/interface/ui/components/ui/button"
 import { Card } from "@/app/interface/ui/components/ui/card"
-import { Check, Copy } from "lucide-react"
+import { Check, Copy, Loader2 } from "lucide-react"
 import { useState } from "react"
 import { useRegistrationStore } from "../../state/registrationStore"
+import { createProfile } from "../../controller/profileController"
+import { useRouter } from "next/navigation"
 
 interface FinalProfileScreenProps {
   onNext: () => void
@@ -13,18 +15,73 @@ interface FinalProfileScreenProps {
 
 export function FinalProfileScreen({ onNext }: FinalProfileScreenProps) {
   const formData = useRegistrationStore()
+  const setUniqueIdInStore = useRegistrationStore((state) => state.setUniqueId)
+  const router = useRouter()
   const [copied, setCopied] = useState(false)
+  const [isCreating, setIsCreating] = useState(false)
+  const [uniqueId, setUniqueId] = useState<string | null>(null)
 
   const layouts = [Layout1, Layout2, Layout3, Layout4]
   const SelectedLayout = layouts[formData.selectedLayout] || Layout1
 
-  // Generate unique URL (in production, this would be the actual profile URL)
-  const profileUrl = `https://tsunagulink.app/${formData.accountId}`
+  // Profile URL will be set after creation
+  const profileUrl = uniqueId
+    ? `${window.location.origin}/profile/${uniqueId}`
+    : "プロフィールを作成中..."
 
   const handleCopyUrl = () => {
-    navigator.clipboard.writeText(profileUrl)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    if (uniqueId) {
+      navigator.clipboard.writeText(profileUrl)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }
+  }
+
+  const handleCreateProfile = async () => {
+    setIsCreating(true)
+    try {
+      // Create profile with all collected data
+      const result = await createProfile({
+        accountId: formData.accountId,
+        email: formData.email,
+        password: formData.password,
+        nickname: formData.nickname,
+        bio: formData.bio,
+        avatarUrl: formData.avatarUrl,
+        socialLinks: [
+          formData.xUsername && { provider: "twitter", url: `https://x.com/${formData.xUsername}` },
+          formData.instagramUsername && {
+            provider: "instagram",
+            url: `https://instagram.com/${formData.instagramUsername}`,
+          },
+          formData.facebookUsername && {
+            provider: "facebook",
+            url: `https://facebook.com/${formData.facebookUsername}`,
+          },
+        ].filter(Boolean) as Array<{ provider: string; url: string }>,
+        blogTitle: formData.ideaTitle,
+        blogContent: formData.ideaContent,
+        blogImageUrl: "",
+        ideaTag: formData.ideaTag === "" ? undefined : formData.ideaTag,
+      })
+
+      if (result.success && result.uniqueId) {
+        // Set uniqueId to show the profile URL and store it
+        setUniqueId(result.uniqueId)
+        setUniqueIdInStore(result.uniqueId)
+        // Proceed to next screen after a short delay to allow user to see the URL
+        setTimeout(() => {
+          onNext()
+        }, 1000)
+      } else {
+        alert(result.error || "プロフィールの作成に失敗しました")
+      }
+    } catch (error) {
+      console.error("Profile creation failed:", error)
+      alert("プロフィールの作成に失敗しました")
+    } finally {
+      setIsCreating(false)
+    }
   }
 
   const profileData = {
@@ -34,7 +91,10 @@ export function FinalProfileScreen({ onNext }: FinalProfileScreenProps) {
     xUsername: formData.xUsername,
     instagramUsername: formData.instagramUsername,
     facebookUsername: formData.facebookUsername,
-    blogTitle: formData.blogTitle,
+    ideaTitle: formData.ideaTitle,
+    ideaTag: formData.ideaTag,
+    ideaTags: formData.ideaTag ? [formData.ideaTag] : [],
+    backgroundColor: "#FFFFFF",
   }
 
   return (
@@ -86,10 +146,18 @@ export function FinalProfileScreen({ onNext }: FinalProfileScreenProps) {
       {/* Next Button */}
       <div className="z-10 mb-8 mt-8">
         <Button
-          onClick={onNext}
+          onClick={handleCreateProfile}
+          disabled={isCreating}
           className="h-12 w-full rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
         >
-          次へ
+          {isCreating ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              作成中...
+            </>
+          ) : (
+            "プロフィールを作成"
+          )}
         </Button>
       </div>
     </div>

@@ -1,9 +1,35 @@
 "use client"
 
 import { Card } from "@/app/interface/ui/components/ui/card"
-import { Bell, ChevronRight, HelpCircle, Lock, LogOut, Palette, User } from "lucide-react"
+import {
+  Bell,
+  Check,
+  ChevronRight,
+  Copy,
+  HelpCircle,
+  Link2,
+  Lock,
+  LogOut,
+  Palette,
+  User,
+} from "lucide-react"
+import { useRegistrationStore } from "../../state/registrationStore"
+import { useState } from "react"
 
 export function SettingsScreen() {
+  const uniqueId = useRegistrationStore((state) => state.uniqueId)
+  const [copied, setCopied] = useState(false)
+
+  const profileUrl = uniqueId ? `${window.location.origin}/profile/${uniqueId}` : ""
+
+  const handleCopyUrl = () => {
+    if (profileUrl) {
+      navigator.clipboard.writeText(profileUrl)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }
+  }
+
   const settingsGroups = [
     {
       title: "アカウント",
@@ -36,6 +62,42 @@ export function SettingsScreen() {
 
       <div className="flex-1 overflow-auto p-4">
         <div className="mx-auto max-w-md space-y-6">
+          {/* Profile URL Section */}
+          {uniqueId && (
+            <div className="space-y-2">
+              <h2 className="px-2 text-sm font-semibold text-gray-500">
+                あなたの公開プロフィールURL
+              </h2>
+              <Card className="overflow-hidden rounded-2xl border-0 bg-white shadow-sm">
+                <div className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-full bg-blue-100 p-2">
+                      <Link2 className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1 overflow-hidden">
+                      <p className="truncate text-sm font-medium text-blue-600">{profileUrl}</p>
+                      <p className="text-xs text-gray-500">このURLをシェアして人とつながろう</p>
+                    </div>
+                    <button
+                      onClick={handleCopyUrl}
+                      className="flex-shrink-0 rounded-full bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
+                    >
+                      {copied ? (
+                        <>
+                          <Check className="inline h-4 w-4" />
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="inline h-4 w-4" />
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          )}
+
           {settingsGroups.map((group, groupIndex) => (
             <div key={groupIndex} className="space-y-2">
               <h2 className="px-2 text-sm font-semibold text-gray-500">{group.title}</h2>

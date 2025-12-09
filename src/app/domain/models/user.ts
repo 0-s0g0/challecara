@@ -4,6 +4,8 @@ export interface User {
   nickname: string
   bio: string
   avatarUrl: string
+  uniqueId: string // 10-character alphanumeric string for public profile URL
+  tutorialCompleted: boolean // チュートリアル完了フラグ
   createdAt: Date
   updatedAt: Date
 }
@@ -15,6 +17,7 @@ export interface UserCreateInput {
   nickname: string
   bio: string
   avatarUrl: string
+  uniqueId: string
 }
 
 import {

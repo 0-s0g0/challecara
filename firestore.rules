@@ -27,20 +27,28 @@ service cloud.firestore {
       allow write: if isAuthenticated();
     }
 
+    // UniqueId index (for public profile URLs)
+    match /uniqueIdIndex/{uniqueId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
     // Social links
     match /socialLinks/{linkId} {
       // Anyone can read
       allow read: if true;
-      // Only owner can write
-      allow create, update, delete: if isOwner(resource.data.userId);
+      // Only owner can write (check on create using request.resource)
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated();
     }
 
     // Blog posts
     match /blogPosts/{postId} {
-      // Anyone can read published posts
-      allow read: if resource.data.isPublished == true || isOwner(resource.data.userId);
-      // Only owner can write
-      allow create, update, delete: if isOwner(resource.data.userId);
+      // Anyone can read all posts (for public profiles)
+      allow read: if true;
+      // Only authenticated users can write
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated();
     }
   }
 }

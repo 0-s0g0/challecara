@@ -8,6 +8,7 @@ export class UserRepository implements IUserRepository {
   private db = getFirebaseDb()
   private usersCollection = collection(this.db, "users")
   private accountIdIndexCollection = collection(this.db, "accountIdIndex")
+  private uniqueIdIndexCollection = collection(this.db, "uniqueIdIndex")
 
   /**
    * Creates a new user in Firestore
@@ -22,6 +23,8 @@ export class UserRepository implements IUserRepository {
       nickname: input.nickname,
       bio: input.bio,
       avatarUrl: input.avatarUrl,
+      uniqueId: input.uniqueId,
+      tutorialCompleted: true, // チュートリアル完了としてマーク
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     }
@@ -35,12 +38,19 @@ export class UserRepository implements IUserRepository {
         userId: input.id,
       })
 
+      // Create uniqueId index for public profile lookups
+      await setDoc(doc(this.uniqueIdIndexCollection, input.uniqueId), {
+        userId: input.id,
+      })
+
       return {
         id: input.id,
         accountId: input.accountId,
         nickname: input.nickname,
         bio: input.bio,
         avatarUrl: input.avatarUrl,
+        uniqueId: input.uniqueId,
+        tutorialCompleted: true,
         createdAt: now.toDate(),
         updatedAt: now.toDate(),
       }
@@ -53,6 +63,11 @@ export class UserRepository implements IUserRepository {
    * Finds user by accountId using the index
    */
   async findByAccountId(accountId: string): Promise<User | null> {
+    // Validate accountId is not empty
+    if (!accountId || accountId.trim() === "") {
+      return null
+    }
+
     // First, lookup userId from accountId index
     const indexDoc = await getDoc(doc(this.accountIdIndexCollection, accountId))
 
@@ -65,10 +80,39 @@ export class UserRepository implements IUserRepository {
   }
 
   /**
+   * Finds user by uniqueId using the index (for public profile access)
+   */
+  async findByUniqueId(uniqueId: string): Promise<User | null> {
+    try {
+      // Validate uniqueId is not empty
+      if (!uniqueId || uniqueId.trim() === "") {
+        return null
+      }
+
+      // First, lookup userId from uniqueId index
+      const indexDoc = await getDoc(doc(this.uniqueIdIndexCollection, uniqueId))
+
+      if (!indexDoc.exists()) {
+        return null
+      }
+
+      const userId = indexDoc.data().userId
+      return this.findById(userId)
+    } catch (_error) {
+      throw new RepositoryError("ユーザーの取得に失敗しました")
+    }
+  }
+
+  /**
    * Finds user by Firebase UID
    */
   async findById(id: string): Promise<User | null> {
     try {
+      // Validate id is not empty
+      if (!id || id.trim() === "") {
+        return null
+      }
+
       const userDoc = await getDoc(doc(this.usersCollection, id))
 
       if (!userDoc.exists()) {
@@ -82,6 +126,8 @@ export class UserRepository implements IUserRepository {
         nickname: data.nickname,
         bio: data.bio,
         avatarUrl: data.avatarUrl,
+        uniqueId: data.uniqueId,
+        tutorialCompleted: data.tutorialCompleted ?? false,
         createdAt: data.createdAt?.toDate() || new Date(),
         updatedAt: data.updatedAt?.toDate() || new Date(),
       }
