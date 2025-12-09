@@ -1,7 +1,18 @@
 "use client"
 
 import { Card } from "@/app/interface/ui/components/ui/card"
-import { Bell, Check, ChevronRight, Copy, HelpCircle, Link2, Lock, LogOut, Palette, User } from "lucide-react"
+import {
+  Bell,
+  Check,
+  ChevronRight,
+  Copy,
+  HelpCircle,
+  Link2,
+  Lock,
+  LogOut,
+  Palette,
+  User,
+} from "lucide-react"
 import { useRegistrationStore } from "../../state/registrationStore"
 import { useState } from "react"
 
@@ -54,7 +65,9 @@ export function SettingsScreen() {
           {/* Profile URL Section */}
           {uniqueId && (
             <div className="space-y-2">
-              <h2 className="px-2 text-sm font-semibold text-gray-500">あなたの公開プロフィールURL</h2>
+              <h2 className="px-2 text-sm font-semibold text-gray-500">
+                あなたの公開プロフィールURL
+              </h2>
               <Card className="overflow-hidden rounded-2xl border-0 bg-white shadow-sm">
                 <div className="p-4">
                   <div className="flex items-center gap-3">

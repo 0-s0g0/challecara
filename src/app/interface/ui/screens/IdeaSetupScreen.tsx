@@ -16,7 +16,11 @@ interface IdeaSetupScreenProps {
 }
 
 export function IdeaSetupScreen({ onNext, onBack }: IdeaSetupScreenProps) {
-  const { ideaTitle: storedTitle, ideaContent: storedContent, ideaTag: storedTag } = useRegistrationStore()
+  const {
+    ideaTitle: storedTitle,
+    ideaContent: storedContent,
+    ideaTag: storedTag,
+  } = useRegistrationStore()
   const setIdeaData = useRegistrationStore((state) => state.setIdeaData)
 
   const [ideaTitle, setIdeaTitle] = useState(storedTitle)
@@ -95,10 +99,14 @@ export function IdeaSetupScreen({ onNext, onBack }: IdeaSetupScreenProps) {
                 >
                   <span className="text-2xl">{tagInfo.icon}</span>
                   <div className="flex flex-col items-start flex-1">
-                    <span className={`font-bold text-sm ${isSelected ? "text-white" : "text-amber-950"}`}>
+                    <span
+                      className={`font-bold text-sm ${isSelected ? "text-white" : "text-amber-950"}`}
+                    >
                       {tagInfo.name}
                     </span>
-                    <span className={`text-xs ${isSelected ? "text-white/80" : "text-amber-900/60"}`}>
+                    <span
+                      className={`text-xs ${isSelected ? "text-white/80" : "text-amber-900/60"}`}
+                    >
                       {tagInfo.nameEn}
                     </span>
                   </div>

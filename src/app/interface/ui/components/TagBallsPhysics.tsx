@@ -56,45 +56,51 @@ export function TagBallsPhysics({ tagCounts, width = 400, height = 300 }: TagBal
       console.log("Render canvas:", render.canvas)
       console.log("Render context:", render.context)
 
-    // 壁を作成
-    const wallOptions = { isStatic: true, render: { fillStyle: "transparent" } }
-    const walls = [
-      Matter.Bodies.rectangle(width / 2, 0, width, 10, wallOptions), // 上
-      Matter.Bodies.rectangle(width / 2, height, width, 10, wallOptions), // 下
-      Matter.Bodies.rectangle(0, height / 2, 10, height, wallOptions), // 左
-      Matter.Bodies.rectangle(width, height / 2, 10, height, wallOptions), // 右
-    ]
+      // 壁を作成
+      const wallOptions = { isStatic: true, render: { fillStyle: "transparent" } }
+      const walls = [
+        Matter.Bodies.rectangle(width / 2, 0, width, 10, wallOptions), // 上
+        Matter.Bodies.rectangle(width / 2, height, width, 10, wallOptions), // 下
+        Matter.Bodies.rectangle(0, height / 2, 10, height, wallOptions), // 左
+        Matter.Bodies.rectangle(width, height / 2, 10, height, wallOptions), // 右
+      ]
 
-    // タグボールを作成
-    const balls = tagCounts.map((tagCount, index) => {
-      const tagInfo = IDEA_TAGS[tagCount.tag]
-      // カウント数に応じてサイズを変更（最小20、最大60）
-      const radius = Math.min(Math.max(20 + tagCount.count * 10, 20), 60)
+      // タグボールを作成
+      const balls = tagCounts.map((tagCount, index) => {
+        const tagInfo = IDEA_TAGS[tagCount.tag]
+        // カウント数に応じてサイズを変更（最小20、最大60）
+        const radius = Math.min(Math.max(20 + tagCount.count * 10, 20), 60)
 
-      // ランダムな初期位置（画面内の上部から）
-      const x = radius + Math.random() * (width - radius * 2)
-      const y = radius + index * 5 // 画面内から少しずつ間隔を空けて配置
+        // ランダムな初期位置（画面内の上部から）
+        const x = radius + Math.random() * (width - radius * 2)
+        const y = radius + index * 5 // 画面内から少しずつ間隔を空けて配置
 
-      console.log(`Creating ball ${index}:`, { tag: tagCount.tag, x, y, radius, color: tagInfo.color })
+        console.log(`Creating ball ${index}:`, {
+          tag: tagCount.tag,
+          x,
+          y,
+          radius,
+          color: tagInfo.color,
+        })
 
-      const ball = Matter.Bodies.circle(x, y, radius, {
-        restitution: 0.8, // 弾性（跳ね返り）
-        friction: 0.01,
-        density: 0.001,
-        render: {
-          fillStyle: tagInfo.color,
-          strokeStyle: "#fff",
-          lineWidth: 2,
-        },
+        const ball = Matter.Bodies.circle(x, y, radius, {
+          restitution: 0.8, // 弾性（跳ね返り）
+          friction: 0.01,
+          density: 0.001,
+          render: {
+            fillStyle: tagInfo.color,
+            strokeStyle: "#fff",
+            lineWidth: 2,
+          },
+        })
+
+        // ボールにタグ情報を保存
+        ;(ball as any).tagInfo = tagInfo
+        ;(ball as any).tagCount = tagCount.count
+
+        return ball
       })
-
-      // ボールにタグ情報を保存
-      ;(ball as any).tagInfo = tagInfo
-      ;(ball as any).tagCount = tagCount.count
-
-      return ball
-    })
-    console.log(`Created ${balls.length} balls`)
+      console.log(`Created ${balls.length} balls`)
 
       // 全てのオブジェクトをワールドに追加
       console.log("Adding bodies to world...")
@@ -208,13 +214,16 @@ export function TagBallsPhysics({ tagCounts, width = 400, height = 300 }: TagBal
   // }, [])
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border-4 border-blue-500" style={{ width: `${width}px`, height: `${height}px` }}>
+    <div
+      className="relative overflow-hidden rounded-2xl border-4 border-blue-500"
+      style={{ width: `${width}px`, height: `${height}px` }}
+    >
       <canvas
         ref={canvasRef}
         width={width}
         height={height}
         className="border-2 border-green-500"
-        style={{ display: 'block', backgroundColor: '#ffffff' }}
+        style={{ display: "block", backgroundColor: "#ffffff" }}
       />
       <div className="absolute top-2 left-2 text-xs bg-black text-white p-1">
         Canvas: {width}x{height}

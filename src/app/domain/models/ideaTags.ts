@@ -1,15 +1,15 @@
 // アイデア投稿のタグ
 export type IdeaTag =
-  | "tech"          // テック
-  | "entrepreneur"  // アントレ
-  | "design"        // デザイン
-  | "business"      // ビジネス
-  | "healthcare"    // ヘルスケア
-  | "education"     // 教育
+  | "tech" // テック
+  | "entrepreneur" // アントレ
+  | "design" // デザイン
+  | "business" // ビジネス
+  | "healthcare" // ヘルスケア
+  | "education" // 教育
   | "entertainment" // エンタメ
-  | "social"        // ソーシャル
-  | "environment"   // 環境
-  | "other"         // その他
+  | "social" // ソーシャル
+  | "environment" // 環境
+  | "other" // その他
 
 // タグの詳細情報
 export interface IdeaTagInfo {
