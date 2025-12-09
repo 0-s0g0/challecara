@@ -5,6 +5,7 @@ import Image from "next/image"
 import type React from "react"
 import { FaFacebook, FaInstagram, FaXTwitter } from "react-icons/fa6"
 import { IDEA_TAGS, type IdeaTag } from "@/app/domain/models/ideaTags"
+import { TagBallsPhysics } from "./TagBallsPhysics"
 
 interface ProfileData {
   nickname: string
@@ -16,6 +17,8 @@ interface ProfileData {
   ideaTitle: string
   ideaTag: IdeaTag | ""
   backgroundColor?: string
+  // 複数投稿をシミュレート（デモ用）
+  ideaTags?: IdeaTag[]
 }
 
 interface LayoutProps {
@@ -52,24 +55,51 @@ export function Layout1({ data }: LayoutProps) {
         </div>
       </div>
 
-      <div className="bg-white p-6">
-        <div className="space-y-2">
-          {data.ideaTag && (
-            <div className="flex justify-center">
-              <span
-                className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-white text-xs font-bold"
-                style={{ background: IDEA_TAGS[data.ideaTag].gradient }}
-              >
-                <span>{IDEA_TAGS[data.ideaTag].icon}</span>
-                <span>{IDEA_TAGS[data.ideaTag].name}</span>
-              </span>
-            </div>
-          )}
-          <h3 className="font-semibold text-foreground text-center">
-            {data.ideaTitle || "アイデア・想い"}
-          </h3>
-          <p className="text-xs text-muted-foreground text-center">最新の投稿</p>
+      <div className="bg-white p-4 relative">
+        <div className="text-xs text-center mb-2 text-gray-500">
+          DEBUG: ideaTags = {JSON.stringify(data.ideaTags)}
         </div>
+        {true ? (
+          <div className="relative z-20 flex justify-center">
+            <TagBallsPhysics
+              tagCounts={
+                // タグを集計
+                (data.ideaTags || []).reduce(
+                  (acc, tag) => {
+                    const existing = acc.find((t) => t.tag === tag)
+                    if (existing) {
+                      existing.count++
+                    } else {
+                      acc.push({ tag, count: 1 })
+                    }
+                    return acc
+                  },
+                  [] as Array<{ tag: IdeaTag; count: number }>
+                )
+              }
+              width={340}
+              height={180}
+            />
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {data.ideaTag && (
+              <div className="flex justify-center">
+                <span
+                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-white text-xs font-bold"
+                  style={{ background: IDEA_TAGS[data.ideaTag].gradient }}
+                >
+                  <span>{IDEA_TAGS[data.ideaTag].icon}</span>
+                  <span>{IDEA_TAGS[data.ideaTag].name}</span>
+                </span>
+              </div>
+            )}
+            <h3 className="font-semibold text-foreground text-center">
+              {data.ideaTitle || "アイデア・想い"}
+            </h3>
+            <p className="text-xs text-muted-foreground text-center">最新の投稿</p>
+          </div>
+        )}
       </div>
     </Card>
   )

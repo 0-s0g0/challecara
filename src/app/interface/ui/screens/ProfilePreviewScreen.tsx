@@ -94,6 +94,17 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
       ideaTitle: formData.ideaTitle,
       ideaTag: formData.ideaTag,
       backgroundColor: backgroundColor,
+      // デモ用：複数投稿をシミュレート（実際はFirestoreから取得）
+      ideaTags: [
+        "tech",
+        "tech",
+        "tech",
+        "entrepreneur",
+        "entrepreneur",
+        "design",
+        "business",
+        "tech",
+      ] as any,
     }),
     [formData, backgroundColor]
   )

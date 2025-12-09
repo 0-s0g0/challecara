@@ -13,6 +13,9 @@ import { UserModel } from "../models/user"
 import type { IBlogPostRepository } from "../repository/IBlogPostRepository"
 import type { ISocialLinkRepository } from "../repository/ISocialLinkRepository"
 import type { IUserRepository } from "../repository/IUserRepository"
+import { generateUniqueProfileId } from "../../utils/generateUniqueId"
+
+import type { IdeaTag } from "../models/ideaTags"
 
 export interface ProfileCreationInput {
   accountId: string
@@ -25,6 +28,7 @@ export interface ProfileCreationInput {
   blogTitle: string
   blogContent: string
   blogImageUrl: string
+  ideaTag?: IdeaTag | ""
 }
 
 export class ProfileCreationUseCase {
@@ -46,6 +50,9 @@ export class ProfileCreationUseCase {
     // Create Firebase Auth account first using email
     const userId = await this.authGateway.createAccount(input.email, input.password)
 
+    // Generate unique profile ID
+    const uniqueId = generateUniqueProfileId()
+
     // Create user profile in Firestore
     const user = await this.userRepository.create({
       id: userId, // Use Firebase UID
@@ -54,6 +61,7 @@ export class ProfileCreationUseCase {
       nickname: input.nickname,
       bio: input.bio,
       avatarUrl: input.avatarUrl,
+      uniqueId: uniqueId,
     })
 
     // Validate and create social links
@@ -77,6 +85,7 @@ export class ProfileCreationUseCase {
         title: input.blogTitle,
         content: input.blogContent,
         imageUrl: input.blogImageUrl,
+        ideaTag: input.ideaTag,
         isPublished: true,
       })
     }

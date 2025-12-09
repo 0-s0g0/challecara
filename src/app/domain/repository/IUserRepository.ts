@@ -15,6 +15,11 @@ export interface IUserRepository {
   findByAccountId(accountId: string): Promise<User | null>
 
   /**
+   * ユニークIDでユーザーを検索（公開プロフィール用）
+   */
+  findByUniqueId(uniqueId: string): Promise<User | null>
+
+  /**
    * 新しいユーザーを作成
    */
   create(input: UserCreateInput): Promise<User>

@@ -3,6 +3,7 @@ import type { IdeaTag } from "@/app/domain/models/ideaTags"
 
 interface RegistrationState {
   // Step 2 data
+  email: string
   accountId: string
   password: string
 
@@ -27,8 +28,11 @@ interface RegistrationState {
   // Step 6 data
   selectedLayout: number
 
+  // Created profile data
+  uniqueId: string
+
   // Actions
-  setLoginData: (accountId: string, password: string) => void
+  setLoginData: (email: string, accountId: string, password: string) => void
   setProfileData: (nickname: string, bio: string, avatarUrl: string) => void
   setSocialData: (
     x: boolean,
@@ -40,10 +44,12 @@ interface RegistrationState {
   ) => void
   setIdeaData: (title: string, content: string, tag: IdeaTag) => void
   setSelectedLayout: (layout: number) => void
+  setUniqueId: (uniqueId: string) => void
   reset: () => void
 }
 
 export const useRegistrationStore = create<RegistrationState>((set) => ({
+  email: "",
   accountId: "",
   password: "",
   nickname: "",
@@ -59,8 +65,9 @@ export const useRegistrationStore = create<RegistrationState>((set) => ({
   ideaContent: "",
   ideaTag: "",
   selectedLayout: 0,
+  uniqueId: "",
 
-  setLoginData: (accountId, password) => set({ accountId, password }),
+  setLoginData: (email, accountId, password) => set({ email, accountId, password }),
   setProfileData: (nickname, bio, avatarUrl) => set({ nickname, bio, avatarUrl }),
   setSocialData: (
     xConnected,
@@ -80,8 +87,10 @@ export const useRegistrationStore = create<RegistrationState>((set) => ({
     }),
   setIdeaData: (ideaTitle, ideaContent, ideaTag) => set({ ideaTitle, ideaContent, ideaTag }),
   setSelectedLayout: (selectedLayout) => set({ selectedLayout }),
+  setUniqueId: (uniqueId) => set({ uniqueId }),
   reset: () =>
     set({
+      email: "",
       accountId: "",
       password: "",
       nickname: "",
@@ -97,5 +106,6 @@ export const useRegistrationStore = create<RegistrationState>((set) => ({
       ideaContent: "",
       ideaTag: "",
       selectedLayout: 0,
+      uniqueId: "",
     }),
 }))
