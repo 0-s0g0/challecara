@@ -43,7 +43,7 @@ export default function Home() {
         {currentScreen === 4 && <SocialSetupScreen onNext={handleNext} onBack={handleBack} />}
         {currentScreen === 5 && <IdeaSetupScreen onNext={handleNext} onBack={handleBack} />}
         {currentScreen === 6 && <ProfilePreviewScreen onNext={handleNext} onBack={handleBack} />}
-        {currentScreen === 7 && <FinalProfileScreen onNext={handleNext} />}
+        {currentScreen === 7 && <FinalProfileScreen onNext={handleNext} onBack={handleBack} />}
         {currentScreen === 8 && <ProfileDisplayScreen />}
 
         {showLoginModal && <LoginScreenModal onNext={handleLoginNext} onBack={handleLoginClose} />}
