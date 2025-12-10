@@ -18,11 +18,7 @@ import type {
 export class FirestoreAnalyticsRepository implements AnalyticsRepository {
   private db = getFirebaseDb()
 
-  async getProfileViews(
-    userId: string,
-    startDate?: Date,
-    endDate?: Date
-  ): Promise<ProfileView[]> {
+  async getProfileViews(userId: string, startDate?: Date, endDate?: Date): Promise<ProfileView[]> {
     const constraints: QueryConstraint[] = [where("userId", "==", userId)]
 
     if (startDate) {
@@ -52,11 +48,7 @@ export class FirestoreAnalyticsRepository implements AnalyticsRepository {
     })
   }
 
-  async getLinkClicks(
-    userId: string,
-    startDate?: Date,
-    endDate?: Date
-  ): Promise<LinkClick[]> {
+  async getLinkClicks(userId: string, startDate?: Date, endDate?: Date): Promise<LinkClick[]> {
     const constraints: QueryConstraint[] = [where("userId", "==", userId)]
 
     if (startDate) {
