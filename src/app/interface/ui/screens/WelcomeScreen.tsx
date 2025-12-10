@@ -2,7 +2,7 @@
 
 import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
 import { Button } from "@/app/interface/ui/components/ui/button"
-import Image from "next/image" 
+import Image from "next/image"
 interface WelcomeScreenProps {
   onNext: () => void
 }
@@ -16,14 +16,17 @@ export function WelcomeScreen({ onNext }: WelcomeScreenProps) {
         {/* アプリケーションロゴの表示 */}
         {/* SVGをImageコンポーネントで表示。publicからの相対パスを指定。 */}
         <Image
-          src="/TsunaguLink-logo.svg" 
+          src="/TsunaguLink-logo.svg"
           alt="TsunaguLink Logo"
-          width={300} 
-          height={300} 
-          className="mx-auto mb-4" 
+          width={300}
+          height={300}
+          className="mx-auto mb-4"
         />
-        
+
         <p className="mb-12 text-sm ">あなたとみんなを繋ぐリンク</p>
+        <h1 className="mb-4 text-4xl font-bold text-foreground display:none" style={{ fontFamily: 'cursive' }}>
+          TsunaguLink
+        </h1>
 
         <div className="flex mx-auto items-center flex-col gap-4">
           <Button

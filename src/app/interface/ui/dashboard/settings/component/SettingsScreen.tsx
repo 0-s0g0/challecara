@@ -107,70 +107,16 @@ export function SettingsScreen() {
                           <p className="text-xs text-gray-500">このURLをシェアして人とつながろう</p>
                         </div>
                         <button
+                          type="button"
                           onClick={handleCopyUrl}
-                          className="flex-shrink-0 rounded-full bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
+                          className="shrink-0 rounded-full bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
                         >
                           {copied ? (
-                            <>
-                              <Check className="inline h-4 w-4" />
-                            </>
+                            <Check className="inline h-4 w-4" />
                           ) : (
-                            <>
-                              <Copy className="inline h-4 w-4" />
-                            </>
+                            <Copy className="inline h-4 w-4" />
                           )}
                         </button>
-          {/* Profile URL Section */}
-          {uniqueId && (
-            <div className="space-y-2">
-              <h2 className="px-2 text-sm font-semibold text-gray-500">
-                あなたの公開プロフィールURL
-              </h2>
-              <Card className="overflow-hidden rounded-2xl border-0 bg-white shadow-sm">
-                <div className="p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="rounded-full bg-blue-100 p-2">
-                      <Link2 className="h-5 w-5 text-blue-600" />
-                    </div>
-                    <div className="flex-1 overflow-hidden">
-                      <p className="truncate text-sm font-medium text-blue-600">{profileUrl}</p>
-                      <p className="text-xs text-gray-500">このURLをシェアして人とつながろう</p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={handleCopyUrl}
-                      className="flex-shrink-0 rounded-full bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
-                    >
-                      {copied ? (
-                        <>
-                          <Check className="inline h-4 w-4" />
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="inline h-4 w-4" />
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          )}
-
-          {settingsGroups.map((group) => (
-            <div key={group.title} className="space-y-2">
-              <h2 className="px-2 text-sm font-semibold text-gray-500">{group.title}</h2>
-              <Card className="overflow-hidden rounded-2xl border-0 bg-white shadow-sm">
-                {group.items.map((item) => {
-                  const Icon = item.icon
-                  return (
-                    <button
-                      key={`${group.title}-${item.label}`}
-                      type="button"
-                      className="flex w-full items-center gap-4 p-4 transition-colors hover:bg-gray-50"
-                    >
-                      <div className="rounded-full bg-gray-100 p-2">
-                        <Icon className="h-5 w-5 text-gray-600" />
                       </div>
                     </div>
                   </Card>
@@ -186,6 +132,7 @@ export function SettingsScreen() {
                       return (
                         <button
                           key={itemIndex}
+                          type="button"
                           className="flex w-full items-center gap-4 p-4 transition-colors hover:bg-gray-50"
                           onClick={() => {
                             if ("action" in item && item.action) {
@@ -210,7 +157,10 @@ export function SettingsScreen() {
 
               {/* Logout Button */}
               <Card className="overflow-hidden rounded-2xl border-0 bg-white shadow-sm">
-                <button className="flex w-full items-center gap-4 p-4 transition-colors hover:bg-red-50">
+                <button
+                  type="button"
+                  className="flex w-full items-center gap-4 p-4 transition-colors hover:bg-red-50"
+                >
                   <div className="rounded-full bg-red-100 p-2">
                     <LogOut className="h-5 w-5 text-red-600" />
                   </div>
@@ -224,17 +174,6 @@ export function SettingsScreen() {
               <div className="py-4 text-center">
                 <p className="text-sm text-gray-500">TsunaguLink</p>
                 <p className="text-xs text-gray-400">バージョン 1.0.0</p>
-          {/* Logout Button */}
-          <Card className="overflow-hidden rounded-2xl border-0 bg-white shadow-sm">
-            <button
-              type="button"
-              className="flex w-full items-center gap-4 p-4 transition-colors hover:bg-red-50"
-            >
-              <div className="rounded-full bg-red-100 p-2">
-                <LogOut className="h-5 w-5 text-red-600" />
-              </div>
-              <div className="flex-1 text-left">
-                <p className="font-medium text-red-600">ログアウト</p>
               </div>
             </>
           )}
