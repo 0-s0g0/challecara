@@ -14,7 +14,7 @@ export default function Home() {
   useEffect(() => {
     if (!loading && user) {
       // ユーザーがログイン済みの場合、ダッシュボードへリダイレクト
-      router.push("/dashboard")
+      router.push("/interface/ui/dashboard")
     }
   }, [user, loading, router])
 
