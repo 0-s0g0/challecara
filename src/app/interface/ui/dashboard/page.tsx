@@ -2,7 +2,8 @@
 
 import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
 import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
-import { AppFooter } from "@/app/interface/ui/components/AppFooter"
+import { AppFooter } from "@/app/interface/ui/dashboard/0component/AppFooter"
+import { AppHeader } from "@/app/interface/ui/dashboard/0component/AppHeader"
 import { useAuth } from "@/app/interface/context/AuthContext"
 import { UseCaseFactory } from "@/app/config/factories/useCaseFactory"
 import { useState, useEffect } from "react"
@@ -92,6 +93,7 @@ export default function DashboardPage() {
 
   return (
     <div className="relative flex min-h-screen flex-col">
+      <AppHeader />
       <PastelBackground />
       <div className="flex-1 overflow-auto pb-20">
         <div className="bg-gradient-to-br from-background to-secondary">

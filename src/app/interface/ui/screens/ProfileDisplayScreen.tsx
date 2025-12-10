@@ -1,6 +1,7 @@
 "use client"
 
-import { AppFooter } from "@/app/interface/ui/components/AppFooter"
+import { AppFooter } from "@/app/interface/ui/dashboard/0component/AppFooter"
+import { AppHeader } from "@/app/interface/ui/dashboard/0component/AppHeader"
 import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
 import { useState, useEffect } from "react"
 import { useRegistrationStore } from "../../state/registrationStore"
@@ -54,6 +55,7 @@ export function ProfileDisplayScreen() {
   return (
     <div className="relative flex min-h-screen flex-col">
       {/* Content Area */}
+      <AppHeader />
       <PastelBackground />
       <div className="flex-1 overflow-auto pb-20">
         {activeTab === "home" && (
