@@ -24,7 +24,10 @@ export function WelcomeScreen({ onNext }: WelcomeScreenProps) {
         />
 
         <p className="mb-12 text-sm ">あなたとみんなを繋ぐリンク</p>
-        <h1 className="mb-4 text-4xl font-bold text-foreground display:none" style={{ fontFamily: 'cursive' }}>
+        <h1
+          className="mb-4 text-4xl font-bold text-foreground display:none"
+          style={{ fontFamily: "cursive" }}
+        >
           TsunaguLink
         </h1>
 
