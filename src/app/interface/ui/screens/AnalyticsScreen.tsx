@@ -1,7 +1,7 @@
 "use client"
 
 import { Card } from "@/app/interface/ui/components/ui/card"
-import { Eye, Heart, TrendingUp, ExternalLink } from "lucide-react"
+import { Eye, TrendingUp, ExternalLink } from "lucide-react"
 import { useAuth } from "@/app/interface/context/AuthContext"
 import { useEffect, useState } from "react"
 import { FirestoreAnalyticsRepository } from "@/app/infrastructure/repository/analyticsRepository"
@@ -300,8 +300,7 @@ export function AnalyticsScreen() {
                   </p>
                 </div>
               )}
-              {stats.deviceBreakdown.mobile >
-                stats.deviceBreakdown.mobile + stats.deviceBreakdown.desktop && (
+              {stats.deviceBreakdown.mobile > stats.deviceBreakdown.desktop && (
                 <div className="flex items-start gap-3">
                   <div className="mt-0.5 h-2 w-2 rounded-full bg-blue-500" />
                   <p className="text-sm text-gray-700">
