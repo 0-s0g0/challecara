@@ -1,12 +1,11 @@
+import { notFound } from "next/navigation"
 import type { IdeaTag } from "@/app/domain/models/ideaTags"
 import { BlogPostRepository } from "@/app/infrastructure/repository/blogPostRepository"
 import { SocialLinkRepository } from "@/app/infrastructure/repository/socialLinkRepository"
 import { UserRepository } from "@/app/infrastructure/repository/userRepository"
 import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
-import { Layout1 } from "@/app/interface/ui/components/ProfileLayouts"
-import { notFound } from "next/navigation"
-import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
 import { ProfileAuthGate } from "@/app/interface/ui/components/ProfileAuthGate"
+import { Layout1 } from "@/app/interface/ui/components/ProfileLayouts"
 import { ProfileTracker } from "./ProfileTracker"
 
 interface PublicProfilePageProps {
