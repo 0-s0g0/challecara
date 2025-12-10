@@ -72,5 +72,15 @@ service cloud.firestore {
       allow create: if isAuthenticated();
       allow update, delete: if isAuthenticated();
     }
+
+    // Profile secrets (秘密の暗号)
+    match /profileSecrets/{userId} {
+      // Anyone can read (needed for authentication check)
+      allow read: if true;
+      // Only the owner can create/update/delete
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+      allow delete: if isOwner(userId);
+    }
   }
 }
