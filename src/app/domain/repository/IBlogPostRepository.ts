@@ -1,4 +1,5 @@
 import type { BlogPost, BlogPostCreateInput } from "../models/blog"
+import type { IdeaAnalytics } from "../models/profileView"
 
 /**
  * ブログ投稿リポジトリのインターフェース
@@ -33,4 +34,9 @@ export interface IBlogPostRepository {
    * ブログ投稿を削除
    */
   delete(id: string): Promise<void>
+
+  /**
+   * ユーザーのアイデア分析を取得
+   */
+  getIdeaAnalytics(userId: string): Promise<IdeaAnalytics>
 }

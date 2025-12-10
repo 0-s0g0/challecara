@@ -12,6 +12,8 @@ import {
   where,
 } from "firebase/firestore"
 import type { BlogPost, BlogPostCreateInput } from "../../domain/models/blog"
+import type { IdeaAnalytics } from "../../domain/models/profileView"
+import { IDEA_TAG_LIST, type IdeaTag } from "../../domain/models/ideaTags"
 import type { IBlogPostRepository } from "../../domain/repository/IBlogPostRepository"
 import { BaseRepository } from "./BaseRepository"
 
@@ -152,6 +154,41 @@ export class BlogPostRepository extends BaseRepository<BlogPost> implements IBlo
       await deleteDoc(postRef)
     } catch (error) {
       this.handleError(error, "ブログ投稿の削除")
+    }
+  }
+
+  async getIdeaAnalytics(userId: string): Promise<IdeaAnalytics> {
+    try {
+      const posts = await this.findByUserId(userId)
+      const publishedPosts = posts.filter((p) => p.isPublished)
+
+      // カテゴリー別カウント
+      const categoryCounts = new Map<IdeaTag, number>()
+      IDEA_TAG_LIST.forEach((tag) => categoryCounts.set(tag, 0))
+
+      publishedPosts.forEach((post) => {
+        if (post.ideaTag && IDEA_TAG_LIST.includes(post.ideaTag as IdeaTag)) {
+          const currentCount = categoryCounts.get(post.ideaTag as IdeaTag) || 0
+          categoryCounts.set(post.ideaTag as IdeaTag, currentCount + 1)
+        }
+      })
+
+      // パーセンテージ計算
+      const totalPublishedPosts = publishedPosts.length
+      const postsByCategory = Array.from(categoryCounts.entries())
+        .filter(([_, count]) => count > 0)
+        .map(([category, count]) => ({
+          category,
+          count,
+          percentage: totalPublishedPosts > 0 ? (count / totalPublishedPosts) * 100 : 0,
+        }))
+
+      return {
+        totalPublishedPosts,
+        postsByCategory,
+      }
+    } catch (error) {
+      this.handleError(error, "アイデア分析の取得")
     }
   }
 }
