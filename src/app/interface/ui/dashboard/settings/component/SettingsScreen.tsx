@@ -17,19 +17,23 @@ import {
   User,
 } from "lucide-react"
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { ProfileSecretSettings } from "./ProfileSecretSettings"
 import { getFirebaseAuth } from "@/app/config/firebase/firebaseConfig"
 import { UserRepository } from "@/app/infrastructure/repository/userRepository"
 
 export function SettingsScreen() {
   const storeUniqueId = useRegistrationStore((state) => state.uniqueId)
+  const resetStore = useRegistrationStore((state) => state.reset)
   const [uniqueId, setUniqueId] = useState<string>("")
   const [copied, setCopied] = useState(false)
   const [activeSection, setActiveSection] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
 
   const auth = getFirebaseAuth()
   const userRepository = new UserRepository()
+  const router = useRouter()
 
   // ログインユーザーの情報を取得
   useEffect(() => {
@@ -63,6 +67,28 @@ export function SettingsScreen() {
       navigator.clipboard.writeText(profileUrl)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
+    }
+  }
+
+  const handleLogout = async () => {
+    if (!confirm("ログアウトしますか？")) {
+      return
+    }
+
+    setIsLoggingOut(true)
+    try {
+      // Firebase Authからログアウト
+      await auth.signOut()
+
+      // ストアをリセット
+      resetStore()
+
+      // スタート画面にリダイレクト
+      router.push("/")
+    } catch (error) {
+      console.error("ログアウトに失敗:", error)
+      alert("ログアウトに失敗しました")
+      setIsLoggingOut(false)
     }
   }
 
@@ -202,13 +228,17 @@ export function SettingsScreen() {
               <Card className="overflow-hidden rounded-2xl border-0 bg-white shadow-sm">
                 <button
                   type="button"
-                  className="flex w-full items-center gap-4 p-4 transition-colors hover:bg-red-50"
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
+                  className="flex w-full items-center gap-4 p-4 transition-colors hover:bg-red-50 disabled:opacity-50"
                 >
                   <div className="rounded-full bg-red-100 p-2">
                     <LogOut className="h-5 w-5 text-red-600" />
                   </div>
                   <div className="flex-1 text-left">
-                    <p className="font-medium text-red-600">ログアウト</p>
+                    <p className="font-medium text-red-600">
+                      {isLoggingOut ? "ログアウト中..." : "ログアウト"}
+                    </p>
                   </div>
                 </button>
               </Card>
