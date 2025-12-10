@@ -1,6 +1,6 @@
 export function PastelBackground() {
   return (
-    <div className="absolute inset-0 overflow-hidden bg-[#fdfdfc]">
+    <div className="absolute inset-0 overflow-hidden bg-[#fdfdfc] dark:bg-[#48494f] ">
       {/* Top left - mint and yellow linear circle */}
       <div className="absolute -left-20 -top-20 h-[280px] w-[280px] rounded-full bg-linear-to-br from-[#2DB1C8] to-[#BAD56E] opacity-40" />
 
