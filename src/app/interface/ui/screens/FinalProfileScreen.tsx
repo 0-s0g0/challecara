@@ -9,6 +9,8 @@ import { useRegistrationStore } from "../../state/registrationStore"
 import { createProfile } from "../../controller/profileController"
 import { useRouter } from "next/navigation"
 import { PastelBackground } from "../components/PastelBackground"
+import { signInWithEmailAndPassword } from "firebase/auth"
+import { getFirebaseAuth } from "@/app/config/firebase/firebaseConfig"
 
 interface FinalProfileScreenProps {
   onNext: () => void
@@ -41,8 +43,15 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
   }
 
   const handleCreateProfile = async () => {
+    console.log("プロフィール作成ボタンがクリックされました")
     setIsCreating(true)
     try {
+      console.log("プロフィール作成処理を開始します", {
+        accountId: formData.accountId,
+        email: formData.email,
+        nickname: formData.nickname,
+      })
+
       // Create profile with all collected data
       const result = await createProfile({
         accountId: formData.accountId,
@@ -68,20 +77,40 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
         ideaTag: formData.ideaTag === "" ? undefined : formData.ideaTag,
       })
 
+      console.log("プロフィール作成結果:", result)
+
       if (result.success && result.uniqueId) {
+        console.log("プロフィール作成成功:", result.uniqueId)
+
+        // Sign in on the client side to update AuthContext
+        if (result.email && result.password) {
+          try {
+            const auth = getFirebaseAuth()
+            await signInWithEmailAndPassword(auth, result.email, result.password)
+            console.log("クライアント側でのサインインに成功しました")
+          } catch (signInError) {
+            console.error("クライアント側でのサインインに失敗:", signInError)
+            // Don't block the flow if sign-in fails, as the cookie-based auth still works
+          }
+        }
+
         // Set uniqueId to show the profile URL and store it
         setUniqueId(result.uniqueId)
         setUniqueIdInStore(result.uniqueId)
         // Proceed to next screen after a short delay to allow user to see the URL
         setTimeout(() => {
+          console.log("次の画面に遷移します")
           onNext()
         }, 1000)
       } else {
+        console.error("プロフィール作成失敗:", result.error)
         alert(result.error || "プロフィールの作成に失敗しました")
       }
     } catch (error) {
       console.error("Profile creation failed:", error)
-      alert("プロフィールの作成に失敗しました")
+      alert(
+        `プロフィールの作成に失敗しました: ${error instanceof Error ? error.message : String(error)}`
+      )
     } finally {
       setIsCreating(false)
     }
@@ -105,39 +134,50 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
       <PastelBackground />
 
       {/* URL Display */}
-      <div className="z-10 mt-8">
-        <div className="mt-8 text-center">
-          <h2 className="text-2xl font-bold text-foreground">プロフィール完成！</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            あなたのプロフィールURLをシェアしよう
-          </p>
-        </div>
-        <Card className="overflow-hidden mt-4 rounded-2xl border-0 bg-white shadow-lg">
-          <div className="flex items-center gap-3 p-4">
-            <div className="flex-1 overflow-hidden">
-              <p className="truncate text-sm font-medium text-primary">{profileUrl}</p>
-            </div>
-            <Button
-              onClick={handleCopyUrl}
-              size="sm"
-              variant="outline"
-              className="flex-shrink-0 rounded-full"
-            >
-              {copied ? (
-                <>
-                  <Check className="mr-1 h-4 w-4" />
-                  コピー済み
-                </>
-              ) : (
-                <>
-                  <Copy className="mr-1 h-4 w-4" />
-                  コピー
-                </>
-              )}
-            </Button>
+      {uniqueId ? (
+        <div className="z-10 mt-8">
+          <div className="mt-8 text-center">
+            <h2 className="text-2xl font-bold text-foreground">プロフィール完成！</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              あなたのプロフィールURLをシェアしよう
+            </p>
           </div>
-        </Card>
-      </div>
+          <Card className="overflow-hidden mt-4 rounded-2xl border-0 bg-white shadow-lg">
+            <div className="flex items-center gap-3 p-4">
+              <div className="flex-1 overflow-hidden">
+                <p className="truncate text-sm font-medium text-primary">{profileUrl}</p>
+              </div>
+              <Button
+                onClick={handleCopyUrl}
+                size="sm"
+                variant="outline"
+                className="flex-shrink-0 rounded-full"
+              >
+                {copied ? (
+                  <>
+                    <Check className="mr-1 h-4 w-4" />
+                    コピー済み
+                  </>
+                ) : (
+                  <>
+                    <Copy className="mr-1 h-4 w-4" />
+                    コピー
+                  </>
+                )}
+              </Button>
+            </div>
+          </Card>
+        </div>
+      ) : (
+        <div className="z-10 mt-8">
+          <div className="mt-8 text-center">
+            <h2 className="text-2xl font-bold text-foreground">プロフィールプレビュー</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              プロフィールを作成するとURLが表示されます
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Profile Preview */}
       <div className="z-10 mt-8 flex flex-1 items-center justify-center">
@@ -147,7 +187,7 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
       </div>
 
       {/* Next Button */}
-      <div className="z-10 flex mb-8 mt-8">
+      <div className="z-10 flex mb-8 mt-8 gap-4">
         <Button
           onClick={onBack}
           variant="outline"
@@ -159,7 +199,7 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
         <Button
           onClick={handleCreateProfile}
           disabled={isCreating}
-          className="h-12 rounded-full bg-[#8B7355] text-white hover:bg-[#6B5335]"
+          className="h-12 flex-1 rounded-full bg-[#8B7355] text-white hover:bg-[#6B5335]"
         >
           {isCreating ? (
             <>

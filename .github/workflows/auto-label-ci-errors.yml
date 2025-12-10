@@ -79,21 +79,25 @@ jobs:
 
           # エラーラベルを作成（赤色）
           gh label create "error:lint" \
+            --repo "${{ github.repository }}" \
             --description "Lintまたは型チェックでエラーが発生" \
             --color "d73a4a" \
             --force 2>/dev/null || echo "✓ error:lint ラベルは既に存在します"
 
           gh label create "error:test-fe" \
+            --repo "${{ github.repository }}" \
             --description "フロントエンドテストでエラーが発生" \
             --color "d73a4a" \
             --force 2>/dev/null || echo "✓ error:test-fe ラベルは既に存在します"
 
           gh label create "error:test-be" \
+            --repo "${{ github.repository }}" \
             --description "バックエンドテストでエラーが発生" \
             --color "d73a4a" \
             --force 2>/dev/null || echo "✓ error:test-be ラベルは既に存在します"
 
           gh label create "error:build" \
+            --repo "${{ github.repository }}" \
             --description "ビルドでエラーが発生" \
             --color "d73a4a" \
             --force 2>/dev/null || echo "✓ error:build ラベルは既に存在します"

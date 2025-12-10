@@ -23,11 +23,15 @@ export class AuthGateway implements IAuthGateway {
    */
   async createAccount(email: string, password: string): Promise<string> {
     try {
+      console.log("[AuthGateway] アカウント作成開始:", { email })
       const userCredential = await createUserWithEmailAndPassword(this.auth, email, password)
+      console.log("[AuthGateway] アカウント作成成功:", userCredential.user.uid)
       return userCredential.user.uid
     } catch (error) {
+      console.error("[AuthGateway] アカウント作成エラー詳細:", error)
       // Map Firebase errors to domain errors
       if (this.isAuthError(error)) {
+        console.log("[AuthGateway] Firebase Auth エラーコード:", error.code)
         if (error.code === "auth/email-already-in-use") {
           throw new DuplicateAccountIdError()
         }

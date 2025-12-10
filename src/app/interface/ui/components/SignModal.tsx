@@ -73,7 +73,7 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
         // Check tutorial completion status
         if (result.user.tutorialCompleted) {
           // チュートリアル完了済み → ダッシュボードへ
-          window.location.href = "/dashboard"
+          window.location.href = "/interface/ui/dashboard"
         } else {
           // チュートリアル未完了 → 続きから（onSuccessで処理）
           if (onSuccess) {

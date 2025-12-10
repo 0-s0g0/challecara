@@ -7,8 +7,9 @@ import { Textarea } from "@/app/interface/ui/components/ui/textarea"
 import { Loader2 } from "lucide-react"
 import { useState } from "react"
 import { IDEA_TAGS, IDEA_TAG_LIST, type IdeaTag } from "@/app/domain/models/ideaTags"
-import { createBlogPost } from "../../controller/blogController"
-import { useRegistrationStore } from "../../state/registrationStore"
+import { createBlogPost } from "@/app/interface/controller/blogController"
+import { useRegistrationStore } from "@/app/interface/state/registrationStore"
+import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
 
 export function BlogCreateScreen() {
   const userId = useRegistrationStore((state) => state.uniqueId)
@@ -50,10 +51,12 @@ export function BlogCreateScreen() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
+    <div className="relative flex min-h-screen flex-col bg-gray-50">
+      <PastelBackground />
       <div className="sticky top-0 z-10 bg-white p-4 shadow-sm">
         <div className="mx-auto flex max-w-md items-center justify-between">
           <h1 className="text-lg font-semibold text-gray-800">新規投稿</h1>
+
           <Button
             onClick={handlePublish}
             disabled={!title || !content || !ideaTag || isPublishing}
@@ -70,10 +73,10 @@ export function BlogCreateScreen() {
           </Button>
         </div>
       </div>
-
-      <div className="flex-1 overflow-auto p-4">
+      <div className="relative z-10 flex-1 overflow-auto p-4">
         <div className="mx-auto max-w-md space-y-6">
           {/* Title */}
+
           <div className="space-y-2">
             <Label htmlFor="title" className="text-sm text-gray-700">
               タイトル

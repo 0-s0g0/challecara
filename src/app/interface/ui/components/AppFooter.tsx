@@ -8,11 +8,11 @@ export function AppFooter() {
   const pathname = usePathname()
 
   const tabs = [
-    { id: "home", path: "/dashboard", icon: Home, label: "ホーム" },
-    { id: "search", path: "/dashboard/search", icon: Search, label: "検索" },
-    { id: "create", path: "/dashboard/create", icon: PlusSquare, label: "投稿" },
-    { id: "analytics", path: "/dashboard/analytics", icon: BarChart3, label: "分析" },
-    { id: "settings", path: "/dashboard/settings", icon: Settings, label: "設定" },
+    { id: "home", path: "/interface/ui/dashboard", icon: Home, label: "ホーム" },
+    { id: "search", path: "/interface/ui/dashboard/search", icon: Search, label: "検索" },
+    { id: "create", path: "/interface/ui/dashboard/create", icon: PlusSquare, label: "投稿" },
+    { id: "analytics", path: "/interface/ui/dashboard/analytics", icon: BarChart3, label: "分析" },
+    { id: "settings", path: "/interface/ui/dashboard/settings", icon: Settings, label: "設定" },
   ]
 
   return (

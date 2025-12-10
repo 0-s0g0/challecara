@@ -7,7 +7,7 @@ export default function TutorialCompletePage() {
   const router = useRouter()
 
   const handleNext = () => {
-    router.push("/dashboard")
+    router.push("/interface/ui/dashboard")
   }
 
   const handleBack = () => {

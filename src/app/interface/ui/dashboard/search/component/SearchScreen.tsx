@@ -4,9 +4,10 @@ import { Card } from "@/app/interface/ui/components/ui/card"
 import { Input } from "@/app/interface/ui/components/ui/input"
 import { Search } from "lucide-react"
 import { useState, useEffect } from "react"
-import { getPublishedBlogPosts } from "../../controller/blogController"
+import { getPublishedBlogPosts } from "@/app/interface/controller/blogController"
 import { IDEA_TAGS, IDEA_TAG_LIST, type IdeaTag } from "@/app/domain/models/ideaTags"
 import { useRouter } from "next/navigation"
+import { PastelBackground } from "../../../components/PastelBackground"
 
 interface BlogPost {
   id: string
@@ -73,7 +74,8 @@ export function SearchScreen() {
 
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
-      <div className="sticky top-0 z-10 bg-white p-4 shadow-sm">
+      <PastelBackground />
+      <div className="sticky top-0 z-10 bg-white/80 p-4 shadow-sm">
         <div className="mx-auto max-w-md space-y-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />

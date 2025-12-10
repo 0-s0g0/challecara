@@ -5,6 +5,7 @@ import { Layout1 } from "@/app/interface/ui/components/ProfileLayouts"
 import type { IdeaTag } from "@/app/domain/models/ideaTags"
 import { notFound } from "next/navigation"
 import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
+import { ProfileTracker } from "./ProfileTracker"
 
 interface PublicProfilePageProps {
   params: Promise<{
@@ -66,10 +67,13 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
     ideaTag: (latestPost?.ideaTag as IdeaTag) || "",
     ideaTags: ideaTags,
     backgroundColor: "#FFFFFF",
+    socialLinks: socialLinks,
+    userId: user.id,
   }
 
   return (
     <main className="min-h-screen items-center justify-center p-8">
+      <ProfileTracker userId={user.id} uniqueId={uniqueId} />
       <PastelBackground />
       <div className="max-w-md w-full">
         <Layout1 data={profileData} />
