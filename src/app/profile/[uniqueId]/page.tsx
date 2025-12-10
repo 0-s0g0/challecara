@@ -5,6 +5,7 @@ import { Layout1 } from "@/app/interface/ui/components/ProfileLayouts"
 import type { IdeaTag } from "@/app/domain/models/ideaTags"
 import { notFound } from "next/navigation"
 import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
+import { ProfileAuthGate } from "@/app/interface/ui/components/ProfileAuthGate"
 
 interface PublicProfilePageProps {
   params: Promise<{
@@ -69,11 +70,13 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
   }
 
   return (
-    <main className="min-h-screen items-center justify-center p-8">
-      <PastelBackground />
-      <div className="max-w-md w-full">
-        <Layout1 data={profileData} />
-      </div>
-    </main>
+    <ProfileAuthGate userId={user.id}>
+      <main className="min-h-screen items-center justify-center p-8">
+        <PastelBackground />
+        <div className="max-w-md w-full">
+          <Layout1 data={profileData} />
+        </div>
+      </main>
+    </ProfileAuthGate>
   )
 }
