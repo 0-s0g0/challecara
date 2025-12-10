@@ -1,11 +1,12 @@
+import { generateUniqueProfileId } from "../../utils/generateUniqueId"
 import {
   DuplicateAccountIdError,
+  ImageSizeExceededError,
   InvalidAccountIdError,
+  InvalidImageError,
   InvalidNicknameError,
   ValidationError,
   WeakPasswordError,
-  InvalidImageError,
-  ImageSizeExceededError,
 } from "../errors/DomainErrors"
 import type { IAuthGateway } from "../gateway/IAuthGateway"
 import type { BlogPostCreateInput } from "../models/blog"
@@ -15,7 +16,6 @@ import { UserModel } from "../models/user"
 import type { IBlogPostRepository } from "../repository/IBlogPostRepository"
 import type { ISocialLinkRepository } from "../repository/ISocialLinkRepository"
 import type { IUserRepository } from "../repository/IUserRepository"
-import { generateUniqueProfileId } from "../../utils/generateUniqueId"
 
 import type { IdeaTag } from "../models/ideaTags"
 

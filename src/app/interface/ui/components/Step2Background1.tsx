@@ -19,7 +19,10 @@ export function Step2Background() {
         viewBox="0 0 400 400"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        role="img"
+        aria-hidden="true"
       >
+        <title>Decorative circle background</title>
         <circle cx="10" cy="200" r="100" stroke="#8B7355" strokeWidth="1.5" fill="none" />
       </svg>
 
@@ -31,7 +34,10 @@ export function Step2Background() {
         viewBox="0 0 400 600"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        role="img"
+        aria-hidden="true"
       >
+        <title>Decorative circle background</title>
         <circle cx="400" cy="320" r="200" stroke="#8B7355" strokeWidth="1.5" fill="none" />
       </svg>
     </div>

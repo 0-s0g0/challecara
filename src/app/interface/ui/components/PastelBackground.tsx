@@ -15,11 +15,12 @@ export function PastelBackground() {
         aria-label="装飾的な円"
         role="img"
       >
+        <title>Decorative circle background</title>
         <circle cx="80" cy="10" r="150" stroke="#8B7355" strokeWidth="1.5" fill="none" />
       </svg>
 
       {/* Left middle - peach circle */}
-      <div className="absolute -left-24 top-[45%] h-[240px] w-[240px] rounded-full bg-linear-to-br from-[#FF442C] to-[#BAD56E opacity-30" />
+      <div className="absolute -left-24 top-[45%] h-[240px] w-[240px] rounded-full bg-linear-to-br from-[#FF442C] to-[#BAD56E] opacity-30" />
 
       {/* Right bottom - large lavender circle */}
       <div className="absolute -right-32 bottom-0 h-[400px] w-[400px] rounded-full bg-linear-to-br from-[#EC1ADE] to-[#BAD56E] opacity-30" />
@@ -32,6 +33,7 @@ export function PastelBackground() {
         aria-label="装飾的な円"
         role="img"
       >
+        <title>Decorative circle background</title>
         <circle cx="400" cy="320" r="200" stroke="#8B7355" strokeWidth="1.5" fill="none" />
       </svg>
     </div>

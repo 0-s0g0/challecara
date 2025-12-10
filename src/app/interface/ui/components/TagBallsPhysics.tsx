@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useRef } from "react"
-import Matter from "matter-js"
 import { IDEA_TAGS, type IdeaTag } from "@/app/domain/models/ideaTags"
+import Matter from "matter-js"
+import { useEffect, useRef } from "react"
 
 interface TagCount {
   tag: IdeaTag

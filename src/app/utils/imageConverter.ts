@@ -13,7 +13,7 @@ export class ImageConverter {
 
   static async toBase64(
     file: File,
-    options: ImageConversionOptions = this.DEFAULT_OPTIONS
+    options: ImageConversionOptions = ImageConverter.DEFAULT_OPTIONS
   ): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
@@ -45,7 +45,7 @@ export class ImageConverter {
             // Base64に変換（JPEG品質指定）
             const base64 = canvas.toDataURL("image/jpeg", options.quality || 0.8)
             resolve(base64)
-          } catch (error) {
+          } catch (_error) {
             reject(new Error("画像の変換に失敗しました"))
           }
         }

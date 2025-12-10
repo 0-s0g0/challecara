@@ -1,12 +1,13 @@
 "use client"
 
+import { IDEA_TAGS, IDEA_TAG_LIST, type IdeaTag } from "@/app/domain/models/ideaTags"
+import { getPublishedBlogPosts } from "@/app/interface/controller/blogController"
 import { Card } from "@/app/interface/ui/components/ui/card"
 import { Input } from "@/app/interface/ui/components/ui/input"
 import { Search } from "lucide-react"
-import { useState, useEffect } from "react"
-import { getPublishedBlogPosts } from "../../controller/blogController"
-import { IDEA_TAGS, IDEA_TAG_LIST, type IdeaTag } from "@/app/domain/models/ideaTags"
 import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { PastelBackground } from "../../../components/PastelBackground"
 
 interface BlogPost {
   id: string
@@ -72,8 +73,11 @@ export function SearchScreen() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
-      <div className="sticky top-0 z-10 bg-white p-4 shadow-sm">
+    <div className="relative flex min-h-screen flex-col">
+      <div className="fixed inset-0 -z-10">
+        <PastelBackground />
+      </div>
+      <div className="sticky top-12 z-10 bg-white/95 p-4 shadow-sm backdrop-blur-sm">
         <div className="mx-auto max-w-md space-y-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
@@ -89,6 +93,7 @@ export function SearchScreen() {
           {/* Tag Filter */}
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
             <button
+              type="button"
               onClick={() => setSelectedTag(undefined)}
               className={`flex-shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                 selectedTag === undefined
@@ -103,6 +108,7 @@ export function SearchScreen() {
               return (
                 <button
                   key={tag}
+                  type="button"
                   onClick={() => setSelectedTag(tag)}
                   className={`flex-shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                     selectedTag === tag
@@ -120,7 +126,7 @@ export function SearchScreen() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto p-4 pb-20">
+      <div className="relative z-0 flex-1 overflow-auto p-4 pb-20">
         <div className="mx-auto max-w-md space-y-4">
           <h2 className="text-lg font-semibold text-gray-800">
             {loading ? "読み込み中..." : `投稿 (${filteredBlogs.length})`}
