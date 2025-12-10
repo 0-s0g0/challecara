@@ -1,11 +1,13 @@
 "use client"
 
+import { IDEA_TAGS, type IdeaTag } from "@/app/domain/models/ideaTags"
+import type { SocialLink } from "@/app/domain/models/socialLink"
 import { Card } from "@/app/interface/ui/components/ui/card"
 import Image from "next/image"
 import type React from "react"
 import { FaFacebook, FaInstagram, FaXTwitter } from "react-icons/fa6"
-import { IDEA_TAGS, type IdeaTag } from "@/app/domain/models/ideaTags"
 import { TagBallsCSS } from "./TagBallsCSS"
+import { TrackableSocialLink } from "./TrackableSocialLink"
 
 interface ProfileData {
   nickname: string
@@ -19,6 +21,9 @@ interface ProfileData {
   backgroundColor?: string
   // 複数投稿をシミュレート（デモ用）
   ideaTags?: IdeaTag[]
+  // トラッキング用のソーシャルリンク
+  socialLinks?: SocialLink[]
+  userId?: string
 }
 
 interface LayoutProps {
@@ -48,18 +53,45 @@ export function Layout1({ data }: LayoutProps) {
           </p>
 
           <div className="mt-4 flex gap-3">
-            {data.instagramUsername && <SocialIcon type="instagram" />}
-            {data.xUsername && <SocialIcon type="x" />}
-            {data.facebookUsername && <SocialIcon type="facebook" />}
+            {data.socialLinks && data.userId ? (
+              <>
+                {data.socialLinks
+                  .filter((link) => link.isActive)
+                  .map((link) => {
+                    // SocialIconは instagram, x, facebook のみをサポート
+                    const iconType = link.provider === "twitter" ? "x" : link.provider
+                    if (iconType !== "instagram" && iconType !== "x" && iconType !== "facebook") {
+                      return null // tiktokなどはスキップ
+                    }
+                    if (!data.userId) {
+                      return null
+                    }
+                    return (
+                      <TrackableSocialLink
+                        key={link.id}
+                        linkId={link.id}
+                        userId={data.userId}
+                        provider={link.provider}
+                        url={link.url}
+                      >
+                        <SocialIcon type={iconType} />
+                      </TrackableSocialLink>
+                    )
+                  })}
+              </>
+            ) : (
+              <>
+                {data.instagramUsername && <SocialIcon type="instagram" />}
+                {data.xUsername && <SocialIcon type="x" />}
+                {data.facebookUsername && <SocialIcon type="facebook" />}
+              </>
+            )}
           </div>
         </div>
       </div>
 
       <div className="bg-white p-4 relative">
-        <div className="text-xs text-center mb-2 text-gray-500">
-          DEBUG: ideaTags = {JSON.stringify(data.ideaTags)}
-        </div>
-        {true ? (
+        {data.ideaTags && data.ideaTags.length > 0 ? (
           <div className="relative z-20 flex justify-center">
             <TagBallsCSS
               tagCounts={
@@ -84,8 +116,8 @@ export function Layout1({ data }: LayoutProps) {
         ) : (
           <div className="space-y-2">
             {(() => {
-              const tag = data.ideaTag as IdeaTag | ""
-              if (tag && tag !== "") {
+              const tag = data.ideaTag
+              if (tag) {
                 const validTag = tag as IdeaTag
                 return (
                   <div className="flex justify-center">

@@ -1,11 +1,13 @@
-import { UserRepository } from "@/app/infrastructure/repository/userRepository"
-import { SocialLinkRepository } from "@/app/infrastructure/repository/socialLinkRepository"
-import { BlogPostRepository } from "@/app/infrastructure/repository/blogPostRepository"
-import { Layout1 } from "@/app/interface/ui/components/ProfileLayouts"
 import type { IdeaTag } from "@/app/domain/models/ideaTags"
+import { BlogPostRepository } from "@/app/infrastructure/repository/blogPostRepository"
+import { SocialLinkRepository } from "@/app/infrastructure/repository/socialLinkRepository"
+import { UserRepository } from "@/app/infrastructure/repository/userRepository"
+import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
+import { Layout1 } from "@/app/interface/ui/components/ProfileLayouts"
 import { notFound } from "next/navigation"
 import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
 import { ProfileAuthGate } from "@/app/interface/ui/components/ProfileAuthGate"
+import { ProfileTracker } from "./ProfileTracker"
 
 interface PublicProfilePageProps {
   params: Promise<{
@@ -67,6 +69,8 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
     ideaTag: (latestPost?.ideaTag as IdeaTag) || "",
     ideaTags: ideaTags,
     backgroundColor: "#FFFFFF",
+    socialLinks: socialLinks,
+    userId: user.id,
   }
 
   return (

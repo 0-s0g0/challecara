@@ -1,19 +1,19 @@
 "use client"
 
-import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
+import { UseCaseFactory } from "@/app/config/factories/useCaseFactory"
+import type { IdeaTag } from "@/app/domain/models/ideaTags"
+import type { ProfileData } from "@/app/domain/usecase/getProfileUseCase"
+import { useAuth } from "@/app/interface/context/AuthContext"
 import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
+import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
 import { AppFooter } from "@/app/interface/ui/dashboard/0component/AppFooter"
 import { AppHeader } from "@/app/interface/ui/dashboard/0component/AppHeader"
-import { useAuth } from "@/app/interface/context/AuthContext"
-import { UseCaseFactory } from "@/app/config/factories/useCaseFactory"
-import { useState, useEffect } from "react"
-import type { ProfileData } from "@/app/domain/usecase/getProfileUseCase"
-import type { IdeaTag } from "@/app/domain/models/ideaTags"
+import { useEffect, useState } from "react"
 
 export default function DashboardPage() {
   const { firebaseUser, loading } = useAuth()
   const [profileData, setProfileData] = useState<ProfileData | null>(null)
-  const [selectedLayout, setSelectedLayout] = useState(0)
+  const [selectedLayout, _setSelectedLayout] = useState(0)
 
   const layouts = [Layout1, Layout2, Layout3, Layout4]
   const SelectedLayout = layouts[selectedLayout] || Layout1

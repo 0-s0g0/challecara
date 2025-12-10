@@ -1,14 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { IDEA_TAGS, IDEA_TAG_LIST, type IdeaTag } from "@/app/domain/models/ideaTags"
+import { Step3Background } from "@/app/interface/ui/components/Step3Background1"
 import { Button } from "@/app/interface/ui/components/ui/button"
 import { Input } from "@/app/interface/ui/components/ui/input"
 import { Label } from "@/app/interface/ui/components/ui/label"
 import { Textarea } from "@/app/interface/ui/components/ui/textarea"
 import { ChevronLeft } from "lucide-react"
+import { useState } from "react"
 import { useRegistrationStore } from "../../state/registrationStore"
-import { Step3Background } from "@/app/interface/ui/components/Step3Background1"
-import { IDEA_TAGS, IDEA_TAG_LIST, type IdeaTag } from "@/app/domain/models/ideaTags"
 
 interface IdeaSetupScreenProps {
   onNext: () => void
@@ -87,6 +87,7 @@ export function IdeaSetupScreen({ onNext, onBack }: IdeaSetupScreenProps) {
               return (
                 <button
                   key={tag}
+                  type="button"
                   onClick={() => setIdeaTag(tag)}
                   className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all ${
                     isSelected
@@ -130,7 +131,14 @@ export function IdeaSetupScreen({ onNext, onBack }: IdeaSetupScreenProps) {
             className="h-12 flex-1 rounded-full bg-[#8B7355] px-8 text-white hover:bg-[#6B5335]"
           >
             次へ
-            <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="ml-1 h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <title>Next arrow</title>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </Button>

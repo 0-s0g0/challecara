@@ -62,6 +62,9 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
   const [gradientColor1, setGradientColor1] = useState("#FFFFFF")
   const [gradientColor2, setGradientColor2] = useState("#000000")
   const [gradientDirection, setGradientDirection] = useState("to-br")
+  const gradientStartColorId = "inline-gradient-start-color"
+  const gradientEndColorId = "inline-gradient-end-color"
+  const gradientDirectionId = "inline-gradient-direction"
 
   const scrollRef = useRef<HTMLDivElement>(null)
 
@@ -174,6 +177,7 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
             {layouts.map((layout, index) => (
               <button
                 key={layout.id}
+                type="button"
                 onClick={() => scrollToLayout(index)}
                 className={`h-2 w-2 rounded-full transition-all duration-300 ${
                   selectedLayout === index ? "w-6 bg-[#8B7355]" : "bg-gray-300"
@@ -221,9 +225,10 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
                           <div className="mx-auto max-w-sm rounded-2xl bg-white/90 backdrop-blur-sm p-6 shadow-lg space-y-4">
                             {/* Background Type Selector */}
                             <div className="space-y-2">
-                              <label className="text-sm text-gray-600">背景タイプ</label>
+                              <p className="text-sm text-gray-600">背景タイプ</p>
                               <div className="flex gap-2">
                                 <button
+                                  type="button"
                                   onClick={() => setBackgroundType("solid")}
                                   className={`flex-1 h-10 rounded-lg border-2 transition-all text-sm ${
                                     backgroundType === "solid"
@@ -234,6 +239,7 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
                                   単色
                                 </button>
                                 <button
+                                  type="button"
                                   onClick={() => setBackgroundType("gradient")}
                                   className={`flex-1 h-10 rounded-lg border-2 transition-all text-sm ${
                                     backgroundType === "gradient"
@@ -274,13 +280,17 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
                                 <div className="flex items-center justify-between gap-4">
                                   {/* 開始色 (Color 1) 設定 */}
                                   <div className="space-y-2 w-full max-w-[70px] flex-shrink-0">
-                                    <label className="text-xs font-semibold text-gray-700">
+                                    <label
+                                      className="text-xs font-semibold text-gray-700"
+                                      htmlFor={gradientStartColorId}
+                                    >
                                       開始色
                                     </label>
                                     <div className="flex flex-col items-center gap-1">
                                       {/* Color Picker */}
                                       <input
                                         type="color"
+                                        id={gradientStartColorId}
                                         value={
                                           gradientColor1.startsWith("#")
                                             ? gradientColor1
@@ -313,13 +323,17 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
 
                                   {/* 終了色 (Color 2) 設定 */}
                                   <div className="space-y-2 w-full max-w-[70px] flex-shrink-0">
-                                    <label className="text-xs font-semibold text-gray-700 text-right block">
+                                    <label
+                                      className="text-xs font-semibold text-gray-700 text-right block"
+                                      htmlFor={gradientEndColorId}
+                                    >
                                       終了色
                                     </label>
                                     <div className="flex flex-col items-center gap-1">
                                       {/* Color Picker */}
                                       <input
                                         type="color"
+                                        id={gradientEndColorId}
                                         value={
                                           gradientColor2.startsWith("#")
                                             ? gradientColor2
@@ -342,10 +356,14 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
 
                                 {/* 2. 方向セレクター */}
                                 <div className="space-y-2">
-                                  <label className="text-sm font-semibold text-gray-700 block">
+                                  <label
+                                    className="text-sm font-semibold text-gray-700 block"
+                                    htmlFor={gradientDirectionId}
+                                  >
                                     方向
                                   </label>
                                   <select
+                                    id={gradientDirectionId}
                                     value={gradientDirection}
                                     onChange={(e) => setGradientDirection(e.target.value)}
                                     className="w-full h-10 rounded-lg border border-gray-300 px-3 text-sm focus:ring-2 focus:ring-[#8B7355] focus:border-[#8B7355] transition"
@@ -376,6 +394,7 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
           {/* 左矢印ボタン */}
           {/* ------------------ */}
           <button
+            type="button"
             onClick={() => scrollByDelta(-1)}
             disabled={selectedLayout === 0}
             className={`absolute left-0 top-1/2 -translate-y-1/2 p-2 bg-white/70 backdrop-blur-sm rounded-full shadow-lg transition-opacity duration-300 ${
@@ -390,6 +409,7 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
           {/* 右矢印ボタン */}
           {/* ------------------ */}
           <button
+            type="button"
             onClick={() => scrollByDelta(1)}
             disabled={selectedLayout === layouts.length - 1}
             className={`absolute right-0 top-1/2 -translate-y-1/2 p-2 bg-white/70 backdrop-blur-sm rounded-full shadow-lg transition-opacity duration-300 ${
@@ -418,7 +438,14 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
             className="h-12 flex-1 rounded-full bg-[#8B7355] px-8 text-white hover:bg-[#6B5335] transition-all duration-300 hover:shadow-lg hover:translate-y-[-1px]"
           >
             次へ
-            <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="ml-1 h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <title>Next arrow</title>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </Button>

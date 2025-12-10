@@ -39,7 +39,7 @@ export async function login(email: string, password: string) {
   }
 }
 
-export async function signup(email: string, password: string, nickname: string) {
+export async function signup(email: string, password: string, _nickname: string) {
   try {
     // Create Firebase Auth account only (no Firestore document)
     const authGateway = UseCaseFactory.createAuthGateway()
