@@ -28,6 +28,8 @@ export async function createProfile(input: ProfileCreationInput) {
       userId: user.id,
       uniqueId: user.uniqueId,
       message: "プロフィールが作成されました",
+      email: input.email, // Return email for client-side sign-in
+      password: input.password, // Return password for client-side sign-in
       user: {
         id: user.id,
         accountId: user.accountId,
