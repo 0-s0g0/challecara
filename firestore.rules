@@ -1,6 +1,28 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // === Analytics Collections ===
+
+    // プロフィール閲覧数（匿名アクセス可）
+    match /profileViews/{viewId} {
+      allow create: if true; // 誰でも記録可能
+      allow read: if request.auth != null
+        && request.auth.uid == resource.data.userId; // 自分の分析データのみ閲覧可
+    }
+
+    // ソーシャルリンククリック（匿名アクセス可）
+    match /linkClicks/{clickId} {
+      allow create: if true; // 誰でも記録可能
+      allow read: if request.auth != null
+        && request.auth.uid == resource.data.userId; // 自分の分析データのみ閲覧可
+    }
+
+    // ブログ投稿閲覧数（匿名アクセス可）
+    match /blogPostViews/{viewId} {
+      allow create: if true; // 誰でも記録可能
+      allow read: if request.auth != null; // ログインユーザーのみ閲覧可
+    }
     // Helper functions
     function isAuthenticated() {
       return request.auth != null;

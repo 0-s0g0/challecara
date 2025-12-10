@@ -6,6 +6,8 @@ import type React from "react"
 import { FaFacebook, FaInstagram, FaXTwitter } from "react-icons/fa6"
 import { IDEA_TAGS, type IdeaTag } from "@/app/domain/models/ideaTags"
 import { TagBallsCSS } from "./TagBallsCSS"
+import { TrackableSocialLink } from "./TrackableSocialLink"
+import type { SocialLink } from "@/app/domain/models/socialLink"
 
 interface ProfileData {
   nickname: string
@@ -19,6 +21,9 @@ interface ProfileData {
   backgroundColor?: string
   // 複数投稿をシミュレート（デモ用）
   ideaTags?: IdeaTag[]
+  // トラッキング用のソーシャルリンク
+  socialLinks?: SocialLink[]
+  userId?: string
 }
 
 interface LayoutProps {
@@ -48,9 +53,29 @@ export function Layout1({ data }: LayoutProps) {
           </p>
 
           <div className="mt-4 flex gap-3">
-            {data.instagramUsername && <SocialIcon type="instagram" />}
-            {data.xUsername && <SocialIcon type="x" />}
-            {data.facebookUsername && <SocialIcon type="facebook" />}
+            {data.socialLinks && data.userId ? (
+              <>
+                {data.socialLinks
+                  .filter((link) => link.isActive)
+                  .map((link) => (
+                    <TrackableSocialLink
+                      key={link.id}
+                      linkId={link.id}
+                      userId={data.userId!}
+                      provider={link.provider}
+                      url={link.url}
+                    >
+                      <SocialIcon type={link.provider === "twitter" ? "x" : link.provider} />
+                    </TrackableSocialLink>
+                  ))}
+              </>
+            ) : (
+              <>
+                {data.instagramUsername && <SocialIcon type="instagram" />}
+                {data.xUsername && <SocialIcon type="x" />}
+                {data.facebookUsername && <SocialIcon type="facebook" />}
+              </>
+            )}
           </div>
         </div>
       </div>
