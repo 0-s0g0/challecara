@@ -135,7 +135,14 @@ export function SocialSetupScreen({ onNext, onBack }: SocialSetupScreenProps) {
               className="h-12 flex-1 rounded-full bg-[#8B7355] px-8 text-white hover:bg-[#6B5335]"
             >
               次へ
-              <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="ml-1 h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <title>Next arrow</title>
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -166,6 +173,7 @@ function SocialButton({
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
       className={`border-none flex w-full max-w-xs items-center justify-center gap-3 rounded-2xl p-4 transition-all ${
         username

@@ -1,19 +1,19 @@
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  Timestamp,
-  orderBy,
-  type QueryConstraint,
-} from "firebase/firestore"
 import { getFirebaseDb } from "@/app/config/firebase/firebaseConfig"
 import type {
   AnalyticsRepository,
-  ProfileView,
-  LinkClick,
   AnalyticsStats,
+  LinkClick,
+  ProfileView,
 } from "@/app/domain/repository/analyticsRepository"
+import {
+  type QueryConstraint,
+  Timestamp,
+  collection,
+  getDocs,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore"
 
 export class FirestoreAnalyticsRepository implements AnalyticsRepository {
   private db = getFirebaseDb()

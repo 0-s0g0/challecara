@@ -17,7 +17,7 @@ export class ImageValidator {
 
   static validate(
     file: File,
-    config: ImageValidationConfig = this.DEFAULT_CONFIG
+    config: ImageValidationConfig = ImageValidator.DEFAULT_CONFIG
   ): ImageValidationResult {
     // 1. ファイル存在チェック
     if (!file) {

@@ -1,12 +1,12 @@
 "use client"
 
+import { IDEA_TAGS, IDEA_TAG_LIST, type IdeaTag } from "@/app/domain/models/ideaTags"
+import { getPublishedBlogPosts } from "@/app/interface/controller/blogController"
 import { Card } from "@/app/interface/ui/components/ui/card"
 import { Input } from "@/app/interface/ui/components/ui/input"
 import { Search } from "lucide-react"
-import { useState, useEffect } from "react"
-import { getPublishedBlogPosts } from "@/app/interface/controller/blogController"
-import { IDEA_TAGS, IDEA_TAG_LIST, type IdeaTag } from "@/app/domain/models/ideaTags"
 import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 import { PastelBackground } from "../../../components/PastelBackground"
 
 interface BlogPost {
@@ -93,6 +93,7 @@ export function SearchScreen() {
           {/* Tag Filter */}
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
             <button
+              type="button"
               onClick={() => setSelectedTag(undefined)}
               className={`flex-shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                 selectedTag === undefined
@@ -107,6 +108,7 @@ export function SearchScreen() {
               return (
                 <button
                   key={tag}
+                  type="button"
                   onClick={() => setSelectedTag(tag)}
                   className={`flex-shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                     selectedTag === tag

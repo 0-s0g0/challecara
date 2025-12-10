@@ -1,10 +1,10 @@
-import { UserRepository } from "@/app/infrastructure/repository/userRepository"
-import { SocialLinkRepository } from "@/app/infrastructure/repository/socialLinkRepository"
-import { BlogPostRepository } from "@/app/infrastructure/repository/blogPostRepository"
-import { Layout1 } from "@/app/interface/ui/components/ProfileLayouts"
 import type { IdeaTag } from "@/app/domain/models/ideaTags"
-import { notFound } from "next/navigation"
+import { BlogPostRepository } from "@/app/infrastructure/repository/blogPostRepository"
+import { SocialLinkRepository } from "@/app/infrastructure/repository/socialLinkRepository"
+import { UserRepository } from "@/app/infrastructure/repository/userRepository"
 import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
+import { Layout1 } from "@/app/interface/ui/components/ProfileLayouts"
+import { notFound } from "next/navigation"
 import { ProfileTracker } from "./ProfileTracker"
 
 interface PublicProfilePageProps {

@@ -1,16 +1,16 @@
 "use client"
 
+import { getFirebaseAuth } from "@/app/config/firebase/firebaseConfig"
 import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
 import { Button } from "@/app/interface/ui/components/ui/button"
 import { Card } from "@/app/interface/ui/components/ui/card"
-import { Check, ChevronLeft, Copy, Loader2 } from "lucide-react"
-import { useState } from "react"
-import { useRegistrationStore } from "../../state/registrationStore"
-import { createProfile } from "../../controller/profileController"
-import { useRouter } from "next/navigation"
-import { PastelBackground } from "../components/PastelBackground"
 import { signInWithEmailAndPassword } from "firebase/auth"
-import { getFirebaseAuth } from "@/app/config/firebase/firebaseConfig"
+import { Check, ChevronLeft, Copy, Loader2 } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { createProfile } from "../../controller/profileController"
+import { useRegistrationStore } from "../../state/registrationStore"
+import { PastelBackground } from "../components/PastelBackground"
 
 interface FinalProfileScreenProps {
   onNext: () => void
@@ -20,7 +20,7 @@ interface FinalProfileScreenProps {
 export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) {
   const formData = useRegistrationStore()
   const setUniqueIdInStore = useRegistrationStore((state) => state.setUniqueId)
-  const router = useRouter()
+  const _router = useRouter()
   const [copied, setCopied] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
   const [uniqueId, setUniqueId] = useState<string | null>(null)

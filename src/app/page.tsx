@@ -1,7 +1,7 @@
 "use client"
 
-import { WelcomeScreen } from "@/app/interface/ui/screens/WelcomeScreen"
 import { LoginScreen } from "@/app/interface/ui/screens/LoginScreen"
+import { WelcomeScreen } from "@/app/interface/ui/screens/WelcomeScreen"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useAuth } from "./interface/context/AuthContext"

@@ -1,7 +1,7 @@
 "use client"
 
 import { BarChart3, Home, PlusSquare, Search, Settings } from "lucide-react"
-import { useRouter, usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 
 export function AppFooter() {
   const router = useRouter()
@@ -26,6 +26,7 @@ export function AppFooter() {
             return (
               <button
                 key={tab.id}
+                type="button"
                 onClick={() => router.push(tab.path)}
                 className="flex flex-col items-center gap-1 transition-colors"
               >

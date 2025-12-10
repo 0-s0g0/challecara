@@ -46,6 +46,15 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
         <div
           className="fixed inset-0 z-40 bg-black/20 animate-in fade-in duration-300"
           onClick={onBack}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault()
+              onBack()
+            }
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label="戻る"
         />
 
         {/* Modal */}
@@ -91,7 +100,11 @@ export function LoginScreen({ onNext, onBack }: LoginScreenProps) {
               <div className="text-center">
                 <p className="text-xs text-gray-500">
                   アカウントを持っていない場合{" "}
-                  <button className="font-semibold text-[#8B7355] underline" onClick={onNext}>
+                  <button
+                    type="button"
+                    className="font-semibold text-[#8B7355] underline"
+                    onClick={onNext}
+                  >
                     SIGN UP
                   </button>
                 </p>

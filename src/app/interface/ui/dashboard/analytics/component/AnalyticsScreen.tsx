@@ -1,11 +1,12 @@
 "use client"
 
-import { Card } from "@/app/interface/ui/components/ui/card"
-import { Eye, TrendingUp, ExternalLink } from "lucide-react"
-import { useAuth } from "@/app/interface/context/AuthContext"
-import { useEffect, useState } from "react"
-import { FirestoreAnalyticsRepository } from "@/app/infrastructure/repository/analyticsRepository"
 import type { AnalyticsStats } from "@/app/domain/repository/analyticsRepository"
+import { FirestoreAnalyticsRepository } from "@/app/infrastructure/repository/analyticsRepository"
+import { useAuth } from "@/app/interface/context/AuthContext"
+import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
+import { Card } from "@/app/interface/ui/components/ui/card"
+import { ExternalLink, Eye, TrendingUp } from "lucide-react"
+import { useEffect, useState } from "react"
 
 export function AnalyticsScreen() {
   const { user } = useAuth()
@@ -172,8 +173,8 @@ export function AnalyticsScreen() {
           <Card className="rounded-2xl border-0 bg-white p-6 shadow-sm">
             <h2 className="mb-6 font-semibold text-gray-800">週間プロフィール閲覧数</h2>
             <div className="flex items-end justify-between gap-2" style={{ height: "200px" }}>
-              {weeklyViews.map((data, index) => (
-                <div key={index} className="flex flex-1 flex-col items-center gap-2">
+              {weeklyViews.map((data) => (
+                <div key={data.day} className="flex flex-1 flex-col items-center gap-2">
                   <div className="relative w-full">
                     <div
                       className="w-full rounded-t-lg bg-gradient-to-t from-blue-500 to-blue-400 transition-all hover:from-blue-600 hover:to-blue-500"
@@ -198,7 +199,10 @@ export function AnalyticsScreen() {
               <h2 className="mb-4 font-semibold text-gray-800">人気のリンク</h2>
               <div className="space-y-3">
                 {stats.linkClicks.map((link, index) => (
-                  <div key={index} className="flex items-center justify-between">
+                  <div
+                    key={`${link.provider}-${index}`}
+                    className="flex items-center justify-between"
+                  >
                     <div className="flex items-center gap-3">
                       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
                         <span className="text-sm font-bold text-gray-600">{index + 1}</span>
@@ -272,7 +276,10 @@ export function AnalyticsScreen() {
               <h2 className="mb-4 font-semibold text-gray-800">流入元トップ5</h2>
               <div className="space-y-2">
                 {stats.topReferrers.map((referrer, index) => (
-                  <div key={index} className="flex items-center justify-between text-sm">
+                  <div
+                    key={`${referrer.source}-${index}`}
+                    className="flex items-center justify-between text-sm"
+                  >
                     <span className="truncate text-gray-700">
                       {referrer.source === "direct" ? "🔗 直接アクセス" : referrer.source}
                     </span>

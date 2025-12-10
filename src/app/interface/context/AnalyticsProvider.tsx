@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect } from "react"
 import { initializeAnalytics } from "@/app/infrastructure/analytics/firebaseAnalytics"
+import { useEffect } from "react"
 
 export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {

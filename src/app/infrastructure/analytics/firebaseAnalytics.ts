@@ -1,7 +1,7 @@
 "use client"
 
-import { type Analytics, getAnalytics, logEvent, setUserId } from "firebase/analytics"
 import { getFirebaseApp } from "@/app/config/firebase/firebaseConfig"
+import { type Analytics, getAnalytics, logEvent, setUserId } from "firebase/analytics"
 
 let analytics: Analytics | null = null
 

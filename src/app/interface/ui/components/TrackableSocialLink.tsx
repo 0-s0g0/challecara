@@ -1,9 +1,9 @@
 "use client"
 
-import { trackLinkClick } from "@/app/infrastructure/analytics/firebaseAnalytics"
-import { doc, setDoc, collection, serverTimestamp } from "firebase/firestore"
 import { getFirebaseDb } from "@/app/config/firebase/firebaseConfig"
 import type { SocialProvider } from "@/app/domain/models/socialLink"
+import { trackLinkClick } from "@/app/infrastructure/analytics/firebaseAnalytics"
+import { collection, doc, serverTimestamp, setDoc } from "firebase/firestore"
 
 interface TrackableSocialLinkProps {
   linkId: string

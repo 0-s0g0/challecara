@@ -21,11 +21,11 @@ export interface UserCreateInput {
 }
 
 import {
+  ImageSizeExceededError,
   InvalidAccountIdError,
+  InvalidImageError,
   InvalidNicknameError,
   WeakPasswordError,
-  InvalidImageError,
-  ImageSizeExceededError,
 } from "../errors/DomainErrors"
 
 export class UserModel {
@@ -87,7 +87,7 @@ export class UserModel {
       }
 
       // サイズ検証
-      if (avatarUrl.length > this.MAX_BASE64_SIZE) {
+      if (avatarUrl.length > UserModel.MAX_BASE64_SIZE) {
         throw new ImageSizeExceededError(UserModel.ERROR_MESSAGES.IMAGE_SIZE_EXCEEDED)
       }
     }

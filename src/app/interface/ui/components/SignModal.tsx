@@ -142,6 +142,15 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
           <div
             className="fixed inset-0 z-40 bg-black/20 animate-in fade-in duration-300"
             onClick={() => onOpenChange(false)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault()
+                onOpenChange(false)
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label="閉じる"
           />
 
           {/* Modal */}

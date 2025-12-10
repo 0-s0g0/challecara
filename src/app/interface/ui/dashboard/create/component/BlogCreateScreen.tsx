@@ -1,15 +1,15 @@
 "use client"
 
+import { IDEA_TAGS, IDEA_TAG_LIST, type IdeaTag } from "@/app/domain/models/ideaTags"
+import { createBlogPost } from "@/app/interface/controller/blogController"
+import { useRegistrationStore } from "@/app/interface/state/registrationStore"
+import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
 import { Button } from "@/app/interface/ui/components/ui/button"
 import { Input } from "@/app/interface/ui/components/ui/input"
 import { Label } from "@/app/interface/ui/components/ui/label"
 import { Textarea } from "@/app/interface/ui/components/ui/textarea"
 import { Loader2 } from "lucide-react"
 import { useState } from "react"
-import { IDEA_TAGS, IDEA_TAG_LIST, type IdeaTag } from "@/app/domain/models/ideaTags"
-import { createBlogPost } from "@/app/interface/controller/blogController"
-import { useRegistrationStore } from "@/app/interface/state/registrationStore"
-import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
 
 export function BlogCreateScreen() {
   const userId = useRegistrationStore((state) => state.uniqueId)
@@ -43,7 +43,7 @@ export function BlogCreateScreen() {
       } else {
         alert(result.error || "投稿に失敗しました")
       }
-    } catch (error) {
+    } catch (_error) {
       alert("投稿に失敗しました")
     } finally {
       setIsPublishing(false)

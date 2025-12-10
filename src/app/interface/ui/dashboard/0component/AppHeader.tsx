@@ -1,6 +1,6 @@
 "use client"
 
-import { UserCircle, LogIn } from "lucide-react"
+import { LogIn, UserCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "../../../context/AuthContext"
 
@@ -23,12 +23,13 @@ export function AppHeader() {
       <div className="mx-auto max-w-md px-4 py-3">
         <div className="flex items-center justify-between">
           {/* 左側: アプリケーション名 */}
-          <div
+          <button
+            type="button"
             className="text-xl font-bold text-gray-900 cursor-pointer"
             onClick={() => router.push("/interface/ui/dashboard")} // ホームへの遷移を想定
           >
             TsunaguLink
-          </div>
+          </button>
 
           {/* 右側: ユーザー情報 / ログインボタン */}
           {loading ? (
@@ -37,6 +38,7 @@ export function AppHeader() {
           ) : user ? (
             // ログイン済みの場合
             <button
+              type="button"
               onClick={handleUserClick}
               className="flex items-center gap-2 transition-opacity hover:opacity-75"
             >
@@ -46,6 +48,7 @@ export function AppHeader() {
           ) : (
             // 未ログインの場合
             <button
+              type="button"
               onClick={handleLoginClick}
               className="flex items-center gap-1.5 rounded-full bg-gray-900 px-3 py-1.5 text-white transition-colors hover:bg-gray-800"
             >

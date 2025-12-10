@@ -1,9 +1,9 @@
 "use client"
 
-import { useEffect } from "react"
-import { trackProfileView } from "@/app/infrastructure/analytics/firebaseAnalytics"
-import { doc, setDoc, serverTimestamp, collection } from "firebase/firestore"
 import { getFirebaseDb } from "@/app/config/firebase/firebaseConfig"
+import { trackProfileView } from "@/app/infrastructure/analytics/firebaseAnalytics"
+import { collection, doc, serverTimestamp, setDoc } from "firebase/firestore"
+import { useEffect } from "react"
 
 interface ProfileTrackerProps {
   userId: string
