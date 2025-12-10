@@ -1,6 +1,7 @@
 "use client"
 
 import { Card } from "@/app/interface/ui/components/ui/card"
+import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
 import {
   Bell,
   Check,
@@ -13,7 +14,7 @@ import {
   Palette,
   User,
 } from "lucide-react"
-import { useRegistrationStore } from "../../state/registrationStore"
+import { useRegistrationStore } from "@/app/interface/state/registrationStore"
 import { useState } from "react"
 
 export function SettingsScreen() {
@@ -57,13 +58,9 @@ export function SettingsScreen() {
 
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
-      <div className="sticky top-0 z-10 bg-white p-4 shadow-sm">
-        <div className="mx-auto max-w-md">
-          <h1 className="text-lg font-semibold text-gray-800">設定</h1>
-        </div>
-      </div>
+      <PastelBackground />
 
-      <div className="flex-1 overflow-auto p-4">
+      <div className="relative z-0 flex-1 overflow-auto p-4">
         <div className="mx-auto max-w-md space-y-6">
           {/* Profile URL Section */}
           {uniqueId && (

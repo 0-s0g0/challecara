@@ -73,9 +73,11 @@ export function SearchScreen() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
-      <PastelBackground />
-      <div className="sticky top-0 z-10 bg-white/80 p-4 shadow-sm">
+    <div className="relative flex min-h-screen flex-col">
+      <div className="fixed inset-0 -z-10">
+        <PastelBackground />
+      </div>
+      <div className="sticky top-12 z-10 bg-white/95 p-4 shadow-sm backdrop-blur-sm">
         <div className="mx-auto max-w-md space-y-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
@@ -122,7 +124,7 @@ export function SearchScreen() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto p-4 pb-20">
+      <div className="relative z-0 flex-1 overflow-auto p-4 pb-20">
         <div className="mx-auto max-w-md space-y-4">
           <h2 className="text-lg font-semibold text-gray-800">
             {loading ? "読み込み中..." : `投稿 (${filteredBlogs.length})`}

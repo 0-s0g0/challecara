@@ -1,7 +1,8 @@
 "use client"
 
 import { Card } from "@/app/interface/ui/components/ui/card"
-import { Eye, Heart, MessageCircle, TrendingUp } from "lucide-react"
+import { Eye, Heart, TrendingUp } from "lucide-react"
+import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
 
 export function AnalyticsScreen() {
   // Mock analytics data - プロフィール閲覧データ
@@ -25,14 +26,10 @@ export function AnalyticsScreen() {
   const maxViews = Math.max(...weeklyViews.map((d) => d.views))
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
-      <div className="sticky top-0 z-10 bg-white p-4 shadow-sm">
-        <div className="mx-auto max-w-md">
-          <h1 className="text-lg font-semibold text-gray-800">分析</h1>
-        </div>
-      </div>
+    <div className="relative flex min-h-screen flex-col bg-gray-50">
+      <PastelBackground />
 
-      <div className="flex-1 overflow-auto p-4">
+      <div className="top-15 relative z-0 flex-1 overflow-auto p-4">
         <div className="mx-auto max-w-md space-y-6">
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-4">

@@ -2,33 +2,24 @@
 
 import { UserCircle, LogIn } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useState } from "react" // ダミーのログイン状態を保持するために使用
+import { useAuth } from "../../../context/AuthContext"
 
 export function AppHeader() {
   const router = useRouter()
+  const { user, loading } = useAuth()
 
-  // --- ダミーのログイン状態 ---
-  // 実際には、この部分は認証コンテキストやRedux/Zustandなどから取得します
-  const [isLoggedIn, setIsLoggedIn] = useState(true) // trueに設定するとログイン済みの表示
-  const [userName] = useState("ユーザー名") // ログイン済みの場合のユーザー名
-  // --------------------------
-
-  // 未ログイン時にログインページへ遷移する関数（ダミー）
+  // 未ログイン時にログインページへ遷移する関数
   const handleLoginClick = () => {
-    // 実際にはログインページへ遷移
-    console.log("ログインページへ遷移")
-    // router.push("/login")
+    router.push("/login")
   }
 
-  // ログイン済み時にプロフィールページなどへ遷移する関数（ダミー）
+  // ログイン済み時にプロフィールページなどへ遷移する関数
   const handleUserClick = () => {
-    // 実際にはプロフィールページへ遷移
-    console.log("プロフィールページへ遷移")
-    // router.push("/profile")
+    router.push("/profile")
   }
 
   return (
-    <header className="sticky top-0 left-0 right-0 z-50 border-b border-gray-200 bg-amber-900/10 shadow-md">
+    <header className="sticky top-0 left-0 right-0 z-50 border-b border-gray-200 bg-red-50 ">
       <div className="mx-auto max-w-md px-4 py-3">
         <div className="flex items-center justify-between">
           {/* 左側: アプリケーション名 */}
@@ -40,14 +31,17 @@ export function AppHeader() {
           </div>
 
           {/* 右側: ユーザー情報 / ログインボタン */}
-          {isLoggedIn ? (
+          {loading ? (
+            // ローディング中
+            <div className="h-6 w-20 animate-pulse rounded bg-gray-200" />
+          ) : user ? (
             // ログイン済みの場合
             <button
               onClick={handleUserClick}
               className="flex items-center gap-2 transition-opacity hover:opacity-75"
             >
               <UserCircle className="h-6 w-6 text-gray-600" />
-              <span className="text-sm font-medium text-gray-900">{userName}</span>
+              <span className="text-sm font-medium text-gray-900">{user.nickname}</span>
             </button>
           ) : (
             // 未ログインの場合
