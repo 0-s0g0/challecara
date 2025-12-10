@@ -18,7 +18,7 @@ jobs:
           echo ""
 
           # 許可されたプレフィックス
-          ALLOWED_PREFIXES="feat|fix|docs|chore|refactor|test|style|perf|ci|prod"
+          ALLOWED_PREFIXES="feat|fix|docs|chore|refactor|test|style|perf|ci|prod|hotfix"
 
           # 正規表現パターン: プレフィックス + コロン + 半角スペース + 説明
           # スコープは許可しない
@@ -85,6 +85,7 @@ jobs:
           echo "  perf:     - パフォーマンス改善"
           echo "  ci:       - CI設定の変更"
           echo "  prod:     - プロダクトリリース"
+          echo "  hotfix:   - 緊急のバグ修正"
           echo ""
 
           # 正しい形式の例
