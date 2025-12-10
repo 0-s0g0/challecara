@@ -1,5 +1,5 @@
-import { create } from "zustand"
 import type { IdeaTag } from "@/app/domain/models/ideaTags"
+import { create } from "zustand"
 
 interface RegistrationState {
   // Step 2 data

@@ -41,6 +41,15 @@ export function BackgroundEditModal({
       <div
         className="fixed inset-0 z-50 bg-black/50 animate-in fade-in duration-300"
         onClick={onClose}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault()
+            onClose()
+          }
+        }}
+        role="button"
+        tabIndex={0}
+        aria-label="閉じる"
       />
 
       {/* Modal */}
@@ -54,9 +63,10 @@ export function BackgroundEditModal({
           <div className="space-y-6">
             {/* Background Type Selector */}
             <div className="space-y-2">
-              <label className="text-sm text-gray-600">背景タイプ</label>
+              <p className="text-sm text-gray-600">背景タイプ</p>
               <div className="flex gap-2">
                 <button
+                  type="button"
                   onClick={() => setBackgroundType("solid")}
                   className={`flex-1 h-12 rounded-xl border-2 transition-all ${
                     backgroundType === "solid"
@@ -67,6 +77,7 @@ export function BackgroundEditModal({
                   単色
                 </button>
                 <button
+                  type="button"
                   onClick={() => setBackgroundType("gradient")}
                   className={`flex-1 h-12 rounded-xl border-2 transition-all ${
                     backgroundType === "gradient"
@@ -102,7 +113,9 @@ export function BackgroundEditModal({
             {backgroundType === "gradient" && (
               <>
                 <div className="space-y-4">
-                  <label className="text-sm text-gray-600">開始色</label>
+                  <label className="text-sm text-gray-600" htmlFor="gradient-start-color">
+                    開始色
+                  </label>
                   <div className="flex items-center gap-4">
                     <div
                       className="w-16 h-16 rounded-xl border-2 border-gray-200"
@@ -110,6 +123,7 @@ export function BackgroundEditModal({
                     />
                     <input
                       type="text"
+                      id="gradient-start-color"
                       value={gradientColor1}
                       onChange={(e) => setGradientColor1(e.target.value)}
                       placeholder="#FFFFFF"
@@ -133,7 +147,9 @@ export function BackgroundEditModal({
                 </div>
 
                 <div className="space-y-4">
-                  <label className="text-sm text-gray-600">終了色</label>
+                  <label className="text-sm text-gray-600" htmlFor="gradient-end-color">
+                    終了色
+                  </label>
                   <div className="flex items-center gap-4">
                     <div
                       className="w-16 h-16 rounded-xl border-2 border-gray-200"
@@ -141,6 +157,7 @@ export function BackgroundEditModal({
                     />
                     <input
                       type="text"
+                      id="gradient-end-color"
                       value={gradientColor2}
                       onChange={(e) => setGradientColor2(e.target.value)}
                       placeholder="#000000"
@@ -164,8 +181,11 @@ export function BackgroundEditModal({
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm text-gray-600">方向</label>
+                  <label className="text-sm text-gray-600" htmlFor="gradient-direction">
+                    方向
+                  </label>
                   <select
+                    id="gradient-direction"
                     value={gradientDirection}
                     onChange={(e) => setGradientDirection(e.target.value)}
                     className="w-full h-12 rounded-xl border-2 border-gray-200 px-4"
@@ -185,7 +205,7 @@ export function BackgroundEditModal({
 
             {/* Preview */}
             <div className="space-y-2">
-              <label className="text-sm text-gray-600">プレビュー</label>
+              <p className="text-sm text-gray-600">プレビュー</p>
               <div
                 className="h-24 rounded-xl border-2 border-gray-200"
                 style={{ background: backgroundColor }}

@@ -129,7 +129,14 @@ export function BlogSetupScreen({ onNext, onBack }: BlogSetupScreenProps) {
             className="h-12 flex-1 rounded-full bg-[#8B7355] px-8 text-white hover:bg-[#6B5335]"
           >
             次へ
-            <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="ml-1 h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <title>Next arrow</title>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </Button>

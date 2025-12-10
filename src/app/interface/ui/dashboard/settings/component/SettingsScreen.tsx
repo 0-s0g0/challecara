@@ -1,7 +1,8 @@
 "use client"
 
-import { Card } from "@/app/interface/ui/components/ui/card"
+import { useRegistrationStore } from "@/app/interface/state/registrationStore"
 import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
+import { Card } from "@/app/interface/ui/components/ui/card"
 import {
   Bell,
   Check,
@@ -14,7 +15,6 @@ import {
   Palette,
   User,
 } from "lucide-react"
-import { useRegistrationStore } from "@/app/interface/state/registrationStore"
 import { useState } from "react"
 
 export function SettingsScreen() {
@@ -79,6 +79,7 @@ export function SettingsScreen() {
                       <p className="text-xs text-gray-500">このURLをシェアして人とつながろう</p>
                     </div>
                     <button
+                      type="button"
                       onClick={handleCopyUrl}
                       className="flex-shrink-0 rounded-full bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
                     >
@@ -98,15 +99,16 @@ export function SettingsScreen() {
             </div>
           )}
 
-          {settingsGroups.map((group, groupIndex) => (
-            <div key={groupIndex} className="space-y-2">
+          {settingsGroups.map((group) => (
+            <div key={group.title} className="space-y-2">
               <h2 className="px-2 text-sm font-semibold text-gray-500">{group.title}</h2>
               <Card className="overflow-hidden rounded-2xl border-0 bg-white shadow-sm">
-                {group.items.map((item, itemIndex) => {
+                {group.items.map((item) => {
                   const Icon = item.icon
                   return (
                     <button
-                      key={itemIndex}
+                      key={`${group.title}-${item.label}`}
+                      type="button"
                       className="flex w-full items-center gap-4 p-4 transition-colors hover:bg-gray-50"
                     >
                       <div className="rounded-full bg-gray-100 p-2">
@@ -126,7 +128,10 @@ export function SettingsScreen() {
 
           {/* Logout Button */}
           <Card className="overflow-hidden rounded-2xl border-0 bg-white shadow-sm">
-            <button className="flex w-full items-center gap-4 p-4 transition-colors hover:bg-red-50">
+            <button
+              type="button"
+              className="flex w-full items-center gap-4 p-4 transition-colors hover:bg-red-50"
+            >
               <div className="rounded-full bg-red-100 p-2">
                 <LogOut className="h-5 w-5 text-red-600" />
               </div>

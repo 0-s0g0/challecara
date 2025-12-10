@@ -5,11 +5,11 @@ import { Button } from "@/app/interface/ui/components/ui/button"
 import { Input } from "@/app/interface/ui/components/ui/input"
 import { Label } from "@/app/interface/ui/components/ui/label"
 import { Textarea } from "@/app/interface/ui/components/ui/textarea"
-import { ChevronLeft, Upload, Loader2 } from "lucide-react"
+import { ImageConverter } from "@/app/utils/imageConverter"
+import { ImageValidator } from "@/app/utils/imageValidator"
+import { ChevronLeft, Loader2, Upload } from "lucide-react"
 import { useState } from "react"
 import { useRegistrationStore } from "../../state/registrationStore"
-import { ImageValidator } from "@/app/utils/imageValidator"
-import { ImageConverter } from "@/app/utils/imageConverter"
 
 interface ProfileSetupScreenProps {
   onNext: () => void
@@ -164,7 +164,14 @@ export function ProfileSetupScreen({ onNext, onBack }: ProfileSetupScreenProps) 
             className="h-12 flex-1 rounded-full bg-[#8B7355] text-white hover:bg-[#6B5335] disabled:opacity-50"
           >
             次へ
-            <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="ml-1 h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <title>Next arrow</title>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </Button>
