@@ -39,9 +39,7 @@ export function AnalyticsScreen({ userId }: AnalyticsScreenProps) {
   }
 
   const weeklyGrowth = profileData ? calculateWeeklyGrowth(profileData) : 0
-  const maxViews = profileData
-    ? Math.max(...profileData.weeklyViews.map((d) => d.count), 1)
-    : 1
+  const maxViews = profileData ? Math.max(...profileData.weeklyViews.map((d) => d.count), 1) : 1
 
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">

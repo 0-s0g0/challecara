@@ -4,6 +4,7 @@ import { AppFooter } from "@/app/interface/ui/components/AppFooter"
 import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
 import { useState, useEffect } from "react"
 import { useRegistrationStore } from "../../state/registrationStore"
+import { useAuth } from "../../context/AuthContext"
 import { AnalyticsScreen } from "./AnalyticsScreen"
 import { BlogCreateScreen } from "./BlogCreateScreen"
 import { SearchScreen } from "./SearchScreen"
@@ -14,6 +15,7 @@ import type { IdeaTag } from "@/app/domain/models/ideaTags"
 
 export function ProfileDisplayScreen() {
   const formData = useRegistrationStore()
+  const { user } = useAuth()
   const [activeTab] = useState<"home" | "search" | "create" | "analytics" | "settings">("home")
   const [ideaTags, setIdeaTags] = useState<IdeaTag[]>([])
 
@@ -68,7 +70,7 @@ export function ProfileDisplayScreen() {
 
         {activeTab === "search" && <SearchScreen />}
         {activeTab === "create" && <BlogCreateScreen />}
-        {activeTab === "analytics" && <AnalyticsScreen />}
+        {activeTab === "analytics" && user && <AnalyticsScreen userId={user.id} />}
         {activeTab === "settings" && <SettingsScreen />}
       </div>
 

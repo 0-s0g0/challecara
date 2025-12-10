@@ -8,7 +8,8 @@ export async function POST(request: NextRequest) {
 
     // リクエストからIPを取得
     const forwardedFor = request.headers.get("x-forwarded-for")
-    const viewerIp = forwardedFor ? forwardedFor.split(",")[0] : request.ip || "unknown"
+    const realIp = request.headers.get("x-real-ip")
+    const viewerIp = forwardedFor ? forwardedFor.split(",")[0] : realIp || "unknown"
 
     const profileViewRepository = new ProfileViewRepository()
 
@@ -26,9 +27,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error("Track view error:", error)
-    return NextResponse.json(
-      { success: false, error: "Failed to track view" },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: "Failed to track view" }, { status: 500 })
   }
 }

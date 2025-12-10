@@ -1,12 +1,7 @@
 export const GA_MEASUREMENT_ID = "G-0827G4RWDV"
 
 // Type-safe GA event tracking
-export const trackEvent = (
-  action: string,
-  category: string,
-  label?: string,
-  value?: number
-) => {
+export const trackEvent = (action: string, category: string, label?: string, value?: number) => {
   if (typeof window !== "undefined" && window.gtag) {
     window.gtag("event", action, {
       event_category: category,

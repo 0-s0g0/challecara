@@ -117,6 +117,10 @@ export const createMockBlogPostRepository = (
       })
     }),
     delete: vi.fn().mockResolvedValue(undefined),
+    getIdeaAnalytics: vi.fn().mockResolvedValue({
+      totalPublishedPosts: 0,
+      postsByCategory: [],
+    }),
     ...overrides,
   }
 }

@@ -16,7 +16,10 @@ import type {
 import type { IProfileViewRepository } from "../../domain/repository/IProfileViewRepository"
 import { BaseRepository } from "./BaseRepository"
 
-export class ProfileViewRepository extends BaseRepository<ProfileView> implements IProfileViewRepository {
+export class ProfileViewRepository
+  extends BaseRepository<ProfileView>
+  implements IProfileViewRepository
+{
   constructor() {
     super("profileViews")
   }
@@ -62,9 +65,7 @@ export class ProfileViewRepository extends BaseRepository<ProfileView> implement
 
       // Calculate total and unique views
       const totalViews = views.length
-      const uniqueIps = new Set(
-        views.map((doc) => doc.data().viewerIp).filter((ip) => ip)
-      )
+      const uniqueIps = new Set(views.map((doc) => doc.data().viewerIp).filter((ip) => ip))
 
       // Calculate daily views for the last 7 days
       const dailyMap = new Map<string, number>()
@@ -105,11 +106,7 @@ export class ProfileViewRepository extends BaseRepository<ProfileView> implement
     }
   }
 
-  async hasRecentView(
-    userId: string,
-    viewerIp: string,
-    minutesAgo = 60
-  ): Promise<boolean> {
+  async hasRecentView(userId: string, viewerIp: string, minutesAgo = 60): Promise<boolean> {
     try {
       const sinceDate = new Date()
       sinceDate.setMinutes(sinceDate.getMinutes() - minutesAgo)
