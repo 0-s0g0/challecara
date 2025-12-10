@@ -24,6 +24,22 @@
         { "fieldPath": "isPublished", "order": "ASCENDING" },
         { "fieldPath": "createdAt", "order": "DESCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "profileViews",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "userId", "order": "ASCENDING" },
+        { "fieldPath": "viewedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "linkClicks",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "userId", "order": "ASCENDING" },
+        { "fieldPath": "clickedAt", "order": "DESCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []
