@@ -108,7 +108,9 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
       }
     } catch (error) {
       console.error("Profile creation failed:", error)
-      alert(`プロフィールの作成に失敗しました: ${error instanceof Error ? error.message : String(error)}`)
+      alert(
+        `プロフィールの作成に失敗しました: ${error instanceof Error ? error.message : String(error)}`
+      )
     } finally {
       setIsCreating(false)
     }

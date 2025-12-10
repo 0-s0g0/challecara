@@ -74,7 +74,7 @@ export function SearchScreen() {
 
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
-      <PastelBackground/>
+      <PastelBackground />
       <div className="sticky top-0 z-10 bg-white/80 p-4 shadow-sm">
         <div className="mx-auto max-w-md space-y-3">
           <div className="relative">

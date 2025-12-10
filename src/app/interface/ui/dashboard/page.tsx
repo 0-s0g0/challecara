@@ -54,12 +54,20 @@ export default function DashboardPage() {
 
   // Extract social usernames from socialLinks
   const xUsername =
-    profileData.socialLinks.find((link) => link.provider === "twitter")?.url.split("/").pop() || ""
+    profileData.socialLinks
+      .find((link) => link.provider === "twitter")
+      ?.url.split("/")
+      .pop() || ""
   const instagramUsername =
-    profileData.socialLinks.find((link) => link.provider === "instagram")?.url.split("/").pop() ||
-    ""
+    profileData.socialLinks
+      .find((link) => link.provider === "instagram")
+      ?.url.split("/")
+      .pop() || ""
   const facebookUsername =
-    profileData.socialLinks.find((link) => link.provider === "facebook")?.url.split("/").pop() || ""
+    profileData.socialLinks
+      .find((link) => link.provider === "facebook")
+      ?.url.split("/")
+      .pop() || ""
 
   // Get the first blog post for display (if any)
   const firstBlogPost = profileData.blogPosts[0]

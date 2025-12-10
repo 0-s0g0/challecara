@@ -11,7 +11,6 @@ import { createBlogPost } from "@/app/interface/controller/blogController"
 import { useRegistrationStore } from "@/app/interface/state/registrationStore"
 import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
 
-
 export function BlogCreateScreen() {
   const userId = useRegistrationStore((state) => state.uniqueId)
   const [title, setTitle] = useState("")
@@ -73,10 +72,8 @@ export function BlogCreateScreen() {
             )}
           </Button>
         </div>
-
       </div>
       <div className="relative z-10 flex-1 overflow-auto p-4">
-                
         <div className="mx-auto max-w-md space-y-6">
           {/* Title */}
 
