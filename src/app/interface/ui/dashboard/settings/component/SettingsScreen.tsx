@@ -16,13 +16,42 @@ import {
   Shield,
   User,
 } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ProfileSecretSettings } from "./ProfileSecretSettings"
+import { getFirebaseAuth } from "@/app/config/firebase/firebaseConfig"
+import { UserRepository } from "@/app/infrastructure/repository/userRepository"
 
 export function SettingsScreen() {
-  const uniqueId = useRegistrationStore((state) => state.uniqueId)
+  const storeUniqueId = useRegistrationStore((state) => state.uniqueId)
+  const [uniqueId, setUniqueId] = useState<string>("")
   const [copied, setCopied] = useState(false)
   const [activeSection, setActiveSection] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  const auth = getFirebaseAuth()
+  const userRepository = new UserRepository()
+
+  // ログインユーザーの情報を取得
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
+      if (firebaseUser) {
+        try {
+          // Firestoreからユーザー情報を取得
+          const user = await userRepository.findById(firebaseUser.uid)
+          if (user) {
+            setUniqueId(user.uniqueId)
+          }
+        } catch (error) {
+          console.error("ユーザー情報の取得に失敗:", error)
+        }
+      } else {
+        // ストアのuniqueIdをフォールバックとして使用
+        setUniqueId(storeUniqueId)
+      }
+      setIsLoading(false)
+    })
+    return () => unsubscribe()
+  }, [storeUniqueId])
 
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL ||
@@ -91,11 +120,17 @@ export function SettingsScreen() {
           {!activeSection && (
             <>
               {/* Profile URL Section */}
-              {uniqueId && (
-                <div className="space-y-2">
-                  <h2 className="px-2 text-sm font-semibold text-gray-500">
-                    あなたの公開プロフィールURL
-                  </h2>
+              <div className="space-y-2">
+                <h2 className="px-2 text-sm font-semibold text-gray-500">
+                  あなたの公開プロフィールURL
+                </h2>
+                {isLoading ? (
+                  <Card className="overflow-hidden rounded-2xl border-0 bg-white shadow-sm">
+                    <div className="p-4">
+                      <p className="text-sm text-gray-500">読み込み中...</p>
+                    </div>
+                  </Card>
+                ) : uniqueId ? (
                   <Card className="overflow-hidden rounded-2xl border-0 bg-white shadow-sm">
                     <div className="p-4">
                       <div className="flex items-center gap-3">
@@ -120,8 +155,16 @@ export function SettingsScreen() {
                       </div>
                     </div>
                   </Card>
-                </div>
-              )}
+                ) : (
+                  <Card className="overflow-hidden rounded-2xl border-0 bg-white shadow-sm">
+                    <div className="p-4">
+                      <p className="text-sm text-gray-500">
+                        プロフィールの登録が完了すると、URLが表示されます
+                      </p>
+                    </div>
+                  </Card>
+                )}
+              </div>
 
               {settingsGroups.map((group, groupIndex) => (
                 <div key={groupIndex} className="space-y-2">
