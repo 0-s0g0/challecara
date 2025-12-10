@@ -57,17 +57,24 @@ export function Layout1({ data }: LayoutProps) {
               <>
                 {data.socialLinks
                   .filter((link) => link.isActive)
-                  .map((link) => (
-                    <TrackableSocialLink
-                      key={link.id}
-                      linkId={link.id}
-                      userId={data.userId!}
-                      provider={link.provider}
-                      url={link.url}
-                    >
-                      <SocialIcon type={link.provider === "twitter" ? "x" : link.provider} />
-                    </TrackableSocialLink>
-                  ))}
+                  .map((link) => {
+                    // SocialIconは instagram, x, facebook のみをサポート
+                    const iconType = link.provider === "twitter" ? "x" : link.provider
+                    if (iconType !== "instagram" && iconType !== "x" && iconType !== "facebook") {
+                      return null // tiktokなどはスキップ
+                    }
+                    return (
+                      <TrackableSocialLink
+                        key={link.id}
+                        linkId={link.id}
+                        userId={data.userId!}
+                        provider={link.provider}
+                        url={link.url}
+                      >
+                        <SocialIcon type={iconType} />
+                      </TrackableSocialLink>
+                    )
+                  })}
               </>
             ) : (
               <>

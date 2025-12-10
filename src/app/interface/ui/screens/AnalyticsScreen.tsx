@@ -15,19 +15,19 @@ export function AnalyticsScreen() {
 
   useEffect(() => {
     const fetchAnalytics = async () => {
-      if (!user?.uid) {
+      if (!user?.id) {
         setLoading(false)
         return
       }
 
       try {
         const repository = new FirestoreAnalyticsRepository()
-        const analyticsData = await repository.getAnalyticsStats(user.uid, 7)
+        const analyticsData = await repository.getAnalyticsStats(user.id, 7)
         setStats(analyticsData)
 
         // 週間データを取得（7日間のビュー数を日別に集計）
         const views = await repository.getProfileViews(
-          user.uid,
+          user.id,
           new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
           new Date()
         )
@@ -61,7 +61,7 @@ export function AnalyticsScreen() {
     }
 
     fetchAnalytics()
-  }, [user?.uid])
+  }, [user?.id])
 
   if (loading) {
     return (
