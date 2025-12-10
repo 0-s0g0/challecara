@@ -105,12 +105,8 @@ export function AnalyticsScreen() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
-      <div className="sticky top-0 z-10 bg-white p-4 shadow-sm">
-        <div className="mx-auto max-w-md">
-          <h1 className="text-lg font-semibold text-gray-800">分析</h1>
-        </div>
-      </div>
+    <div className="relative flex min-h-screen flex-col bg-gray-50">
+      <PastelBackground />
 
       <div className="flex-1 overflow-auto p-4 pb-24">
         <div className="mx-auto max-w-md space-y-6">
