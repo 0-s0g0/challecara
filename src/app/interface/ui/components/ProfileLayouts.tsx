@@ -179,20 +179,18 @@ export function Layout2({ data }: LayoutProps) {
           {data.ideaTags && data.ideaTags.length > 0 ? (
             <div className="flex justify-center">
               <TagBallsPhysics
-                tagCounts={
-                  (data.ideaTags || []).reduce(
-                    (acc, tag) => {
-                      const existing = acc.find((t) => t.tag === tag)
-                      if (existing) {
-                        existing.count++
-                      } else {
-                        acc.push({ tag, count: 1 })
-                      }
-                      return acc
-                    },
-                    [] as Array<{ tag: IdeaTag; count: number }>
-                  )
-                }
+                tagCounts={(data.ideaTags || []).reduce(
+                  (acc, tag) => {
+                    const existing = acc.find((t) => t.tag === tag)
+                    if (existing) {
+                      existing.count++
+                    } else {
+                      acc.push({ tag, count: 1 })
+                    }
+                    return acc
+                  },
+                  [] as Array<{ tag: IdeaTag; count: number }>
+                )}
                 width={320}
                 height={200}
               />
@@ -208,7 +206,9 @@ export function Layout2({ data }: LayoutProps) {
                   <span>{IDEA_TAGS[data.ideaTag].name}</span>
                 </span>
               )}
-              <h3 className="font-semibold text-purple-900">{data.ideaTitle || "アイデア・想い"}</h3>
+              <h3 className="font-semibold text-purple-900">
+                {data.ideaTitle || "アイデア・想い"}
+              </h3>
               <p className="mt-1 text-xs text-purple-700">最新の投稿をチェック</p>
             </div>
           )}
@@ -251,20 +251,18 @@ export function Layout3({ data }: LayoutProps) {
           {data.ideaTags && data.ideaTags.length > 0 ? (
             <div className="mt-8 w-full flex justify-center">
               <TagBallsPhysics
-                tagCounts={
-                  (data.ideaTags || []).reduce(
-                    (acc, tag) => {
-                      const existing = acc.find((t) => t.tag === tag)
-                      if (existing) {
-                        existing.count++
-                      } else {
-                        acc.push({ tag, count: 1 })
-                      }
-                      return acc
-                    },
-                    [] as Array<{ tag: IdeaTag; count: number }>
-                  )
-                }
+                tagCounts={(data.ideaTags || []).reduce(
+                  (acc, tag) => {
+                    const existing = acc.find((t) => t.tag === tag)
+                    if (existing) {
+                      existing.count++
+                    } else {
+                      acc.push({ tag, count: 1 })
+                    }
+                    return acc
+                  },
+                  [] as Array<{ tag: IdeaTag; count: number }>
+                )}
                 width={340}
                 height={180}
               />

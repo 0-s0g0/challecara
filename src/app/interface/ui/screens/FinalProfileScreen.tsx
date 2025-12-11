@@ -90,7 +90,7 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
             console.log("[FinalProfile] クライアント側でのサインインに成功しました")
 
             // AuthContextの更新を待つ
-            await new Promise(resolve => setTimeout(resolve, 500))
+            await new Promise((resolve) => setTimeout(resolve, 500))
           } catch (signInError) {
             console.error("[FinalProfile] クライアント側でのサインインに失敗:", signInError)
             // Don't block the flow if sign-in fails, as the cookie-based auth still works
@@ -215,7 +215,12 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
                 aria-hidden="true"
               >
                 <title>Next arrow</title>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
               </svg>
             </>
           ) : (

@@ -147,7 +147,9 @@ export function BlogCreateScreen() {
                       >
                         {tagInfo.name}
                       </span>
-                      <span className={`text-[10px] mt-0.5 ${isSelected ? "text-white/80" : "text-gray-500"}`}>
+                      <span
+                        className={`text-[10px] mt-0.5 ${isSelected ? "text-white/80" : "text-gray-500"}`}
+                      >
                         {tagInfo.nameEn}
                       </span>
                     </div>
@@ -156,7 +158,6 @@ export function BlogCreateScreen() {
               })}
             </div>
           </div>
-
         </div>
       </div>
     </div>

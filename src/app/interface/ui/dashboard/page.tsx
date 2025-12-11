@@ -52,7 +52,8 @@ export default function DashboardPage() {
         console.log("[Dashboard] プロフィールデータ取得成功:", data)
       } catch (error) {
         console.error("[Dashboard] プロフィールデータの取得に失敗しました:", error)
-        const errorMessage = error instanceof Error ? error.message : "プロフィールデータの取得に失敗しました"
+        const errorMessage =
+          error instanceof Error ? error.message : "プロフィールデータの取得に失敗しました"
         setProfileError(errorMessage)
       } finally {
         setLoadingProfile(false)
