@@ -53,12 +53,17 @@ const getLayoutTransform = (
 export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenProps) {
   const formData = useRegistrationStore()
   const setSelectedLayout = useRegistrationStore((state) => state.setSelectedLayout)
+  const setBackgroundColor = useRegistrationStore((state) => state.setBackgroundColor)
 
   const [selectedLayout, setSelectedLayoutLocal] = useState(formData.selectedLayout || 0)
   const [currentScrollLeft, setCurrentScrollLeft] = useState(0)
   const [isEditing, setIsEditing] = useState(false)
-  const [backgroundType, setBackgroundType] = useState<"solid" | "gradient">("solid")
-  const [solidColor, setSolidColor] = useState("#FFFFFF")
+  const [backgroundType, setBackgroundType] = useState<"solid" | "gradient">(
+    formData.backgroundColor?.startsWith("linear-gradient") ? "gradient" : "solid"
+  )
+  const [solidColor, setSolidColor] = useState(
+    formData.backgroundColor?.startsWith("#") ? formData.backgroundColor : "#FFFFFF"
+  )
   const [gradientColor1, setGradientColor1] = useState("#FFFFFF")
   const [gradientColor2, setGradientColor2] = useState("#000000")
   const [gradientDirection, setGradientDirection] = useState("to-br")
@@ -152,8 +157,9 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
   }
 
   const handleNext = () => {
-    // Save selected layout to store
+    // Save selected layout and background color to store
     setSelectedLayout(selectedLayout)
+    setBackgroundColor(backgroundColor)
     onNext()
   }
 
@@ -179,8 +185,8 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
                 key={layout.id}
                 type="button"
                 onClick={() => scrollToLayout(index)}
-                className={`h-2 w-2 rounded-full transition-all duration-300 ${
-                  selectedLayout === index ? "w-6 bg-[#8B7355]" : "bg-gray-300"
+                className={`h-3 w-3 rounded-full transition-all duration-300 ${
+                  selectedLayout === index ? "w-10 bg-[#8B7355]" : "bg-gray-300"
                 }`}
               />
             ))}
@@ -190,7 +196,7 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
           <div
             ref={scrollRef}
             onScroll={handleScroll}
-            className="flex h-full snap-x snap-mandatory gap-6 overflow-x-auto pb-4 scrollbar-hide px-8"
+            className="flex mt-5 h-full snap-x snap-mandatory gap-6 overflow-x-auto pb-4 scrollbar-hide px-8"
             style={{ scrollSnapType: "x mandatory" }}
           >
             {layouts.map((layout, index) => {

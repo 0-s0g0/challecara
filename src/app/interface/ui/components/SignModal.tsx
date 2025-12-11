@@ -6,6 +6,7 @@ import { Button } from "@/app/interface/ui/components/ui/button"
 import { Input } from "@/app/interface/ui/components/ui/input"
 import { Label } from "@/app/interface/ui/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/interface/ui/components/ui/tabs"
+import { useRouter } from "next/navigation"
 import type * as React from "react"
 import { useEffect, useState } from "react"
 
@@ -25,6 +26,7 @@ const generateAccountId = () => {
 }
 
 export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
+  const router = useRouter()
   const setLoginData = useRegistrationStore((state) => state.setLoginData)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -73,9 +75,16 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
         // Check tutorial completion status
         if (result.user.tutorialCompleted) {
           // チュートリアル完了済み → ダッシュボードへ
-          window.location.href = "/interface/ui/dashboard"
+          // Next.js Routerを使用してAuthContextの状態を確実に更新
+          console.log("[SignModal] ダッシュボードへリダイレクト中...")
+          router.push("/interface/ui/dashboard")
+          // AuthContextの更新を待つために少し遅延
+          setTimeout(() => {
+            router.refresh()
+          }, 100)
         } else {
           // チュートリアル未完了 → 続きから（onSuccessで処理）
+          console.log("[SignModal] チュートリアル未完了、続きから再開")
           if (onSuccess) {
             onSuccess()
           }
@@ -84,6 +93,7 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
         setError(result.error || "サインインに失敗しました")
       }
     } catch (err) {
+      console.error("[SignModal] サインインエラー:", err)
       setError(err instanceof Error ? err.message : "サインインに失敗しました")
     } finally {
       setIsLoading(false)

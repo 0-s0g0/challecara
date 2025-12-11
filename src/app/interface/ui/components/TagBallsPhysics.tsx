@@ -2,7 +2,7 @@
 
 import { IDEA_TAGS, type IdeaTag } from "@/app/domain/models/ideaTags"
 import Matter from "matter-js"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
 interface TagBallsPhysicsProps {
   tagCounts: Array<{ tag: IdeaTag; count: number }>
@@ -14,9 +14,39 @@ export function TagBallsPhysics({ tagCounts, width, height }: TagBallsPhysicsPro
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const engineRef = useRef<Matter.Engine | null>(null)
   const renderRef = useRef<Matter.Render | null>(null)
+  const imagesRef = useRef<Map<IdeaTag, HTMLImageElement>>(new Map())
+  const [imagesLoaded, setImagesLoaded] = useState(false)
+
+  // 画像をプリロード
+  useEffect(() => {
+    if (!tagCounts || tagCounts.length === 0) return
+
+    let loadedCount = 0
+    const totalImages = tagCounts.length
+
+    tagCounts.forEach((tagCount) => {
+      const tagInfo = IDEA_TAGS[tagCount.tag]
+      const img = new Image()
+      img.src = tagInfo.imagePath
+      img.onload = () => {
+        imagesRef.current.set(tagCount.tag, img)
+        loadedCount++
+        if (loadedCount === totalImages) {
+          setImagesLoaded(true)
+        }
+      }
+      img.onerror = () => {
+        console.error(`Failed to load image: ${tagInfo.imagePath}`)
+        loadedCount++
+        if (loadedCount === totalImages) {
+          setImagesLoaded(true)
+        }
+      }
+    })
+  }, [tagCounts])
 
   useEffect(() => {
-    if (!canvasRef.current || !tagCounts || tagCounts.length === 0) return
+    if (!canvasRef.current || !tagCounts || tagCounts.length === 0 || !imagesLoaded) return
 
     // matter.jsのモジュール
     const Engine = Matter.Engine
@@ -68,28 +98,26 @@ export function TagBallsPhysics({ tagCounts, width, height }: TagBallsPhysicsPro
     // タグボールを作成
     const balls = tagCounts.map((tagCount, index) => {
       const tagInfo = IDEA_TAGS[tagCount.tag]
-      // サイズを投稿数に応じて変更（最小20px、最大40px半径）
-      const radius = Math.min(40, Math.max(20, 20 + tagCount.count * 4))
+      // サイズを投稿数に応じて変更（最小30px、最大60px半径）
+      const radius = Math.min(60, Math.max(30, 30 + tagCount.count * 5))
 
       // ボールの初期位置（上からランダムに配置）
       const x = (width / (tagCounts.length + 1)) * (index + 1) + (Math.random() - 0.5) * 50
       const y = -50 - index * 60 // 上から順番に落ちてくる
 
-      // グラデーションから単色を抽出（簡易的に）
-      // TODO: カスタムレンダリングでグラデーションを実装
-      const color = tagInfo.gradient.match(/#[0-9A-Fa-f]{6}/)?.[0] || "#6366f1"
-
       return Bodies.circle(x, y, radius, {
         restitution: 0.6, // 弾性
         friction: 0.001,
         render: {
-          fillStyle: color,
+          fillStyle: "transparent", // カスタムレンダリングで描画
         },
         // カスタムデータを保存
         label: JSON.stringify({
           tag: tagCount.tag,
           count: tagCount.count,
-          icon: tagInfo.icon,
+          name: tagInfo.name,
+          nameEn: tagInfo.nameEn,
+          gradient: tagInfo.gradient,
         }),
       })
     })
@@ -109,11 +137,11 @@ export function TagBallsPhysics({ tagCounts, width, height }: TagBallsPhysicsPro
       Composite.clear(engine.world, false)
       Engine.clear(engine)
     }
-  }, [tagCounts, width, height])
+  }, [tagCounts, width, height, imagesLoaded])
 
-  // カスタムレンダリングでテキストとアイコンを描画
+  // カスタムレンダリングで背景画像、グラデーション、テキストを描画
   useEffect(() => {
-    if (!canvasRef.current || !engineRef.current) return
+    if (!canvasRef.current || !engineRef.current || !imagesLoaded) return
 
     const canvas = canvasRef.current
     const ctx = canvas.getContext("2d")
@@ -122,7 +150,9 @@ export function TagBallsPhysics({ tagCounts, width, height }: TagBallsPhysicsPro
     const engine = engineRef.current
 
     const renderFrame = () => {
-      // matter.jsのレンダラーが既に描画しているので、その上にテキストを追加
+      // Canvasをクリア
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
       const bodies = Matter.Composite.allBodies(engine.world)
 
       bodies.forEach((body) => {
@@ -130,29 +160,73 @@ export function TagBallsPhysics({ tagCounts, width, height }: TagBallsPhysicsPro
 
         try {
           const data = JSON.parse(body.label)
-          const { icon, count } = data
+          const { tag, name, nameEn, gradient } = data
+          const radius = body.circleRadius || 30
 
-          // アイコンとカウントを描画
           ctx.save()
           ctx.translate(body.position.x, body.position.y)
           ctx.rotate(body.angle)
 
-          // テキストのスタイル
-          ctx.fillStyle = "white"
-          ctx.textAlign = "center"
-          ctx.textBaseline = "middle"
+          // クリッピングパスで円形にする
+          ctx.beginPath()
+          ctx.arc(0, 0, radius, 0, Math.PI * 2)
+          ctx.clip()
 
-          // アイコン
-          ctx.font = `${body.circleRadius ? body.circleRadius * 0.8 : 20}px Arial`
-          ctx.fillText(icon, 0, -5)
+          // グラデーション背景を描画
+          const gradientMatch = gradient.match(/#[0-9A-Fa-f]{6}/g)
+          if (gradientMatch && gradientMatch.length >= 2) {
+            const grad = ctx.createLinearGradient(-radius, -radius, radius, radius)
+            grad.addColorStop(0, gradientMatch[0])
+            grad.addColorStop(1, gradientMatch[1])
+            ctx.fillStyle = grad
+          } else {
+            ctx.fillStyle = gradientMatch?.[0] || "#6366f1"
+          }
+          ctx.fill()
 
-          // カウント
-          ctx.font = `${body.circleRadius ? body.circleRadius * 0.4 : 12}px Arial`
-          ctx.fillText(count.toString(), 0, body.circleRadius ? body.circleRadius * 0.4 : 10)
+          // 背景画像を半透明で描画
+          const image = imagesRef.current.get(tag)
+          if (image) {
+            ctx.globalAlpha = 0.2
+            const imageSize = radius * 2
+            ctx.drawImage(image, -radius, -radius, imageSize, imageSize)
+            ctx.globalAlpha = 1.0
+          }
+
+          // ボーダーを描画
+          ctx.beginPath()
+          ctx.arc(0, 0, radius, 0, Math.PI * 2)
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.3)"
+          ctx.lineWidth = 2
+          ctx.stroke()
 
           ctx.restore()
-        } catch (_error) {
-          // ラベルがJSON形式でない場合はスキップ
+
+          // テキストを描画（クリッピングなし）
+          ctx.save()
+          ctx.translate(body.position.x, body.position.y)
+          ctx.rotate(body.angle)
+
+          ctx.fillStyle = "#000000"
+          ctx.textAlign = "center"
+          ctx.textBaseline = "middle"
+          ctx.shadowColor = "rgba(255, 255, 255, 0.5)"
+          ctx.shadowBlur = 2
+
+          // タグ名（大きく）
+          const fontSize = Math.max(12, radius * 0.35)
+          ctx.font = `bold ${fontSize}px sans-serif`
+          ctx.fillText(name, 0, -fontSize * 0.3)
+
+          // 英語名（小さく）
+          const smallFontSize = Math.max(8, radius * 0.22)
+          ctx.font = `${smallFontSize}px sans-serif`
+          ctx.fillStyle = "rgba(0, 0, 0, 0.7)"
+          ctx.fillText(nameEn, 0, fontSize * 0.5)
+
+          ctx.restore()
+        } catch (error) {
+          console.error("Rendering error:", error)
         }
       })
 
@@ -164,12 +238,12 @@ export function TagBallsPhysics({ tagCounts, width, height }: TagBallsPhysicsPro
     return () => {
       cancelAnimationFrame(animationId)
     }
-  }, [tagCounts])
+  }, [tagCounts, imagesLoaded])
 
   if (!tagCounts || tagCounts.length === 0) {
     return (
       <div
-        className="flex items-center justify-center bg-gray-50 rounded-2xl"
+        className="flex items-center justify-center bg-gray-100 rounded-2xl"
         style={{ width: `${width}px`, height: `${height}px` }}
       >
         <p className="text-sm text-gray-400">まだ投稿がありません</p>
@@ -179,7 +253,7 @@ export function TagBallsPhysics({ tagCounts, width, height }: TagBallsPhysicsPro
 
   return (
     <div
-      className="relative overflow-hidden bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl"
+      className="relative overflow-hidden backdrop-blur-xl bg-white/50 rounded-2xl"
       style={{ width: `${width}px`, height: `${height}px` }}
     >
       <canvas ref={canvasRef} className="absolute inset-0" />

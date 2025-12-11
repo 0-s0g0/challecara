@@ -27,6 +27,7 @@ interface RegistrationState {
 
   // Step 6 data
   selectedLayout: number
+  backgroundColor: string
 
   // Created profile data
   uniqueId: string
@@ -44,6 +45,7 @@ interface RegistrationState {
   ) => void
   setIdeaData: (title: string, content: string, tag: IdeaTag | "") => void
   setSelectedLayout: (layout: number) => void
+  setBackgroundColor: (backgroundColor: string) => void
   setUniqueId: (uniqueId: string) => void
   reset: () => void
 }
@@ -65,6 +67,7 @@ export const useRegistrationStore = create<RegistrationState>((set) => ({
   ideaContent: "",
   ideaTag: "",
   selectedLayout: 0,
+  backgroundColor: "#FFFFFF",
   uniqueId: "",
 
   setLoginData: (email, accountId, password) => set({ email, accountId, password }),
@@ -87,6 +90,7 @@ export const useRegistrationStore = create<RegistrationState>((set) => ({
     }),
   setIdeaData: (ideaTitle, ideaContent, ideaTag) => set({ ideaTitle, ideaContent, ideaTag }),
   setSelectedLayout: (selectedLayout) => set({ selectedLayout }),
+  setBackgroundColor: (backgroundColor) => set({ backgroundColor }),
   setUniqueId: (uniqueId) => set({ uniqueId }),
   reset: () =>
     set({
@@ -106,6 +110,7 @@ export const useRegistrationStore = create<RegistrationState>((set) => ({
       ideaContent: "",
       ideaTag: "",
       selectedLayout: 0,
+      backgroundColor: "#FFFFFF",
       uniqueId: "",
     }),
 }))

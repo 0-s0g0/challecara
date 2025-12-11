@@ -9,6 +9,7 @@ import { Input } from "@/app/interface/ui/components/ui/input"
 import { Label } from "@/app/interface/ui/components/ui/label"
 import { Textarea } from "@/app/interface/ui/components/ui/textarea"
 import { Loader2 } from "lucide-react"
+import Image from "next/image"
 import { useState } from "react"
 
 export function BlogCreateScreen() {
@@ -111,7 +112,7 @@ export function BlogCreateScreen() {
           {/* Tag Selection */}
           <div className="space-y-3">
             <Label className="text-sm text-gray-700">カテゴリータグ</Label>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-10 gap-2">
               {IDEA_TAG_LIST.map((tag) => {
                 const tagInfo = IDEA_TAGS[tag]
                 const isSelected = ideaTag === tag
@@ -121,7 +122,7 @@ export function BlogCreateScreen() {
                     key={tag}
                     type="button"
                     onClick={() => setIdeaTag(tag)}
-                    className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all ${
+                    className={`relative flex flex-col items-center justify-center p-3 rounded-full border-2 transition-all aspect-square overflow-hidden ${
                       isSelected
                         ? "border-primary bg-primary/10 scale-105"
                         : "border-gray-200 bg-white hover:border-primary/50"
@@ -130,14 +131,23 @@ export function BlogCreateScreen() {
                       background: isSelected ? tagInfo.gradient : undefined,
                     }}
                   >
-                    <span className="text-2xl">{tagInfo.icon}</span>
-                    <div className="flex flex-col items-start flex-1">
+                    {/* 背景画像 */}
+                    <div className="absolute inset-0 opacity-20">
+                      <Image
+                        src={tagInfo.imagePath}
+                        alt={tagInfo.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    {/* テキスト */}
+                    <div className="relative z-10 flex flex-col items-center justify-center text-center">
                       <span
-                        className={`font-bold text-sm ${isSelected ? "text-white" : "text-gray-800"}`}
+                        className={`font-bold text-xl ${isSelected ? "text-white" : "text-gray-800"}`}
                       >
                         {tagInfo.name}
                       </span>
-                      <span className={`text-xs ${isSelected ? "text-white/80" : "text-gray-500"}`}>
+                      <span className={`text-[10px] mt-0.5 ${isSelected ? "text-white/80" : "text-gray-500"}`}>
                         {tagInfo.nameEn}
                       </span>
                     </div>
@@ -147,11 +157,6 @@ export function BlogCreateScreen() {
             </div>
           </div>
 
-          <div className="rounded-2xl bg-blue-50 p-4">
-            <p className="text-sm text-blue-800">
-              💡 ヒント: タグを選択すると、同じテーマに興味がある人に見つけてもらいやすくなります！
-            </p>
-          </div>
         </div>
       </div>
     </div>

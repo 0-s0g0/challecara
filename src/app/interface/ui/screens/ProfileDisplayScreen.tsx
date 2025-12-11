@@ -49,7 +49,7 @@ export function ProfileDisplayScreen() {
     ideaTitle: formData.ideaTitle,
     ideaTag: formData.ideaTag,
     ideaTags: ideaTags,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: formData.backgroundColor,
   }
 
   return (
