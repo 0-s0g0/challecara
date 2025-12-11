@@ -9,14 +9,24 @@ import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/component
 import { AppFooter } from "@/app/interface/ui/dashboard/0component/AppFooter"
 import { AppHeader } from "@/app/interface/ui/dashboard/0component/AppHeader"
 import { useEffect, useState } from "react"
+import { usePathname } from "next/navigation"
 
 export default function DashboardPage() {
   const { firebaseUser, loading } = useAuth()
+  const pathname = usePathname()
   const [profileData, setProfileData] = useState<ProfileData | null>(null)
   const [selectedLayout, _setSelectedLayout] = useState(0)
+  const [lastVisitTime, setLastVisitTime] = useState(0)
 
   const layouts = [Layout1, Layout2, Layout3, Layout4]
   const SelectedLayout = layouts[selectedLayout] || Layout1
+
+  // ページに戻ったときに更新時刻を記録
+  // useEffect(() => {
+  //   if (pathname === "/interface/ui/dashboard") {
+  //     setLastVisitTime(Date.now())
+  //   }
+  // }, [pathname])
 
   // Fetch complete profile data from Firestore
   useEffect(() => {
@@ -37,7 +47,7 @@ export default function DashboardPage() {
       }
     }
     fetchProfileData()
-  }, [firebaseUser])
+  }, [firebaseUser, lastVisitTime])
 
   if (loading || !profileData) {
     return (

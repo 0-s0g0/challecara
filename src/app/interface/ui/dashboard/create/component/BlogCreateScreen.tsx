@@ -2,7 +2,7 @@
 
 import { IDEA_TAGS, IDEA_TAG_LIST, type IdeaTag } from "@/app/domain/models/ideaTags"
 import { createBlogPost } from "@/app/interface/controller/blogController"
-import { useRegistrationStore } from "@/app/interface/state/registrationStore"
+import { useAuth } from "@/app/interface/context/AuthContext"
 import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
 import { Button } from "@/app/interface/ui/components/ui/button"
 import { Input } from "@/app/interface/ui/components/ui/input"
@@ -12,7 +12,7 @@ import { Loader2 } from "lucide-react"
 import { useState } from "react"
 
 export function BlogCreateScreen() {
-  const userId = useRegistrationStore((state) => state.uniqueId)
+  const { firebaseUser } = useAuth()
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
   const [ideaTag, setIdeaTag] = useState<IdeaTag | "">("")
@@ -23,17 +23,25 @@ export function BlogCreateScreen() {
       alert("タイトル、内容、タグをすべて入力してください")
       return
     }
+    if (!firebaseUser) {
+      alert("ログインしていません")
+      return
+    }
+
+    console.log("🔑 Firebase User UID:", firebaseUser.uid)
+    console.log("📝 Creating blog post with userId:", firebaseUser.uid)
 
     setIsPublishing(true)
     try {
       const result = await createBlogPost({
-        userId: userId || "",
+        userId: firebaseUser.uid,
         title,
         content,
         ideaTag,
         imageUrl: "",
         isPublished: true,
       })
+      console.log("✅ Blog post creation result:", result)
 
       if (result.success) {
         alert("投稿しました！")
