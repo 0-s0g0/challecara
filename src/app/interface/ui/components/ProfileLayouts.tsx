@@ -6,7 +6,7 @@ import { Card } from "@/app/interface/ui/components/ui/card"
 import Image from "next/image"
 import type React from "react"
 import { FaFacebook, FaInstagram, FaXTwitter } from "react-icons/fa6"
-import { TagBallsCSS } from "./TagBallsCSS"
+import { TagBallsPhysics } from "./TagBallsPhysics"
 import { TrackableSocialLink } from "./TrackableSocialLink"
 
 interface ProfileData {
@@ -93,7 +93,7 @@ export function Layout1({ data }: LayoutProps) {
       <div className="bg-white p-4 relative">
         {data.ideaTags && data.ideaTags.length > 0 ? (
           <div className="relative z-20 flex justify-center">
-            <TagBallsCSS
+            <TagBallsPhysics
               tagCounts={
                 // タグを集計
                 (data.ideaTags || []).reduce(

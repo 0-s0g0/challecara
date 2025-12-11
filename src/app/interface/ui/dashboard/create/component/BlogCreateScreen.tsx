@@ -28,9 +28,6 @@ export function BlogCreateScreen() {
       return
     }
 
-    console.log("🔑 Firebase User UID:", firebaseUser.uid)
-    console.log("📝 Creating blog post with userId:", firebaseUser.uid)
-
     setIsPublishing(true)
     try {
       const result = await createBlogPost({
@@ -41,7 +38,6 @@ export function BlogCreateScreen() {
         imageUrl: "",
         isPublished: true,
       })
-      console.log("✅ Blog post creation result:", result)
 
       if (result.success) {
         alert("投稿しました！")
