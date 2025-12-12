@@ -122,37 +122,36 @@ export function BlogCreateScreen() {
                     </div>
                     {/* テキスト */}
                     <div className="relative z-10 flex flex-col items-center justify-center text-center">
-                    <span
-                      className={`font-bold text-xs xl:text-xl  ${isSelected ? "amber-900" : "text-amber-950"}`}
-                    >
-                      {tagInfo.name}
-                    </span>
-                    <span
-                      className={`text-[10px] mt-0.5 ${isSelected ? "text-amber-900/80" : "text-amber-900/60"}`}
-                    >
-                      {tagInfo.nameEn}
-                    </span>
-                  </div>
+                      <span
+                        className={`font-bold text-xs xl:text-xl  ${isSelected ? "amber-900" : "text-amber-950"}`}
+                      >
+                        {tagInfo.name}
+                      </span>
+                      <span
+                        className={`text-[10px] mt-0.5 ${isSelected ? "text-amber-900/80" : "text-amber-900/60"}`}
+                      >
+                        {tagInfo.nameEn}
+                      </span>
+                    </div>
                   </button>
                 )
               })}
             </div>
             <Button
-            onClick={handlePublish}
-            disabled={!title || !content || !ideaTag || isPublishing}
-            className="mt-5 h-12 w-full rounded-full bg-[#8B7355] px-8 text-white hover:bg-[#6B5335]"
-          >
-            {isPublishing ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                投稿中...
-              </>
-            ) : (
-              "投稿する"
-            )}
-          </Button>
+              onClick={handlePublish}
+              disabled={!title || !content || !ideaTag || isPublishing}
+              className="mt-5 h-12 w-full rounded-full bg-[#8B7355] px-8 text-white hover:bg-[#6B5335]"
+            >
+              {isPublishing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  投稿中...
+                </>
+              ) : (
+                "投稿する"
+              )}
+            </Button>
           </div>
-          
         </div>
       </div>
     </div>
