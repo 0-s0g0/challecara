@@ -20,7 +20,14 @@ export function WelcomeScreen({ onNext }: WelcomeScreenProps) {
           alt="TsunaguLink Logo"
           width={300}
           height={300}
-          className="mx-auto mb-4"
+          className="mx-auto mb-4 dark:hidden"
+        />
+        <Image
+          src="/TsunaguLink-logo-dark.svg"
+          alt="TsunaguLink2 Logo"
+          width={300}
+          height={300}
+          className="mx-auto mb-4 hidden dark:block"
         />
 
         <p className="mb-12 text-sm ">あなたとみんなを繋ぐリンク</p>

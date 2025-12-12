@@ -112,7 +112,7 @@ export function BlogCreateScreen() {
           {/* Tag Selection */}
           <div className="space-y-3">
             <Label className="text-sm text-gray-700">カテゴリータグ</Label>
-            <div className="grid grid-cols-10 gap-2">
+            <div className="grid grid-cols-5 md:grid-cols-10 gap-2">
               {IDEA_TAG_LIST.map((tag) => {
                 const tagInfo = IDEA_TAGS[tag]
                 const isSelected = ideaTag === tag
@@ -141,18 +141,18 @@ export function BlogCreateScreen() {
                       />
                     </div>
                     {/* テキスト */}
-                    <div className="relative z-10 flex flex-col items-center justify-center text-center">
-                      <span
-                        className={`font-bold text-xl ${isSelected ? "text-white" : "text-gray-800"}`}
-                      >
-                        {tagInfo.name}
-                      </span>
-                      <span
-                        className={`text-[10px] mt-0.5 ${isSelected ? "text-white/80" : "text-gray-500"}`}
-                      >
-                        {tagInfo.nameEn}
-                      </span>
-                    </div>
+                                      <div className="relative z-10 flex flex-col items-center justify-center text-center">
+                    <span
+                      className={`font-bold text-xs xl:text-xl  ${isSelected ? "amber-900" : "text-amber-950"}`}
+                    >
+                      {tagInfo.name}
+                    </span>
+                    <span
+                      className={`text-[10px] mt-0.5 ${isSelected ? "text-amber-900/80" : "text-amber-900/60"}`}
+                    >
+                      {tagInfo.nameEn}
+                    </span>
+                  </div>
                   </button>
                 )
               })}

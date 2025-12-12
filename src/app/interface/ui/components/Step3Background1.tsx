@@ -1,11 +1,11 @@
 export function Step3Background() {
   return (
-    <div className="absolute inset-0 overflow-hidden bg-[#f2f2ed]">
+    <div className="absolute inset-0 overflow-hidden bg-[#f2f2ed]  dark:bg-[#48494f]">
       {/* Top left - mint and yellow gradient circle */}
       <div className="absolute left-20 -top-30 h-[280px] w-[280px] rounded-full bg-gradient-to-br from-[#FF442C] to-[#BAD56E] opacity-40" />
 
       <div className="absolute inset-0 top-6 flex items-start justify-center">
-        <div className="text-amber-950/70 flex items-end" style={{ fontFamily: "cursive" }}>
+        <div className="text-amber-950/70 dark:text-gray-300 flex items-end" style={{ fontFamily: "cursive" }}>
           <div className="mb-4 text-8xl font-bold">3</div>
           <div className="mb-4 text-4xl font-bold">/3</div>
         </div>

@@ -189,9 +189,9 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
         <Button
           onClick={onBack}
           variant="outline"
-          className="h-12 flex-1 rounded-full border-primary/20 bg-white/80 backdrop-blur-sm hover:bg-white"
+          className="h-12 text-black flex-1 rounded-full border-primary/20 bg-white/80 backdrop-blur-sm hover:bg-white"
         >
-          <ChevronLeft className="mr-1 h-4 w-4" />
+          <ChevronLeft className="mr-1 h-4 w-4 text-black" />
           戻る
         </Button>
         <Button

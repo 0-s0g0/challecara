@@ -82,7 +82,7 @@ export function ProfileSetupScreen({ onNext, onBack }: ProfileSetupScreenProps) 
   return (
     <div className="relative flex min-h-screen flex-col p-8">
       <Step1Background />
-      <div className="z-10 mt-35 flex flex-1 flex-col space-y-6 bg-gray-200/30 backdrop-blur-md p-6 rounded-3xl text-amber-950">
+      <div className="z-10 mt-35 flex flex-1 flex-col space-y-6 bg-gray-200/30 dark:bg-gray-50/50 backdrop-blur-md p-6 rounded-3xl text-amber-950">
         <div className="space-y-2">
           <Label htmlFor="nickname" className="text-lg text-amber-950">
             ニックネーム
@@ -109,7 +109,7 @@ export function ProfileSetupScreen({ onNext, onBack }: ProfileSetupScreenProps) 
         </div>
 
         <div className="space-y-2">
-          <Label className="text-lg text-amber-950">メイン画像</Label>
+          <Label className="text-lg text-amber-950">アイコン画像</Label>
           <div className="gap-3">
             <span className="text-xs text-muted-foreground">{fileName || "画像を選択"}</span>
 

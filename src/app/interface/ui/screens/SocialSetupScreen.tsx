@@ -64,7 +64,7 @@ export function SocialSetupScreen({ onNext, onBack }: SocialSetupScreenProps) {
     <div className="relative flex min-h-screen flex-col p-8">
       <Step2Background />
 
-      <div className="z-10 mt-35 flex flex-1 flex-col space-y-6 bg-gray-200/30 backdrop-blur-md p-6 rounded-3xl text-amber-950">
+      <div className="z-10 mt-35 flex flex-1 flex-col space-y-6 bg-gray-200/30 dark:bg-gray-50/50 backdrop-blur-md p-6 rounded-3xl text-amber-950">
         <div className="mt-2 text-center">
           <div className="text-xl text-amber-950">表示するSNSのアカウントを選ぼう</div>
         </div>
@@ -177,8 +177,8 @@ function SocialButton({
       onClick={onClick}
       className={`border-none flex w-full max-w-xs items-center justify-center gap-3 rounded-2xl p-4 transition-all ${
         username
-          ? "bg-[#EC1ADE]/10 text-foreground shadow-lg backdrop-blur-sm border-none"
-          : " border-none bg-white/80 text-foreground backdrop-blur-sm hover:bg-white"
+          ? "bg-[#EC1ADE]/10 text-black shadow-lg backdrop-blur-sm border-none"
+          : " border-none bg-white/80 text-black backdrop-blur-sm hover:bg-white"
       } ${isSelected ? " border-none ring-2 ring-offset-2" : ""}`}
     >
       {icon}
@@ -213,7 +213,7 @@ function UsernameInput({
         <Button
           onClick={onCancel}
           variant="outline"
-          className="h-10 flex-1 rounded-full  text-sm hover:bg-gray-50"
+          className="h-10 flex-1 rounded-full bg-white text-sm hover:bg-gray-50"
         >
           取り消し
         </Button>
