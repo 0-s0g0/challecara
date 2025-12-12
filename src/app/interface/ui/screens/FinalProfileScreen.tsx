@@ -8,7 +8,6 @@ import { signInWithEmailAndPassword } from "firebase/auth"
 import { Check, ChevronLeft, Copy, Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { createProfile } from "../../controller/profileController"
 import { useRegistrationStore } from "../../state/registrationStore"
 import { PastelBackground } from "../components/PastelBackground"
 
@@ -53,32 +52,40 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
       })
 
       // Create profile with all collected data
-      const result = await createProfile({
-        accountId: formData.accountId,
-        email: formData.email,
-        password: formData.password,
-        nickname: formData.nickname,
-        bio: formData.bio,
-        avatarUrl: formData.avatarUrl,
-        socialLinks: [
-          formData.xUsername && { provider: "twitter", url: `https://x.com/${formData.xUsername}` },
-          formData.instagramUsername && {
-            provider: "instagram",
-            url: `https://instagram.com/${formData.instagramUsername}`,
-          },
-          formData.facebookUsername && {
-            provider: "facebook",
-            url: `https://facebook.com/${formData.facebookUsername}`,
-          },
-        ].filter(Boolean) as Array<{ provider: string; url: string }>,
-        blogTitle: formData.ideaTitle,
-        blogContent: formData.ideaContent,
-        blogImageUrl: "",
-        ideaTag: formData.ideaTag === "" ? undefined : formData.ideaTag,
-        selectedLayout: formData.selectedLayout,
-        backgroundColor: formData.backgroundColor,
-        textColor: formData.textColor,
+      const response = await fetch("/api/profile/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          accountId: formData.accountId,
+          email: formData.email,
+          password: formData.password,
+          nickname: formData.nickname,
+          bio: formData.bio,
+          avatarUrl: formData.avatarUrl,
+          socialLinks: [
+            formData.xUsername && { provider: "twitter", url: `https://x.com/${formData.xUsername}` },
+            formData.instagramUsername && {
+              provider: "instagram",
+              url: `https://instagram.com/${formData.instagramUsername}`,
+            },
+            formData.facebookUsername && {
+              provider: "facebook",
+              url: `https://facebook.com/${formData.facebookUsername}`,
+            },
+          ].filter(Boolean) as Array<{ provider: string; url: string }>,
+          blogTitle: formData.ideaTitle,
+          blogContent: formData.ideaContent,
+          blogImageUrl: "",
+          ideaTag: formData.ideaTag === "" ? undefined : formData.ideaTag,
+          selectedLayout: formData.selectedLayout,
+          backgroundColor: formData.backgroundColor,
+          textColor: formData.textColor,
+        }),
       })
+
+      const result = await response.json()
 
       console.log("プロフィール作成結果:", result)
 
