@@ -128,8 +128,8 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
     setError(null)
 
     // Validation
-    if (signUpData.password.length < 4) {
-      setError("パスワードは4文字以上である必要があります")
+    if (signUpData.password.length < 8) {
+      setError("パスワードは8文字以上である必要があります")
       setIsLoading(false)
       return
     }
@@ -217,12 +217,12 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                       <Input
                         id="signin-password"
                         type="password"
-                        placeholder="••••"
+                        placeholder="••••••••"
                         value={signInData.password}
                         onChange={(e) => setSignInData({ ...signInData, password: e.target.value })}
                         required
                         disabled={isLoading}
-                        minLength={4}
+                        minLength={8}
                         className="h-12 rounded-2xl border-gray-200 text-zinc-800"
                       />
                     </div>
@@ -293,15 +293,15 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                       <Input
                         id="signup-password"
                         type="password"
-                        placeholder="••••"
+                        placeholder="••••••••"
                         value={signUpData.password}
                         onChange={(e) => setSignUpData({ ...signUpData, password: e.target.value })}
                         required
                         disabled={isLoading}
-                        minLength={4}
+                        minLength={8}
                         className="h-12 rounded-2xl border-gray-200 text-zinc-800"
                       />
-                      <p className="text-xs text-gray-500">4文字以上</p>
+                      <p className="text-xs text-gray-500">8文字以上</p>
                     </div>
 
                     {error && <p className="text-sm text-red-500">{error}</p>}
