@@ -6,6 +6,9 @@ export interface User {
   avatarUrl: string
   uniqueId: string // 10-character alphanumeric string for public profile URL
   tutorialCompleted: boolean // チュートリアル完了フラグ
+  selectedLayout?: number // 選択されたレイアウト (0-3)
+  backgroundColor?: string // 背景色
+  textColor?: string // テキストカラー
   createdAt: Date
   updatedAt: Date
 }
@@ -18,6 +21,9 @@ export interface UserCreateInput {
   bio: string
   avatarUrl: string
   uniqueId: string
+  selectedLayout?: number
+  backgroundColor?: string
+  textColor?: string
 }
 
 import {

@@ -53,15 +53,22 @@ const getLayoutTransform = (
 export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenProps) {
   const formData = useRegistrationStore()
   const setSelectedLayout = useRegistrationStore((state) => state.setSelectedLayout)
+  const setBackgroundColor = useRegistrationStore((state) => state.setBackgroundColor)
+  const setTextColorInStore = useRegistrationStore((state) => state.setTextColor)
 
   const [selectedLayout, setSelectedLayoutLocal] = useState(formData.selectedLayout || 0)
   const [currentScrollLeft, setCurrentScrollLeft] = useState(0)
   const [isEditing, setIsEditing] = useState(false)
-  const [backgroundType, setBackgroundType] = useState<"solid" | "gradient">("solid")
-  const [solidColor, setSolidColor] = useState("#FFFFFF")
+  const [backgroundType, setBackgroundType] = useState<"solid" | "gradient">(
+    formData.backgroundColor?.startsWith("linear-gradient") ? "gradient" : "solid"
+  )
+  const [solidColor, setSolidColor] = useState(
+    formData.backgroundColor?.startsWith("#") ? formData.backgroundColor : "#FFFFFF"
+  )
   const [gradientColor1, setGradientColor1] = useState("#FFFFFF")
   const [gradientColor2, setGradientColor2] = useState("#000000")
   const [gradientDirection, setGradientDirection] = useState("to-br")
+  const [textColor, setTextColor] = useState(formData.textColor || "#000000")
   const gradientStartColorId = "inline-gradient-start-color"
   const gradientEndColorId = "inline-gradient-end-color"
   const gradientDirectionId = "inline-gradient-direction"
@@ -98,6 +105,7 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
       ideaTitle: formData.ideaTitle,
       ideaTag: formData.ideaTag,
       backgroundColor: backgroundColor,
+      textColor: textColor,
       // デモ用：複数投稿をシミュレート（実際はFirestoreから取得）
       ideaTags: [
         "tech",
@@ -110,7 +118,7 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
         "tech",
       ] as IdeaTag[],
     }),
-    [formData, backgroundColor]
+    [formData, backgroundColor, textColor]
   )
 
   const handleScroll = useCallback(() => {
@@ -152,8 +160,10 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
   }
 
   const handleNext = () => {
-    // Save selected layout to store
+    // Save selected layout, background color, and text color to store
     setSelectedLayout(selectedLayout)
+    setBackgroundColor(backgroundColor)
+    setTextColorInStore(textColor)
     onNext()
   }
 
@@ -166,7 +176,7 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
     <div className="relative flex min-h-screen flex-col p-8">
       <PastelBackground />
 
-      <div className="flex flex-1 flex-col space-y-6 bg-gray-200/30 backdrop-blur-md rounded-3xl text-amber-950">
+      <div className="flex flex-1 flex-col space-y-6 bg-gray-200/30 dark:bg-gray-50/50 backdrop-blur-md rounded-3xl text-amber-950">
         <div className="mt-6 text-center">
           <div className="text-xl text-amber-950">デザインを選ぼう</div>
         </div>
@@ -179,8 +189,8 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
                 key={layout.id}
                 type="button"
                 onClick={() => scrollToLayout(index)}
-                className={`h-2 w-2 rounded-full transition-all duration-300 ${
-                  selectedLayout === index ? "w-6 bg-[#8B7355]" : "bg-gray-300"
+                className={`h-3 w-3 rounded-full transition-all duration-300 ${
+                  selectedLayout === index ? "w-10 bg-[#8B7355]" : "bg-gray-300"
                 }`}
               />
             ))}
@@ -190,7 +200,7 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
           <div
             ref={scrollRef}
             onScroll={handleScroll}
-            className="flex h-full snap-x snap-mandatory gap-6 overflow-x-auto pb-4 scrollbar-hide px-8"
+            className="flex mt-5 h-full snap-x snap-mandatory gap-6 overflow-x-auto pb-4 scrollbar-hide px-8"
             style={{ scrollSnapType: "x mandatory" }}
           >
             {layouts.map((layout, index) => {
@@ -216,7 +226,7 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
                             variant="outline"
                             className="rounded-full bg-white/80 px-6 hover:bg-white"
                           >
-                            {isEditing ? "閉じる" : "背景を編集"}
+                            {isEditing ? "閉じる" : "色の変更"}
                           </Button>
                         </div>
 
@@ -380,6 +390,26 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
                                 </div>
                               </div>
                             )}
+
+                            {/* Text Color */}
+                            <div className="space-y-2 pt-4 border-t border-gray-200">
+                              <p className="text-sm text-gray-600">テキストカラー</p>
+                              <div className="flex items-center gap-3">
+                                <input
+                                  type="color"
+                                  value={textColor.startsWith("#") ? textColor : "#000000"}
+                                  onChange={(e) => setTextColor(e.target.value)}
+                                  className="w-12 h-12 rounded-lg border-2 border-gray-200 cursor-pointer"
+                                />
+                                <input
+                                  type="text"
+                                  value={textColor}
+                                  onChange={(e) => setTextColor(e.target.value)}
+                                  placeholder="#000000"
+                                  className="flex-1 h-10 rounded-lg border-2 border-gray-200 px-3 text-sm"
+                                />
+                              </div>
+                            </div>
                           </div>
                         )}
                       </div>

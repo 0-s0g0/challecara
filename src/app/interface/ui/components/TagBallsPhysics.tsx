@@ -2,233 +2,315 @@
 
 import { IDEA_TAGS, type IdeaTag } from "@/app/domain/models/ideaTags"
 import Matter from "matter-js"
-import { useEffect, useRef } from "react"
-
-interface TagCount {
-  tag: IdeaTag
-  count: number
-}
+import { useEffect, useRef, useState } from "react"
 
 interface TagBallsPhysicsProps {
-  tagCounts: TagCount[]
-  width?: number
-  height?: number
+  tagCounts: Array<{ tag: IdeaTag; count: number }>
+  width: number
+  height: number
+  onTagClick?: (tag: IdeaTag) => void
 }
 
-export function TagBallsPhysics({ tagCounts, width = 400, height = 300 }: TagBallsPhysicsProps) {
+export function TagBallsPhysics({ tagCounts, width, height, onTagClick }: TagBallsPhysicsProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const engineRef = useRef<Matter.Engine | null>(null)
   const renderRef = useRef<Matter.Render | null>(null)
+  const imagesRef = useRef<Map<IdeaTag, HTMLImageElement>>(new Map())
+  const [imagesLoaded, setImagesLoaded] = useState(false)
+
+  // 画像をプリロード
+  useEffect(() => {
+    if (!tagCounts || tagCounts.length === 0) return
+
+    let loadedCount = 0
+    const totalImages = tagCounts.length
+
+    tagCounts.forEach((tagCount) => {
+      const tagInfo = IDEA_TAGS[tagCount.tag]
+      const img = new Image()
+      img.src = tagInfo.imagePath
+      img.onload = () => {
+        imagesRef.current.set(tagCount.tag, img)
+        loadedCount++
+        if (loadedCount === totalImages) {
+          setImagesLoaded(true)
+        }
+      }
+      img.onerror = () => {
+        console.error(`Failed to load image: ${tagInfo.imagePath}`)
+        loadedCount++
+        if (loadedCount === totalImages) {
+          setImagesLoaded(true)
+        }
+      }
+    })
+  }, [tagCounts])
 
   useEffect(() => {
-    console.log("TagBallsPhysics mounted!", { tagCounts, width, height })
-    if (!canvasRef.current) {
-      console.log("Canvas ref not ready")
-      return
+    if (!canvasRef.current || !tagCounts || tagCounts.length === 0 || !imagesLoaded) return
+
+    // matter.jsのモジュール
+    const Engine = Matter.Engine
+    const Render = Matter.Render
+    const Runner = Matter.Runner
+    const Bodies = Matter.Bodies
+    const Composite = Matter.Composite
+
+    // エンジンの作成
+    const engine = Engine.create()
+    engineRef.current = engine
+
+    // 重力を設定
+    engine.gravity.y = 0.5
+
+    // レンダラーの作成
+    const render = Render.create({
+      canvas: canvasRef.current,
+      engine: engine,
+      options: {
+        width: width,
+        height: height,
+        wireframes: false,
+        background: "transparent",
+      },
+    })
+    renderRef.current = render
+
+    // 壁を作成
+    const wallThickness = 50
+    const walls = [
+      // 下
+      Bodies.rectangle(width / 2, height + wallThickness / 2, width, wallThickness, {
+        isStatic: true,
+        render: { fillStyle: "transparent" },
+      }),
+      // 左
+      Bodies.rectangle(-wallThickness / 2, height / 2, wallThickness, height, {
+        isStatic: true,
+        render: { fillStyle: "transparent" },
+      }),
+      // 右
+      Bodies.rectangle(width + wallThickness / 2, height / 2, wallThickness, height, {
+        isStatic: true,
+        render: { fillStyle: "transparent" },
+      }),
+    ]
+
+    // タグボールを作成
+    const balls = tagCounts.map((tagCount, index) => {
+      const tagInfo = IDEA_TAGS[tagCount.tag]
+      // サイズを投稿数に応じて変更（最小30px、最大60px半径）
+      const radius = Math.min(60, Math.max(30, 30 + tagCount.count * 5))
+
+      // ボールの初期位置（上からランダムに配置）
+      const x = (width / (tagCounts.length + 1)) * (index + 1) + (Math.random() - 0.5) * 50
+      const y = -50 - index * 60 // 上から順番に落ちてくる
+
+      return Bodies.circle(x, y, radius, {
+        restitution: 0.6, // 弾性
+        friction: 0.001,
+        render: {
+          fillStyle: "transparent", // カスタムレンダリングで描画
+        },
+        // カスタムデータを保存
+        label: JSON.stringify({
+          tag: tagCount.tag,
+          count: tagCount.count,
+          name: tagInfo.name,
+          nameEn: tagInfo.nameEn,
+          gradient: tagInfo.gradient,
+        }),
+      })
+    })
+
+    // ワールドに追加
+    Composite.add(engine.world, [...walls, ...balls])
+
+    // レンダラーとエンジンを起動
+    Render.run(render)
+    const runner = Runner.create()
+    Runner.run(runner, engine)
+
+    // クリーンアップ
+    return () => {
+      Render.stop(render)
+      Runner.stop(runner)
+      Composite.clear(engine.world, false)
+      Engine.clear(engine)
     }
+  }, [tagCounts, width, height, imagesLoaded])
+
+  // カスタムレンダリングで背景画像、グラデーション、テキストを描画
+  useEffect(() => {
+    if (!canvasRef.current || !engineRef.current || !imagesLoaded) return
 
     const canvas = canvasRef.current
-    console.log("Canvas element:", canvas)
-    console.log("Canvas dimensions:", canvas.width, canvas.height)
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
 
-    try {
-      console.log("Creating Matter.js engine...")
-      // Matter.jsのエンジンとレンダラーを作成
-      const engine = Matter.Engine.create({
-        gravity: { x: 0, y: 1 }, // scale削除してデフォルト重力を使用
+    const engine = engineRef.current
+
+    const renderFrame = () => {
+      // Canvasをクリア
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+      const bodies = Matter.Composite.allBodies(engine.world)
+
+      bodies.forEach((body) => {
+        if (body.isStatic) return
+
+        try {
+          const data = JSON.parse(body.label)
+          const { tag, name, nameEn, gradient } = data
+          const radius = body.circleRadius || 30
+
+          ctx.save()
+          ctx.translate(body.position.x, body.position.y)
+          ctx.rotate(body.angle)
+
+          // クリッピングパスで円形にする
+          ctx.beginPath()
+          ctx.arc(0, 0, radius, 0, Math.PI * 2)
+          ctx.clip()
+
+          // グラデーション背景を描画
+          const gradientMatch = gradient.match(/#[0-9A-Fa-f]{6}/g)
+          if (gradientMatch && gradientMatch.length >= 2) {
+            const grad = ctx.createLinearGradient(-radius, -radius, radius, radius)
+            grad.addColorStop(0, gradientMatch[0])
+            grad.addColorStop(1, gradientMatch[1])
+            ctx.fillStyle = grad
+          } else {
+            ctx.fillStyle = gradientMatch?.[0] || "#6366f1"
+          }
+          ctx.fill()
+
+          // 背景画像を半透明で描画
+          const image = imagesRef.current.get(tag)
+          if (image) {
+            ctx.globalAlpha = 0.2
+            const imageSize = radius * 2
+            ctx.drawImage(image, -radius, -radius, imageSize, imageSize)
+            ctx.globalAlpha = 1.0
+          }
+
+          // ボーダーを描画
+          ctx.beginPath()
+          ctx.arc(0, 0, radius, 0, Math.PI * 2)
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.3)"
+          ctx.lineWidth = 2
+          ctx.stroke()
+
+          ctx.restore()
+
+          // テキストを描画（クリッピングなし）
+          ctx.save()
+          ctx.translate(body.position.x, body.position.y)
+          ctx.rotate(body.angle)
+
+          ctx.fillStyle = "#000000"
+          ctx.textAlign = "center"
+          ctx.textBaseline = "middle"
+          ctx.shadowColor = "rgba(255, 255, 255, 0.5)"
+          ctx.shadowBlur = 2
+
+          // タグ名（大きく）
+          const fontSize = Math.max(12, radius * 0.35)
+          ctx.font = `bold ${fontSize}px sans-serif`
+          ctx.fillText(name, 0, -fontSize * 0.3)
+
+          // 英語名（小さく）
+          const smallFontSize = Math.max(8, radius * 0.22)
+          ctx.font = `${smallFontSize}px sans-serif`
+          ctx.fillStyle = "rgba(0, 0, 0, 0.7)"
+          ctx.fillText(nameEn, 0, fontSize * 0.5)
+
+          ctx.restore()
+        } catch (error) {
+          console.error("Rendering error:", error)
+        }
       })
-      engineRef.current = engine
-      console.log("Engine created", engine)
 
-      console.log("Creating Matter.js render...")
-      const render = Matter.Render.create({
-        canvas: canvasRef.current,
-        engine: engine,
-        options: {
-          width,
-          height,
-          wireframes: true, // デバッグ用に一時的にtrue
-          background: "#f0f0f0",
-        },
-      })
-      renderRef.current = render
-      console.log("Render created", render)
-      console.log("Render canvas:", render.canvas)
-      console.log("Render context:", render.context)
-
-      // 壁を作成
-      const wallOptions = { isStatic: true, render: { fillStyle: "transparent" } }
-      const walls = [
-        Matter.Bodies.rectangle(width / 2, 0, width, 10, wallOptions), // 上
-        Matter.Bodies.rectangle(width / 2, height, width, 10, wallOptions), // 下
-        Matter.Bodies.rectangle(0, height / 2, 10, height, wallOptions), // 左
-        Matter.Bodies.rectangle(width, height / 2, 10, height, wallOptions), // 右
-      ]
-
-      // タグボールを作成
-      const balls = tagCounts.map((tagCount, index) => {
-        const tagInfo = IDEA_TAGS[tagCount.tag]
-        // カウント数に応じてサイズを変更（最小20、最大60）
-        const radius = Math.min(Math.max(20 + tagCount.count * 10, 20), 60)
-
-        // ランダムな初期位置（画面内の上部から）
-        const x = radius + Math.random() * (width - radius * 2)
-        const y = radius + index * 5 // 画面内から少しずつ間隔を空けて配置
-
-        console.log(`Creating ball ${index}:`, {
-          tag: tagCount.tag,
-          x,
-          y,
-          radius,
-          color: tagInfo.color,
-        })
-
-        const ball = Matter.Bodies.circle(x, y, radius, {
-          restitution: 0.8, // 弾性（跳ね返り）
-          friction: 0.01,
-          density: 0.001,
-          render: {
-            fillStyle: tagInfo.color,
-            strokeStyle: "#fff",
-            lineWidth: 2,
-          },
-        })
-
-        // ボールにタグ情報を保存
-        const ballWithTag = ball as Matter.Body & { tagInfo: typeof tagInfo; tagCount: number }
-        ballWithTag.tagInfo = tagInfo
-        ballWithTag.tagCount = tagCount.count
-
-        return ball
-      })
-      console.log(`Created ${balls.length} balls`)
-
-      // 全てのオブジェクトをワールドに追加
-      console.log("Adding bodies to world...")
-      Matter.Composite.add(engine.world, [...walls, ...balls])
-
-      // エンジンとレンダラーを開始
-      console.log("Starting engine and render...")
-
-      // Runnerを作成して保存
-      const runner = Matter.Runner.create()
-      Matter.Runner.run(runner, engine)
-      // Matter.Render.run(render) // 一時的にコメントアウト
-      console.log("Matter.js running (without render)!")
-
-      // テスト: 直接canvasに描画
-      const ctx = canvasRef.current.getContext("2d")
-      if (ctx) {
-        console.log("Drawing test shapes directly to canvas...")
-
-        // 赤い四角
-        ctx.fillStyle = "red"
-        ctx.fillRect(10, 10, 50, 50)
-
-        // 青い円
-        ctx.fillStyle = "blue"
-        ctx.beginPath()
-        ctx.arc(100, 100, 30, 0, Math.PI * 2)
-        ctx.fill()
-
-        // 緑のテキスト
-        ctx.fillStyle = "green"
-        ctx.font = "20px Arial"
-        ctx.fillText("TEST", 150, 50)
-
-        console.log("Drew test shapes: red square, blue circle, green text")
-      }
-
-      // マウスコントロール（クリックで弾く）
-      const mouse = Matter.Mouse.create(canvasRef.current)
-      const mouseConstraint = Matter.MouseConstraint.create(engine, {
-        mouse: mouse,
-        constraint: {
-          stiffness: 0.2,
-          render: {
-            visible: false,
-          },
-        },
-      })
-      Matter.Composite.add(engine.world, mouseConstraint)
-
-      // クリーンアップ
-      return () => {
-        console.log("Cleaning up Matter.js...")
-        Matter.Render.stop(render)
-        Matter.Runner.stop(runner)
-        Matter.World.clear(engine.world, false)
-        Matter.Engine.clear(engine)
-        render.canvas.remove()
-      }
-    } catch (error) {
-      console.error("Error initializing Matter.js:", error)
+      requestAnimationFrame(renderFrame)
     }
-  }, [tagCounts, width, height])
 
-  // テスト: カスタムレンダリングを一時的に無効化
-  // useEffect(() => {
-  //   if (!canvasRef.current || !engineRef.current || !renderRef.current) return
+    const animationId = requestAnimationFrame(renderFrame)
 
-  //   const canvas = canvasRef.current
-  //   const ctx = canvas.getContext("2d")
-  //   if (!ctx) return
+    return () => {
+      cancelAnimationFrame(animationId)
+    }
+  }, [tagCounts, imagesLoaded])
 
-  //   const engine = engineRef.current
-  //   const render = renderRef.current
+  if (!tagCounts || tagCounts.length === 0) {
+    return (
+      <div
+        className="flex items-center justify-center bg-gray-100 rounded-2xl"
+        style={{ width: `${width}px`, height: `${height}px` }}
+      >
+        <p className="text-sm text-gray-400">まだ投稿がありません</p>
+      </div>
+    )
+  }
 
-  //   // Matter.jsのレンダリング後にカスタム描画を追加
-  //   const afterRender = () => {
-  //     const bodies = Matter.Composite.allBodies(engine.world)
+  // クリックイベントを処理
+  useEffect(() => {
+    if (!canvasRef.current || !engineRef.current || !imagesLoaded) return
 
-  //     bodies.forEach((body) => {
-  //       if ((body as any).tagInfo) {
-  //         const tagInfo = (body as any).tagInfo
-  //         const tagCount = (body as any).tagCount
+    console.log("Setting up click handler, onTagClick:", onTagClick, "typeof:", typeof onTagClick)
 
-  //         // ボールの位置とサイズ
-  //         const pos = body.position
-  //         const radius = (body as any).circleRadius || 30
+    const canvas = canvasRef.current
+    const engine = engineRef.current
 
-  //         // アイコンを描画
-  //         ctx.save()
-  //         ctx.font = `${radius * 0.8}px Arial`
-  //         ctx.textAlign = "center"
-  //         ctx.textBaseline = "middle"
-  //         ctx.fillText(tagInfo.icon, pos.x, pos.y - radius * 0.15)
+    const handleClick = (event: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect()
+      const x = event.clientX - rect.left
+      const y = event.clientY - rect.top
 
-  //         // カウント数を描画
-  //         ctx.font = `bold ${radius * 0.4}px Arial`
-  //         ctx.fillStyle = "#fff"
-  //         ctx.fillText(`×${tagCount}`, pos.x, pos.y + radius * 0.4)
-  //         ctx.restore()
-  //       }
-  //     })
-  //   }
+      console.log("Canvas clicked at:", x, y)
 
-  //   // Matter.jsのレンダリングイベントにフックする
-  //   Matter.Events.on(render, "afterRender", afterRender)
+      const bodies = Matter.Composite.allBodies(engine.world)
+      console.log("Total bodies:", bodies.length)
 
-  //   return () => {
-  //     Matter.Events.off(render, "afterRender", afterRender)
-  //   }
-  // }, [])
+      for (const body of bodies) {
+        if (body.isStatic) continue
+
+        const distance = Math.sqrt(
+          Math.pow(body.position.x - x, 2) + Math.pow(body.position.y - y, 2)
+        )
+
+        const radius = body.circleRadius || 30
+        if (distance <= radius) {
+          try {
+            const data = JSON.parse(body.label)
+            console.log("Ball clicked! Tag:", data.tag)
+            if (onTagClick) {
+              console.log("Calling onTagClick with:", data.tag)
+              onTagClick(data.tag)
+            } else {
+              console.warn("onTagClick is not defined!")
+            }
+            break
+          } catch (error) {
+            console.error("Error parsing body label:", error)
+          }
+        }
+      }
+    }
+
+    canvas.addEventListener("click", handleClick)
+    canvas.style.cursor = onTagClick ? "pointer" : "default"
+
+    return () => {
+      canvas.removeEventListener("click", handleClick)
+    }
+  }, [onTagClick, imagesLoaded])
 
   return (
     <div
-      className="relative overflow-hidden rounded-2xl border-4 border-blue-500"
+      className="relative overflow-hidden backdrop-blur-xl rounded-2xl"
       style={{ width: `${width}px`, height: `${height}px` }}
     >
-      <canvas
-        ref={canvasRef}
-        width={width}
-        height={height}
-        className="border-2 border-green-500"
-        style={{ display: "block", backgroundColor: "#ffffff" }}
-      />
-      <div className="absolute top-2 left-2 text-xs bg-black text-white p-1">
-        Canvas: {width}x{height}
-      </div>
+      <canvas ref={canvasRef} className="absolute inset-0 z-10" />
     </div>
   )
 }

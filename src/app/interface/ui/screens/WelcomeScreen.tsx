@@ -2,23 +2,43 @@
 
 import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
 import { Button } from "@/app/interface/ui/components/ui/button"
-
+import Image from "next/image"
 interface WelcomeScreenProps {
   onNext: () => void
 }
 
 export function WelcomeScreen({ onNext }: WelcomeScreenProps) {
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
+    <div className="relative flex min-h-screen flex-col items-center justify-center">
       <PastelBackground />
 
-      <div className="z-10 text-center">
-        <h1 className="mb-4 text-4xl font-bold text-foreground" style={{ fontFamily: "cursive" }}>
+      <div className="relative z-10 text-center">
+        {/* アプリケーションロゴの表示 */}
+        {/* SVGをImageコンポーネントで表示。publicからの相対パスを指定。 */}
+        <Image
+          src="/TsunaguLink-logo.svg"
+          alt="TsunaguLink Logo"
+          width={300}
+          height={300}
+          className="mx-auto mb-4 dark:hidden"
+        />
+        <Image
+          src="/TsunaguLink-logo-dark.svg"
+          alt="TsunaguLink2 Logo"
+          width={300}
+          height={300}
+          className="mx-auto mb-4 hidden dark:block"
+        />
+
+        <p className="mb-12 text-sm ">あなたとみんなを繋ぐリンク</p>
+        <h1
+          className="mb-4 text-4xl font-bold text-foreground display:none hidden"
+          style={{ fontFamily: "cursive" }}
+        >
           TsunaguLink
         </h1>
-        <p className="mb-12 text-sm text-muted-foreground">あなたとみんなを繋ぐリンク</p>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex mx-auto items-center flex-col gap-4">
           <Button
             onClick={onNext}
             size="lg"

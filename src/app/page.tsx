@@ -33,14 +33,15 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p className="text-gray-500">読み込み中...</p>
+      <div className="relative flex min-h-screen items-center justify-center">
+        <div className="absolute inset-0 overflow-hidden bg-[#fdfdfc] dark:bg-[#48494f]" />
+        <p className="relative z-10 text-gray-500">読み込み中...</p>
       </div>
     )
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen">
       <div className="mx-auto max-w-md">
         <WelcomeScreen onNext={handleWelcomeNext} />
         {showLoginModal && <LoginScreenModal onNext={handleLoginNext} onBack={handleLoginClose} />}

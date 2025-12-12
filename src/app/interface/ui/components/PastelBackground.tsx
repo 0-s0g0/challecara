@@ -1,11 +1,11 @@
 export function PastelBackground() {
   return (
-    <div className="absolute inset-0 overflow-hidden bg-[#fdfdfc]">
+    <div className="absolute inset-0 overflow-hidden bg-[#fdfdfc] dark:bg-[#48494f] -z-10">
       {/* Top left - mint and yellow linear circle */}
-      <div className="absolute -left-20 -top-20 h-[280px] w-[280px] rounded-full bg-linear-to-br from-[#2DB1C8] to-[#BAD56E] opacity-40" />
+      <div className="absolute -left-20 -top-20 h-[280px] w-[280px] rounded-full bg-gradient-to-br from-[#2DB1C8] to-[#BAD56E] opacity-40" />
 
       {/* Top left - smaller mint circle */}
-      <div className="absolute -left-20 top-25 h-[180px] w-[180px] rounded-full bg-linear-to-br from-[#2DB1C8] to-[#BAD56E] opacity-40" />
+      <div className="absolute -left-20 top-25 h-[180px] w-[180px] rounded-full bg-gradient-to-br from-[#2DB1C8] to-[#BAD56E] opacity-40" />
 
       <svg
         className="absolute left-0 top-0 h-[400px] w-full"
@@ -20,10 +20,10 @@ export function PastelBackground() {
       </svg>
 
       {/* Left middle - peach circle */}
-      <div className="absolute -left-24 top-[45%] h-[240px] w-[240px] rounded-full bg-linear-to-br from-[#FF442C] to-[#BAD56E] opacity-30" />
+      <div className="absolute -left-24 top-[45%] h-[240px] w-[240px] rounded-full bg-gradient-to-br from-[#FF442C] to-[#BAD56E] opacity-30" />
 
       {/* Right bottom - large lavender circle */}
-      <div className="absolute -right-32 bottom-0 h-[400px] w-[400px] rounded-full bg-linear-to-br from-[#EC1ADE] to-[#BAD56E] opacity-30" />
+      <div className="absolute -right-32 bottom-0 h-[400px] w-[400px] rounded-full bg-gradient-to-br from-[#EC1ADE] to-[#BAD56E] opacity-30" />
 
       <svg
         className="absolute bottom-0 right-0 h-[600px] w-full"
