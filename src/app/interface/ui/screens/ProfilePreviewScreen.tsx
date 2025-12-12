@@ -173,17 +173,17 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
   }, [])
 
   return (
-    <div className="relative flex min-h-screen flex-col p-8">
+    <div className="relative flex min-h-screen flex-col mt-3">
       <PastelBackground />
 
-      <div className="flex flex-1 flex-col space-y-6 bg-gray-200/30 dark:bg-gray-50/50 backdrop-blur-md rounded-3xl text-amber-950">
+      
         <div className="mt-6 text-center">
           <div className="text-xl text-amber-950">デザインを選ぼう</div>
         </div>
         <div className="relative flex-1 overflow-hidden">
           {/* Layout Indicators */}
 
-          <div className="flex justify-center gap-2">
+          <div className="flex justify-center gap-0">
             {layouts.map((layout, index) => (
               <button
                 key={layout.id}
@@ -480,7 +480,6 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
             </svg>
           </Button>
         </div>
-      </div>
 
       <style jsx>{`
         .scrollbar-hide::-webkit-scrollbar {

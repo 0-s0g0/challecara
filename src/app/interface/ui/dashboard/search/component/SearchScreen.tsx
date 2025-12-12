@@ -97,7 +97,7 @@ export function SearchScreen() {
               onClick={() => setSelectedTag(undefined)}
               className={`flex-shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                 selectedTag === undefined
-                  ? "bg-gray-900 text-white"
+                  ? "bg-gray-900 text-black"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
@@ -112,7 +112,7 @@ export function SearchScreen() {
                   onClick={() => setSelectedTag(tag)}
                   className={`flex-shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                     selectedTag === tag
-                      ? "text-white"
+                      ? "text-black"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
                   style={selectedTag === tag ? { background: tagInfo.gradient } : undefined}
@@ -159,7 +159,7 @@ export function SearchScreen() {
                       </div>
                       {tagInfo && (
                         <div
-                          className="flex-shrink-0 rounded-full px-3 py-1 text-xs font-medium text-white"
+                          className="flex-shrink-0 rounded-full px-3 py-1 text-xs font-medium text-black"
                           style={{ background: tagInfo.gradient }}
                         >
                           <span className="mr-1">{tagInfo.icon}</span>
