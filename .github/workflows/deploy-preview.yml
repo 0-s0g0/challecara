@@ -38,6 +38,13 @@ jobs:
       - name: Build for Cloudflare Pages Functions
         run: npx open-next@latest build --output=cloudflare-pages
 
+      - name: Ensure Cloudflare Pages project exists
+        run: npx wrangler pages project create challecara --production-branch main
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        continue-on-error: true
+
       - name: Deploy to Cloudflare Pages (Preview)
         run: npx wrangler pages deploy .open-next
         env:
