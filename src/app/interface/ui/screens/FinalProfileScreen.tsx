@@ -4,10 +4,12 @@ import { getFirebaseAuth } from "@/app/config/firebase/firebaseConfig"
 import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
 import { Button } from "@/app/interface/ui/components/ui/button"
 import { Card } from "@/app/interface/ui/components/ui/card"
+import { shouldUseEdgeRuntime } from "@/lib/environment"
 import { signInWithEmailAndPassword } from "firebase/auth"
 import { Check, ChevronLeft, Copy, Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { createProfile } from "../../controller/profileController"
 import { useRegistrationStore } from "../../state/registrationStore"
 import { PastelBackground } from "../components/PastelBackground"
 
@@ -51,41 +53,52 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
         nickname: formData.nickname,
       })
 
-      // Create profile with all collected data
-      const response = await fetch("/api/profile/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          accountId: formData.accountId,
-          email: formData.email,
-          password: formData.password,
-          nickname: formData.nickname,
-          bio: formData.bio,
-          avatarUrl: formData.avatarUrl,
-          socialLinks: [
-            formData.xUsername && { provider: "twitter", url: `https://x.com/${formData.xUsername}` },
-            formData.instagramUsername && {
-              provider: "instagram",
-              url: `https://instagram.com/${formData.instagramUsername}`,
-            },
-            formData.facebookUsername && {
-              provider: "facebook",
-              url: `https://facebook.com/${formData.facebookUsername}`,
-            },
-          ].filter(Boolean) as Array<{ provider: string; url: string }>,
-          blogTitle: formData.ideaTitle,
-          blogContent: formData.ideaContent,
-          blogImageUrl: "",
-          ideaTag: formData.ideaTag === "" ? undefined : formData.ideaTag,
-          selectedLayout: formData.selectedLayout,
-          backgroundColor: formData.backgroundColor,
-          textColor: formData.textColor,
-        }),
-      })
+      const profileData = {
+        accountId: formData.accountId,
+        email: formData.email,
+        password: formData.password,
+        nickname: formData.nickname,
+        bio: formData.bio,
+        avatarUrl: formData.avatarUrl,
+        socialLinks: [
+          formData.xUsername && { provider: "twitter", url: `https://x.com/${formData.xUsername}` },
+          formData.instagramUsername && {
+            provider: "instagram",
+            url: `https://instagram.com/${formData.instagramUsername}`,
+          },
+          formData.facebookUsername && {
+            provider: "facebook",
+            url: `https://facebook.com/${formData.facebookUsername}`,
+          },
+        ].filter(Boolean) as Array<{ provider: string; url: string }>,
+        blogTitle: formData.ideaTitle,
+        blogContent: formData.ideaContent,
+        blogImageUrl: "",
+        ideaTag: formData.ideaTag === "" ? undefined : formData.ideaTag,
+        selectedLayout: formData.selectedLayout,
+        backgroundColor: formData.backgroundColor,
+        textColor: formData.textColor,
+      }
 
-      const result = await response.json()
+      let result
+
+      // Use different implementation based on environment
+      if (shouldUseEdgeRuntime()) {
+        // Cloudflare Pages (PR environment): Use Edge Runtime compatible API route
+        console.log("[FinalProfile] Using Edge Runtime API route")
+        const response = await fetch("/api/profile/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(profileData),
+        })
+        result = await response.json()
+      } else {
+        // Production: Use Server Action
+        console.log("[FinalProfile] Using Server Action")
+        result = await createProfile(profileData)
+      }
 
       console.log("プロフィール作成結果:", result)
 
