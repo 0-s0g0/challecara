@@ -110,7 +110,6 @@ export function Layout1({ data }: LayoutProps) {
                 </>
               )}
             </div>
-
           </div>
         </div>
 
