@@ -1,48 +1,57 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { UseCaseFactory } from "@/app/config/factories/useCaseFactory"
 import type { ProfileCreationInput } from "@/app/domain/usecase/profileCreationUseCase"
 
-// Note: Cloudflare Pages only supports Edge Runtime, but we need Node.js for Firebase
-// @cloudflare/next-on-pages will attempt to polyfill Node.js APIs
-// If this doesn't work, we'll need to implement an Edge-compatible alternative
-export const runtime = 'nodejs'
+// Edge Runtime is required for Cloudflare Pages
+export const runtime = 'edge'
 
+/**
+ * Mock implementation for Cloudflare Pages preview environments
+ *
+ * This API route is used only in PR preview environments (*.challecara.pages.dev).
+ * Production (tsunagulink.0-s0g0.com) uses the Server Action implementation.
+ *
+ * Since Cloudflare Pages only supports Edge Runtime and Firebase Client SDK
+ * doesn't work in Edge Runtime, we use a mock implementation for previews.
+ * This allows UI/UX testing without actual database operations.
+ */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json() as ProfileCreationInput
 
-    const useCase = UseCaseFactory.createProfileCreationUseCase()
-    const user = await useCase.execute(body)
+    // Generate a mock unique ID
+    const uniqueId = `preview-${Math.random().toString(36).substring(2, 10)}`
+    const userId = `user-${Math.random().toString(36).substring(2, 10)}`
 
-    // Auto-login after registration - get token
-    const authGateway = UseCaseFactory.createAuthGateway()
-    const token = await authGateway.generateToken(user.id)
+    console.log("[API /profile/create] Mock profile creation for preview environment", {
+      accountId: body.accountId,
+      uniqueId,
+    })
 
-    // Create response with user data
+    // Create mock response with user data
     const response = NextResponse.json(
       {
         success: true,
-        userId: user.id,
-        uniqueId: user.uniqueId,
-        message: "プロフィールが作成されました",
+        userId: userId,
+        uniqueId: uniqueId,
+        message: "プロフィールが作成されました（プレビュー環境）",
         email: body.email,
         password: body.password,
         user: {
-          id: user.id,
-          accountId: user.accountId,
-          nickname: user.nickname,
-          bio: user.bio,
-          avatarUrl: user.avatarUrl,
-          uniqueId: user.uniqueId,
+          id: userId,
+          accountId: body.accountId,
+          nickname: body.nickname,
+          bio: body.bio,
+          avatarUrl: body.avatarUrl,
+          uniqueId: uniqueId,
         },
       },
       { status: 201 }
     )
 
-    // Set auth cookie
-    response.cookies.set("authToken", token, {
+    // Set mock auth cookie
+    response.cookies.set("authToken", `preview-token-${userId}`, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       sameSite: "strict",
       maxAge: 60 * 60 * 24 * 7, // 7 days
       path: "/",
