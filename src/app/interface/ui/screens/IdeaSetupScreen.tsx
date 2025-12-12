@@ -80,7 +80,7 @@ export function IdeaSetupScreen({ onNext, onBack }: IdeaSetupScreenProps) {
 
         <div className="space-y-3">
           <Label className="text-lg text-amber-950">カテゴリータグ</Label>
-          <div className="grid grid-cols-5 md:grid-cols-10 gap-2">
+          <div className="grid grid-cols-5 gap-2">
             {IDEA_TAG_LIST.map((tag) => {
               const tagInfo = IDEA_TAGS[tag]
               const isSelected = ideaTag === tag
@@ -111,7 +111,7 @@ export function IdeaSetupScreen({ onNext, onBack }: IdeaSetupScreenProps) {
                   {/* テキスト */}
                   <div className="relative z-10 flex flex-col items-center justify-center text-center">
                     <span
-                      className={`font-bold text-xs xl:text-xl  ${isSelected ? "amber-900" : "text-amber-950"}`}
+                      className={`font-bold text-xs  ${isSelected ? "amber-900" : "text-amber-950"}`}
                     >
                       {tagInfo.name}
                     </span>

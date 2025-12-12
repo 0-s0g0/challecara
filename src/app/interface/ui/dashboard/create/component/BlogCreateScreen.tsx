@@ -92,7 +92,7 @@ export function BlogCreateScreen() {
           {/* Tag Selection */}
           <div className="space-y-3">
             <Label className="text-sm text-gray-700 dark:text-white">カテゴリータグ</Label>
-            <div className="grid grid-cols-5 md:grid-cols-10 gap-2">
+            <div className="grid grid-cols-5  gap-2">
               {IDEA_TAG_LIST.map((tag) => {
                 const tagInfo = IDEA_TAGS[tag]
                 const isSelected = ideaTag === tag
