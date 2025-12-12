@@ -133,14 +133,14 @@ export function ProfileSecretSettings() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-black">
       <div className="flex items-center gap-3">
         <div className="rounded-full bg-purple-100 p-3">
           <Shield className="h-6 w-6 text-purple-600" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-gray-800">ひみつの暗号</h2>
-          <p className="text-sm text-gray-500">
+          <h2 className="text-xl font-bold text-gray-800 dark:text-white">ひみつの暗号</h2>
+          <p className="text-sm text-gray-500 dark:text-white">
             プロフィールを見るために必要な質問と答えを設定できます
           </p>
         </div>

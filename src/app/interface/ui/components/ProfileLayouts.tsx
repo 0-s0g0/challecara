@@ -133,7 +133,7 @@ export function Layout1({ data }: LayoutProps) {
                     [] as Array<{ tag: IdeaTag; count: number }>
                   )
                 }
-                width={360}
+                width={300}
                 height={180}
                 onTagClick={handleTagClick}
               />
@@ -252,7 +252,7 @@ export function Layout2({ data }: LayoutProps) {
                   },
                   [] as Array<{ tag: IdeaTag; count: number }>
                 )}
-                width={320}
+                width={300}
                 height={200}
                 onTagClick={handleTagClick}
               />
@@ -356,7 +356,7 @@ export function Layout3({ data }: LayoutProps) {
                     },
                     [] as Array<{ tag: IdeaTag; count: number }>
                   )}
-                  width={320}
+                  width={300}
                   height={180}
                   onTagClick={handleTagClick}
                 />
