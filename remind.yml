@@ -1,0 +1,23 @@
+# reminder-lint configuration
+# https://github.com/CyberAgent/reminder-lint
+
+# コメント検索用の正規表現パターン
+comment_regex: "remind:.*"
+
+# 検索対象ディレクトリ
+search_directory: .
+
+# トリガー設定
+trigger:
+  # 日時フォーマット (YYYY/MM/DD形式)
+  datetime: "%Y/%m/%d"
+
+# バリデーション設定
+validate:
+  # 日時フォーマットの検証
+  datetime:
+    format: "%Y/%m/%d"
+
+  # 担当者の必須化
+  assignee:
+    format: "@dokkiitech"
