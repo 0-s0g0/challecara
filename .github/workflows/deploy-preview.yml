@@ -1,4 +1,4 @@
-name: Deploy Preview to Cloudflare Workers
+name: Deploy Preview to Cloudflare Pages
 
 on:
   pull_request:
@@ -29,10 +29,7 @@ jobs:
             branch="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
             slug=$(echo "$branch" | tr '[:upper:]' '[:lower:]' | sed -e 's/[^a-z0-9-]/-/g' -e 's/-\+/-/g' -e 's/^-//' -e 's/-$//')
           fi
-          # Worker名を設定 (challecara-preview-{slug})
-          worker_name="challecara-preview-${slug}"
           echo "slug=${slug}" >> "$GITHUB_OUTPUT"
-          echo "worker_name=${worker_name}" >> "$GITHUB_OUTPUT"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -48,24 +45,34 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build for Cloudflare Workers
+      - name: Build for Cloudflare Pages
         run: pnpm build:worker
 
-      - name: Deploy to Cloudflare Workers (Preview)
+      - name: Debug - Show .open-next structure
+        run: |
+          echo "=== .open-next directory structure ==="
+          ls -la .open-next/ || echo ".open-next not found"
+          echo ""
+          echo "=== Looking for _worker.js ==="
+          find .open-next -name "_worker.js" -o -name "worker.js" 2>/dev/null || echo "No worker.js found"
+          echo ""
+          echo "=== .open-next subdirectories ==="
+          ls -la .open-next/*/ 2>/dev/null | head -50 || echo "No subdirectories"
+
+      - name: Deploy to Cloudflare Pages (Preview)
         id: deploy_preview
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy --name ${{ steps.preview_meta.outputs.worker_name }}
+          command: pages deploy .open-next --project-name=challecara --branch=${{ steps.preview_meta.outputs.slug }}
 
       - name: Get Preview URL
         id: preview_url
         run: |
-          worker_name="${{ steps.preview_meta.outputs.worker_name }}"
-          # Workers URL形式: https://{worker-name}.{account-subdomain}.workers.dev
-          # subdomainはwrangler whoamiで取得可能だが、一般的なフォーマットで設定
-          url="https://${worker_name}.workers.dev"
+          slug="${{ steps.preview_meta.outputs.slug }}"
+          # Cloudflare Pages URL形式
+          url="https://${slug}.challecara.pages.dev"
           echo "url=$url" >> "$GITHUB_OUTPUT"
 
       - name: Comment Preview URL on PR
@@ -76,7 +83,7 @@ jobs:
           script: |
             const prNumber = context.issue.number;
             const previewUrl = process.env.PREVIEW_URL || 'N/A';
-            const marker = '<!-- cloudflare-workers-preview -->';
+            const marker = '<!-- cloudflare-pages-preview -->';
 
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
