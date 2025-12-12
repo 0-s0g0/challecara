@@ -71,7 +71,6 @@ export function Layout1({ data }: LayoutProps) {
             <p className="mt-2 text-sm leading-relaxed opacity-90">
               {data.bio || "自己紹介がここに表示されます"}
             </p>
-
             <div className="mt-4 flex gap-3">
               {data.socialLinks && data.userId ? (
                 <>
@@ -111,6 +110,7 @@ export function Layout1({ data }: LayoutProps) {
                 </>
               )}
             </div>
+
           </div>
         </div>
 
