@@ -18,9 +18,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run reminder-lint
-        uses: CyberAgent/reminder-lint@latest
-        with:
-          args: run
+        run: docker run --rm -v "${{ github.workspace }}:/workspace" --workdir /workspace ghcr.io/cyberagent/reminder-lint:latest run
 
   lint:
     name: Lint and Type Check
