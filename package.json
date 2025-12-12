@@ -9,6 +9,7 @@
     "build:pages": "pnpm build && npx @cloudflare/next-on-pages@latest",
     "start": "next start",
     "lint": "eslint",
+    "remind": "docker run --rm -v \"$(pwd):/workspace\" ghcr.io/cyberagent/reminder-lint:latest run",
     "format": "biome format --write .",
     "format:check": "biome format .",
     "biome:check": "biome check .",
