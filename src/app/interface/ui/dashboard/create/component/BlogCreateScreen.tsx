@@ -58,32 +58,12 @@ export function BlogCreateScreen() {
   return (
     <div className="relative flex min-h-screen flex-col bg-gray-50">
       <PastelBackground />
-      <div className="sticky top-0 z-10 bg-white p-4 shadow-sm">
-        <div className="mx-auto flex max-w-md items-center justify-between">
-          <h1 className="text-lg font-semibold text-gray-800">新規投稿</h1>
-
-          <Button
-            onClick={handlePublish}
-            disabled={!title || !content || !ideaTag || isPublishing}
-            className="rounded-full bg-primary hover:bg-primary/90"
-          >
-            {isPublishing ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                投稿中...
-              </>
-            ) : (
-              "投稿する"
-            )}
-          </Button>
-        </div>
-      </div>
       <div className="relative z-10 flex-1 overflow-auto p-4">
         <div className="mx-auto max-w-md space-y-6">
           {/* Title */}
 
           <div className="space-y-2">
-            <Label htmlFor="title" className="text-sm text-gray-700">
+            <Label htmlFor="title" className="text-sm text-gray-700 dark:text-white">
               タイトル
             </Label>
             <Input
@@ -97,7 +77,7 @@ export function BlogCreateScreen() {
 
           {/* Content */}
           <div className="space-y-2">
-            <Label htmlFor="content" className="text-sm text-gray-700">
+            <Label htmlFor="content" className="text-sm text-gray-700 dark:text-white">
               内容
             </Label>
             <Textarea
@@ -111,7 +91,7 @@ export function BlogCreateScreen() {
 
           {/* Tag Selection */}
           <div className="space-y-3">
-            <Label className="text-sm text-gray-700">カテゴリータグ</Label>
+            <Label className="text-sm text-gray-700 dark:text-white">カテゴリータグ</Label>
             <div className="grid grid-cols-5 md:grid-cols-10 gap-2">
               {IDEA_TAG_LIST.map((tag) => {
                 const tagInfo = IDEA_TAGS[tag]
@@ -141,7 +121,7 @@ export function BlogCreateScreen() {
                       />
                     </div>
                     {/* テキスト */}
-                                      <div className="relative z-10 flex flex-col items-center justify-center text-center">
+                    <div className="relative z-10 flex flex-col items-center justify-center text-center">
                     <span
                       className={`font-bold text-xs xl:text-xl  ${isSelected ? "amber-900" : "text-amber-950"}`}
                     >
@@ -157,7 +137,22 @@ export function BlogCreateScreen() {
                 )
               })}
             </div>
+            <Button
+            onClick={handlePublish}
+            disabled={!title || !content || !ideaTag || isPublishing}
+            className="mt-5 h-12 w-full rounded-full bg-[#8B7355] px-8 text-white hover:bg-[#6B5335]"
+          >
+            {isPublishing ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                投稿中...
+              </>
+            ) : (
+              "投稿する"
+            )}
+          </Button>
           </div>
+          
         </div>
       </div>
     </div>
