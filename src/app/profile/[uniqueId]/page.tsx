@@ -69,6 +69,7 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
     ideaTags: ideaTags,
     backgroundColor: user.backgroundColor || "#FFFFFF",
     textColor: user.textColor || "#000000",
+
     socialLinks: socialLinks,
     userId: user.id,
   }

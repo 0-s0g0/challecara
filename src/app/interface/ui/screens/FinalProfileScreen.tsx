@@ -20,7 +20,7 @@ interface FinalProfileScreenProps {
 export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) {
   const formData = useRegistrationStore()
   const setUniqueIdInStore = useRegistrationStore((state) => state.setUniqueId)
-  const router = useRouter()
+  const _router = useRouter()
   const [copied, setCopied] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
   const [uniqueId, setUniqueId] = useState<string | null>(null)
