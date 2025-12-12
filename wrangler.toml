@@ -6,12 +6,6 @@ name = "challecara"
 compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
 
-# OpenNext が生成する出力ディレクトリ
-main = ".open-next/worker.js"
-
-# 静的アセットの設定
-assets = { directory = ".open-next/assets", binding = "STATIC_ASSETS" }
-
 # 本番環境の設定
 [env.production]
 name = "challecara"
