@@ -68,10 +68,25 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy .open-next --project-name=challecara --branch=${{ steps.preview_meta.outputs.slug }} --commit-hash=${{ github.sha }}
+          command: pages deploy .open-next --project-name=challecara --branch=${{ steps.preview_meta.outputs.slug }} --commit-hash=${{ github.sha }} --commit-message="${{ github.event.pull_request.title || github.sha }}"
 
       - name: Show preview deployments (debug)
-        run: npx wrangler pages deployment list --project-name challecara --branch "${{ steps.preview_meta.outputs.slug }}" --format json
+        run: npx wrangler pages deployment list --project-name challecara --environment preview --json
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Extract preview URL
+        id: preview_url
+        run: |
+          branch="${{ steps.preview_meta.outputs.slug }}"
+          url=$(npx wrangler pages deployment list --project-name challecara --environment preview --json | jq -r --arg branch "$branch" '
+            .deployments[] | select(.deployment_trigger.metadata.branch == $branch) | .url
+          ' | head -n1)
+          if [ -z "$url" ] || [ "$url" = "null" ]; then
+            url="https://${branch}.challecara.pages.dev"
+          fi
+          echo "url=$url" >> "$GITHUB_OUTPUT"
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -79,12 +94,11 @@ jobs:
       - name: Comment Preview URL on PR
         uses: actions/github-script@v7
         env:
-          PREVIEW_URL: ${{ steps.deploy_preview.outputs['deployment-url'] }}
-          FALLBACK_URL: https://${{ steps.preview_meta.outputs.slug }}.challecara.pages.dev
+          PREVIEW_URL: ${{ steps.preview_url.outputs.url }}
         with:
           script: |
             const prNumber = context.issue.number;
-            const previewUrl = process.env.PREVIEW_URL || process.env.FALLBACK_URL || 'N/A';
+            const previewUrl = process.env.PREVIEW_URL || 'N/A';
             const marker = '<!-- cloudflare-workers-preview -->';
 
             const { data: comments } = await github.rest.issues.listComments({
