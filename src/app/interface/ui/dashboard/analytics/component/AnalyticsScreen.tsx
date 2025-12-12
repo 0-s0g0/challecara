@@ -66,9 +66,9 @@ export function AnalyticsScreen() {
 
   if (loading) {
     return (
-      <div className="relative flex flex-col bg-gray-50">
+      <div className="relative flex flex-col">
         <PastelBackground />
-        <div className="flex flex-1 items-center justify-center p-8">
+        <div className="relative z-10 flex flex-1 items-center justify-center p-8">
           <p className="text-gray-500">読み込み中...</p>
         </div>
       </div>
@@ -77,9 +77,9 @@ export function AnalyticsScreen() {
 
   if (!stats) {
     return (
-      <div className="relative flex flex-col bg-gray-50">
+      <div className="relative flex flex-col">
         <PastelBackground />
-        <div className="flex flex-1 items-center justify-center p-8">
+        <div className="relative z-10 flex flex-1 items-center justify-center p-8">
           <p className="text-gray-500">データがありません</p>
         </div>
       </div>
@@ -98,10 +98,10 @@ export function AnalyticsScreen() {
   }
 
   return (
-    <div className="relative flex flex-col bg-gray-50">
+    <div className="relative flex flex-col">
       <PastelBackground />
 
-      <div className="flex-1 overflow-auto p-4 pb-24">
+      <div className="relative z-10 flex-1 overflow-auto p-4 pb-24">
         <div className="mx-auto max-w-md space-y-6">
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-4">

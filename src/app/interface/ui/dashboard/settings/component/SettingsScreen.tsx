@@ -123,10 +123,10 @@ export function SettingsScreen() {
   ]
 
   return (
-    <div className="flex flex-col bg-gray-50">
+    <div className="relative flex flex-col">
       <PastelBackground />
 
-      <div className="relative z-0 flex-1 overflow-auto p-4 pb-24">
+      <div className="relative z-10 flex-1 overflow-auto p-4 pb-24">
         <div className="mx-auto max-w-md space-y-6">
           {/* 秘密の暗号設定画面 */}
           {activeSection === "profile-secret" && (
