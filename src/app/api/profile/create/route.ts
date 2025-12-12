@@ -2,7 +2,10 @@ import { type NextRequest, NextResponse } from "next/server"
 import { UseCaseFactory } from "@/app/config/factories/useCaseFactory"
 import type { ProfileCreationInput } from "@/app/domain/usecase/profileCreationUseCase"
 
-export const runtime = 'edge'
+// Note: Cloudflare Pages only supports Edge Runtime, but we need Node.js for Firebase
+// @cloudflare/next-on-pages will attempt to polyfill Node.js APIs
+// If this doesn't work, we'll need to implement an Edge-compatible alternative
+export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
   try {
