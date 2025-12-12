@@ -1,6 +1,8 @@
 import { getApiDocs } from "@/lib/swagger"
 import { NextResponse } from "next/server"
 
+export const runtime = 'edge'
+
 /**
  * @swagger
  * /api/openapi:
