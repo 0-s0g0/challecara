@@ -1,7 +1,7 @@
 "use client"
 
+import { UseCaseFactory } from "@/app/config/factories/useCaseFactory"
 import { IDEA_TAGS, IDEA_TAG_LIST, type IdeaTag } from "@/app/domain/models/ideaTags"
-import { createBlogPost } from "@/app/interface/controller/blogController"
 import { useAuth } from "@/app/interface/context/AuthContext"
 import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
 import { Button } from "@/app/interface/ui/components/ui/button"
@@ -31,7 +31,10 @@ export function BlogCreateScreen() {
 
     setIsPublishing(true)
     try {
-      const result = await createBlogPost({
+      // クライアント側から直接Firestoreに書き込む
+      const blogPostRepository = UseCaseFactory.createBlogPostRepository()
+
+      await blogPostRepository.create({
         userId: firebaseUser.uid,
         title,
         content,
@@ -40,50 +43,27 @@ export function BlogCreateScreen() {
         isPublished: true,
       })
 
-      if (result.success) {
-        alert("投稿しました！")
-        setTitle("")
-        setContent("")
-        setIdeaTag("")
-      } else {
-        alert(result.error || "投稿に失敗しました")
-      }
-    } catch (_error) {
-      alert("投稿に失敗しました")
+      alert("投稿しました！")
+      setTitle("")
+      setContent("")
+      setIdeaTag("")
+    } catch (error) {
+      console.error("投稿エラー:", error)
+      alert("投稿に失敗しました: " + (error instanceof Error ? error.message : "不明なエラー"))
     } finally {
       setIsPublishing(false)
     }
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-gray-50">
+    <div className="relative flex flex-col">
       <PastelBackground />
-      <div className="sticky top-0 z-10 bg-white p-4 shadow-sm">
-        <div className="mx-auto flex max-w-md items-center justify-between">
-          <h1 className="text-lg font-semibold text-gray-800">新規投稿</h1>
-
-          <Button
-            onClick={handlePublish}
-            disabled={!title || !content || !ideaTag || isPublishing}
-            className="rounded-full bg-primary hover:bg-primary/90"
-          >
-            {isPublishing ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                投稿中...
-              </>
-            ) : (
-              "投稿する"
-            )}
-          </Button>
-        </div>
-      </div>
-      <div className="relative z-10 flex-1 overflow-auto p-4">
+      <div className="relative z-10 flex-1 overflow-auto p-4 pb-24">
         <div className="mx-auto max-w-md space-y-6">
           {/* Title */}
 
           <div className="space-y-2">
-            <Label htmlFor="title" className="text-sm text-gray-700">
+            <Label htmlFor="title" className="text-sm text-gray-700 dark:text-white">
               タイトル
             </Label>
             <Input
@@ -97,7 +77,7 @@ export function BlogCreateScreen() {
 
           {/* Content */}
           <div className="space-y-2">
-            <Label htmlFor="content" className="text-sm text-gray-700">
+            <Label htmlFor="content" className="text-sm text-gray-700 dark:text-white">
               内容
             </Label>
             <Textarea
@@ -111,8 +91,8 @@ export function BlogCreateScreen() {
 
           {/* Tag Selection */}
           <div className="space-y-3">
-            <Label className="text-sm text-gray-700">カテゴリータグ</Label>
-            <div className="grid grid-cols-10 gap-2">
+            <Label className="text-sm text-gray-700 dark:text-white">カテゴリータグ</Label>
+            <div className="grid grid-cols-5 md:grid-cols-10 gap-2">
               {IDEA_TAG_LIST.map((tag) => {
                 const tagInfo = IDEA_TAGS[tag]
                 const isSelected = ideaTag === tag
@@ -143,12 +123,12 @@ export function BlogCreateScreen() {
                     {/* テキスト */}
                     <div className="relative z-10 flex flex-col items-center justify-center text-center">
                       <span
-                        className={`font-bold text-xl ${isSelected ? "text-white" : "text-gray-800"}`}
+                        className={`font-bold text-xs xl:text-xl  ${isSelected ? "amber-900" : "text-amber-950"}`}
                       >
                         {tagInfo.name}
                       </span>
                       <span
-                        className={`text-[10px] mt-0.5 ${isSelected ? "text-white/80" : "text-gray-500"}`}
+                        className={`text-[10px] mt-0.5 ${isSelected ? "text-amber-900/80" : "text-amber-900/60"}`}
                       >
                         {tagInfo.nameEn}
                       </span>
@@ -157,6 +137,20 @@ export function BlogCreateScreen() {
                 )
               })}
             </div>
+            <Button
+              onClick={handlePublish}
+              disabled={!title || !content || !ideaTag || isPublishing}
+              className="mt-5 h-12 w-full rounded-full bg-[#8B7355] px-8 text-white hover:bg-[#6B5335]"
+            >
+              {isPublishing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  投稿中...
+                </>
+              ) : (
+                "投稿する"
+              )}
+            </Button>
           </div>
         </div>
       </div>

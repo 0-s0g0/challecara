@@ -192,7 +192,7 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                         onChange={(e) => setSignInData({ ...signInData, email: e.target.value })}
                         required
                         disabled={isLoading}
-                        className="h-12 rounded-2xl border-gray-200"
+                        className="h-12 rounded-2xl border-gray-200 text-zinc-800"
                       />
                     </div>
 
@@ -208,7 +208,7 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                         onChange={(e) => setSignInData({ ...signInData, password: e.target.value })}
                         required
                         disabled={isLoading}
-                        className="h-12 rounded-2xl border-gray-200"
+                        className="h-12 rounded-2xl border-gray-200 text-zinc-800"
                       />
                     </div>
 
@@ -251,7 +251,7 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                         onChange={(e) => setSignUpData({ ...signUpData, email: e.target.value })}
                         required
                         disabled={isLoading}
-                        className="h-12 rounded-2xl border-gray-200"
+                        className="h-12 rounded-2xl border-gray-200 text-zinc-800"
                       />
                     </div>
 
@@ -269,7 +269,7 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                         disabled={isLoading}
                         minLength={1}
                         maxLength={50}
-                        className="h-12 rounded-2xl border-gray-200"
+                        className="h-12 rounded-2xl border-gray-200 text-zinc-800"
                       />
                     </div>
 
@@ -286,7 +286,7 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                         required
                         disabled={isLoading}
                         minLength={8}
-                        className="h-12 rounded-2xl border-gray-200"
+                        className="h-12 rounded-2xl border-gray-200 text-zinc-800"
                       />
                       <p className="text-xs text-gray-500">8文字以上</p>
                     </div>
@@ -309,7 +309,7 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                         required
                         disabled={isLoading}
                         minLength={8}
-                        className="h-12 rounded-2xl border-gray-200"
+                        className="h-12 rounded-2xl border-gray-200 text-zinc-800"
                       />
                     </div>
 

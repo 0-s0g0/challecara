@@ -25,6 +25,9 @@ export class UserRepository implements IUserRepository {
       avatarUrl: input.avatarUrl,
       uniqueId: input.uniqueId,
       tutorialCompleted: true, // チュートリアル完了としてマーク
+      selectedLayout: input.selectedLayout,
+      backgroundColor: input.backgroundColor,
+      textColor: input.textColor,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     }
@@ -51,6 +54,9 @@ export class UserRepository implements IUserRepository {
         avatarUrl: input.avatarUrl,
         uniqueId: input.uniqueId,
         tutorialCompleted: true,
+        selectedLayout: input.selectedLayout,
+        backgroundColor: input.backgroundColor,
+        textColor: input.textColor,
         createdAt: now.toDate(),
         updatedAt: now.toDate(),
       }
@@ -128,6 +134,9 @@ export class UserRepository implements IUserRepository {
         avatarUrl: data.avatarUrl,
         uniqueId: data.uniqueId,
         tutorialCompleted: data.tutorialCompleted ?? false,
+        selectedLayout: data.selectedLayout,
+        backgroundColor: data.backgroundColor,
+        textColor: data.textColor,
         createdAt: data.createdAt?.toDate() || new Date(),
         updatedAt: data.updatedAt?.toDate() || new Date(),
       }

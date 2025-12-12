@@ -15,7 +15,9 @@ export function AppHeader() {
 
   // ログイン済み時にプロフィールページなどへ遷移する関数
   const handleUserClick = () => {
-    router.push("/profile")
+    if (user?.uniqueId) {
+      router.push(`/profile/${user.uniqueId}`)
+    }
   }
 
   return (

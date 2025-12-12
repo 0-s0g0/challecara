@@ -15,12 +15,12 @@ export default function DashboardPage() {
   const { firebaseUser, loading } = useAuth()
   const pathname = usePathname()
   const [profileData, setProfileData] = useState<ProfileData | null>(null)
-  const [selectedLayout, _setSelectedLayout] = useState(0)
   const [lastVisitTime, setLastVisitTime] = useState(0)
   const [loadingProfile, setLoadingProfile] = useState(true)
   const [profileError, setProfileError] = useState<string | null>(null)
 
   const layouts = [Layout1, Layout2, Layout3, Layout4]
+  const selectedLayout = profileData?.user.selectedLayout ?? 0
   const SelectedLayout = layouts[selectedLayout] || Layout1
 
   // ページに戻ったときに更新時刻を記録
@@ -160,7 +160,8 @@ export default function DashboardPage() {
     ideaTitle: firstBlogPost?.title || "",
     ideaTag: (firstBlogPost?.ideaTag || "") as IdeaTag | "",
     ideaTags: ideaTags,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: profileData.user.backgroundColor || "#FFFFFF",
+    textColor: profileData.user.textColor || "#000000",
   }
 
   return (

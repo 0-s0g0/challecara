@@ -5,7 +5,7 @@ import { SocialLinkRepository } from "@/app/infrastructure/repository/socialLink
 import { UserRepository } from "@/app/infrastructure/repository/userRepository"
 import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
 import { ProfileAuthGate } from "@/app/interface/ui/components/ProfileAuthGate"
-import { Layout1 } from "@/app/interface/ui/components/ProfileLayouts"
+import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
 import { ProfileTracker } from "./ProfileTracker"
 
 interface PublicProfilePageProps {
@@ -67,17 +67,23 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
     ideaTitle: latestPost?.title || "",
     ideaTag: (latestPost?.ideaTag as IdeaTag) || "",
     ideaTags: ideaTags,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: user.backgroundColor || "#FFFFFF",
+    textColor: user.textColor || "#000000",
     socialLinks: socialLinks,
     userId: user.id,
   }
 
+  // Select layout based on user's preference
+  const layouts = [Layout1, Layout2, Layout3, Layout4]
+  const SelectedLayout = layouts[user.selectedLayout || 0] || Layout1
+
   return (
     <ProfileAuthGate userId={user.id}>
+      <ProfileTracker userId={user.id} uniqueId={uniqueId} />
       <main className="min-h-screen items-center justify-center p-8">
         <PastelBackground />
         <div className="max-w-md w-full">
-          <Layout1 data={profileData} />
+          <SelectedLayout data={profileData} />
         </div>
       </main>
     </ProfileAuthGate>

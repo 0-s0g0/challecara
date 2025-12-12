@@ -43,11 +43,11 @@ export function IdeaSetupScreen({ onNext, onBack }: IdeaSetupScreenProps) {
   return (
     <div className="relative flex min-h-screen flex-col p-8">
       <Step3Background />
-      <div className="z-10 mt-35 flex flex-1 flex-col space-y-6 bg-gray-200/30 backdrop-blur-md p-6 rounded-3xl text-amber-950">
+      <div className="z-10 mt-35 flex flex-1 flex-col space-y-6 bg-gray-200/30 dark:bg-gray-50/50 backdrop-blur-md p-6 rounded-3xl text-amber-950">
         <div className="mt-2 text-center">
           <div className="text-xl text-amber-950">あなたのアイデア・想いを投稿しよう</div>
           <p className="text-sm text-amber-900/70 mt-2">
-            起業したいこと、実現したい未来、考えていることを自由に書いてみよう
+            起業したいこと、実現したい未来を自由に書いてみよう
           </p>
         </div>
 
@@ -80,7 +80,7 @@ export function IdeaSetupScreen({ onNext, onBack }: IdeaSetupScreenProps) {
 
         <div className="space-y-3">
           <Label className="text-lg text-amber-950">カテゴリータグ</Label>
-          <div className="grid grid-cols-10 gap-2">
+          <div className="grid grid-cols-5 md:grid-cols-10 gap-2">
             {IDEA_TAG_LIST.map((tag) => {
               const tagInfo = IDEA_TAGS[tag]
               const isSelected = ideaTag === tag
@@ -111,12 +111,12 @@ export function IdeaSetupScreen({ onNext, onBack }: IdeaSetupScreenProps) {
                   {/* テキスト */}
                   <div className="relative z-10 flex flex-col items-center justify-center text-center">
                     <span
-                      className={`font-bold text-xl ${isSelected ? "text-white" : "text-amber-950"}`}
+                      className={`font-bold text-xs xl:text-xl  ${isSelected ? "amber-900" : "text-amber-950"}`}
                     >
                       {tagInfo.name}
                     </span>
                     <span
-                      className={`text-[10px] mt-0.5 ${isSelected ? "text-white/80" : "text-amber-900/60"}`}
+                      className={`text-[10px] mt-0.5 ${isSelected ? "text-amber-900/80" : "text-amber-900/60"}`}
                     >
                       {tagInfo.nameEn}
                     </span>
