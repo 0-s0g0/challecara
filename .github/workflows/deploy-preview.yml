@@ -47,7 +47,7 @@ jobs:
 
 
       - name: Build for Cloudflare Pages Functions
-        run: npx open-next@latest build --output=cloudflare-pages
+        run: pnpm build:worker
 
       - name: Ensure Cloudflare Pages project exists
         run: npx wrangler pages project create challecara --production-branch main
