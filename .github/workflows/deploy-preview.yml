@@ -29,7 +29,10 @@ jobs:
             branch="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
             slug=$(echo "$branch" | tr '[:upper:]' '[:lower:]' | sed -e 's/[^a-z0-9-]/-/g' -e 's/-\+/-/g' -e 's/^-//' -e 's/-$//')
           fi
+          # Worker名を設定 (challecara-preview-{slug})
+          worker_name="challecara-preview-${slug}"
           echo "slug=${slug}" >> "$GITHUB_OUTPUT"
+          echo "worker_name=${worker_name}" >> "$GITHUB_OUTPUT"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -45,51 +48,25 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-
-      - name: Build for Cloudflare Pages Functions
+      - name: Build for Cloudflare Workers
         run: pnpm build:worker
 
-      - name: Ensure Cloudflare Pages project exists
-        run: npx wrangler pages project create challecara --production-branch main
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        continue-on-error: true
-
-      - name: Show Pages projects (debug)
-        run: npx wrangler pages project list
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-
-      - name: Deploy to Cloudflare Pages (Preview)
+      - name: Deploy to Cloudflare Workers (Preview)
         id: deploy_preview
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy .open-next --project-name=challecara --branch=${{ steps.preview_meta.outputs.slug }} --commit-hash=${{ github.sha }} --commit-message="${{ github.event.pull_request.title || github.sha }}"
+          command: deploy --name ${{ steps.preview_meta.outputs.worker_name }}
 
-      - name: Show preview deployments (debug)
-        run: npx wrangler pages deployment list --project-name challecara --environment preview --json
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-
-      - name: Extract preview URL
+      - name: Get Preview URL
         id: preview_url
         run: |
-          branch="${{ steps.preview_meta.outputs.slug }}"
-          url=$(npx wrangler pages deployment list --project-name challecara --environment preview --json | jq -r --arg branch "$branch" '
-            .deployments[] | select(.deployment_trigger.metadata.branch == $branch) | .url
-          ' | head -n1)
-          if [ -z "$url" ] || [ "$url" = "null" ]; then
-            url="https://${branch}.challecara.pages.dev"
-          fi
+          worker_name="${{ steps.preview_meta.outputs.worker_name }}"
+          # Workers URL形式: https://{worker-name}.{account-subdomain}.workers.dev
+          # subdomainはwrangler whoamiで取得可能だが、一般的なフォーマットで設定
+          url="https://${worker_name}.workers.dev"
           echo "url=$url" >> "$GITHUB_OUTPUT"
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Comment Preview URL on PR
         uses: actions/github-script@v7
