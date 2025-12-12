@@ -5,7 +5,9 @@ import type { SocialLink } from "@/app/domain/models/socialLink"
 import { Card } from "@/app/interface/ui/components/ui/card"
 import Image from "next/image"
 import type React from "react"
+import { useCallback, useState } from "react"
 import { FaFacebook, FaInstagram, FaXTwitter } from "react-icons/fa6"
+import { BlogPostsModal } from "./BlogPostsModal"
 import { TagBallsPhysics } from "./TagBallsPhysics"
 import { TrackableSocialLink } from "./TrackableSocialLink"
 
@@ -33,7 +35,18 @@ interface LayoutProps {
 
 // Layout 1: 縦長カード（現在のデザイン）
 export function Layout1({ data }: LayoutProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedTag, setSelectedTag] = useState<IdeaTag | null>(null)
+
+  const handleTagClick = useCallback((tag: IdeaTag) => {
+    console.log("Layout1 handleTagClick called with tag:", tag)
+    console.log("Layout1 userId:", data.userId)
+    setSelectedTag(tag)
+    setIsModalOpen(true)
+  }, [data.userId])
+
   return (
+    <>
     <Card
       className="h-[600px] w-full overflow-hidden rounded-3xl border-0 shadow-2xl"
       style={{ background: data.backgroundColor || "#FFFFFF" }}
@@ -114,6 +127,7 @@ export function Layout1({ data }: LayoutProps) {
               }
               width={360}
               height={180}
+              onTagClick={handleTagClick}
             />
           </div>
         ) : (
@@ -143,13 +157,31 @@ export function Layout1({ data }: LayoutProps) {
           </div>
         )}
       </div>
+      {data.userId && (
+        <BlogPostsModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          selectedTag={selectedTag}
+          userId={data.userId}
+        />
+      )}
     </Card>
+    </>
   )
 }
 
 // Layout 2: 横並びカード
 export function Layout2({ data }: LayoutProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedTag, setSelectedTag] = useState<IdeaTag | null>(null)
+
+  const handleTagClick = useCallback((tag: IdeaTag) => {
+    setSelectedTag(tag)
+    setIsModalOpen(true)
+  }, [])
+
   return (
+    <>
     <Card
       className="h-[600px] w-full overflow-hidden rounded-3xl border-0 shadow-2xl"
       style={{ background: data.backgroundColor || "#F9F5FF" }}
@@ -197,6 +229,7 @@ export function Layout2({ data }: LayoutProps) {
                 )}
                 width={320}
                 height={200}
+                onTagClick={handleTagClick}
               />
             </div>
           ) : (
@@ -216,15 +249,33 @@ export function Layout2({ data }: LayoutProps) {
               <p className="mt-1 text-xs" style={{ color: data.textColor || "#6B21A8", opacity: 0.8 }}>最新の投稿をチェック</p>
             </div>
           )}
-        
+
       </div>
+      {data.userId && (
+        <BlogPostsModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          selectedTag={selectedTag}
+          userId={data.userId}
+        />
+      )}
     </Card>
+    </>
   )
 }
 
 // Layout 3: ミニマルカード
 export function Layout3({ data }: LayoutProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedTag, setSelectedTag] = useState<IdeaTag | null>(null)
+
+  const handleTagClick = useCallback((tag: IdeaTag) => {
+    setSelectedTag(tag)
+    setIsModalOpen(true)
+  }, [])
+
   return (
+    <>
     <Card
       className="h-[600px] w-full overflow-hidden rounded-3xl border-0 shadow-2xl"
       style={{ background: data.backgroundColor || "#FFFFFF" }}
@@ -269,6 +320,7 @@ export function Layout3({ data }: LayoutProps) {
                 )}
                 width={320}
                 height={180}
+                onTagClick={handleTagClick}
               />
             </div>
           ) : (
@@ -290,13 +342,31 @@ export function Layout3({ data }: LayoutProps) {
           )}
         </div>
       </div>
+      {data.userId && (
+        <BlogPostsModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          selectedTag={selectedTag}
+          userId={data.userId}
+        />
+      )}
     </Card>
+    </>
   )
 }
 
 // Layout 4: グリッドカード
 export function Layout4({ data }: LayoutProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedTag, setSelectedTag] = useState<IdeaTag | null>(null)
+
+  const handleTagClick = useCallback((tag: IdeaTag) => {
+    setSelectedTag(tag)
+    setIsModalOpen(true)
+  }, [])
+
   return (
+    <>
     <Card
       className="h-[600px] w-full overflow-hidden rounded-3xl border-0 shadow-2xl"
       style={{ background: data.backgroundColor || "#dbeafe" }}
@@ -343,7 +413,16 @@ export function Layout4({ data }: LayoutProps) {
           </div>
         </div>
       </div>
+      {data.userId && (
+        <BlogPostsModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          selectedTag={selectedTag}
+          userId={data.userId}
+        />
+      )}
     </Card>
+    </>
   )
 }
 

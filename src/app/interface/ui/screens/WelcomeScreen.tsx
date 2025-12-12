@@ -9,10 +9,10 @@ interface WelcomeScreenProps {
 
 export function WelcomeScreen({ onNext }: WelcomeScreenProps) {
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
+    <div className="relative flex min-h-screen flex-col items-center justify-center">
       <PastelBackground />
 
-      <div className="z-10 text-center">
+      <div className="relative z-10 text-center">
         {/* アプリケーションロゴの表示 */}
         {/* SVGをImageコンポーネントで表示。publicからの相対パスを指定。 */}
         <Image

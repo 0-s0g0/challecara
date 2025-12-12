@@ -8,9 +8,10 @@ interface TagBallsPhysicsProps {
   tagCounts: Array<{ tag: IdeaTag; count: number }>
   width: number
   height: number
+  onTagClick?: (tag: IdeaTag) => void
 }
 
-export function TagBallsPhysics({ tagCounts, width, height }: TagBallsPhysicsProps) {
+export function TagBallsPhysics({ tagCounts, width, height, onTagClick }: TagBallsPhysicsProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const engineRef = useRef<Matter.Engine | null>(null)
   const renderRef = useRef<Matter.Render | null>(null)
@@ -251,12 +252,65 @@ export function TagBallsPhysics({ tagCounts, width, height }: TagBallsPhysicsPro
     )
   }
 
+  // クリックイベントを処理
+  useEffect(() => {
+    if (!canvasRef.current || !engineRef.current || !imagesLoaded) return
+
+    console.log("Setting up click handler, onTagClick:", onTagClick, "typeof:", typeof onTagClick)
+
+    const canvas = canvasRef.current
+    const engine = engineRef.current
+
+    const handleClick = (event: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect()
+      const x = event.clientX - rect.left
+      const y = event.clientY - rect.top
+
+      console.log("Canvas clicked at:", x, y)
+
+      const bodies = Matter.Composite.allBodies(engine.world)
+      console.log("Total bodies:", bodies.length)
+
+      for (const body of bodies) {
+        if (body.isStatic) continue
+
+        const distance = Math.sqrt(
+          Math.pow(body.position.x - x, 2) + Math.pow(body.position.y - y, 2)
+        )
+
+        const radius = body.circleRadius || 30
+        if (distance <= radius) {
+          try {
+            const data = JSON.parse(body.label)
+            console.log("Ball clicked! Tag:", data.tag)
+            if (onTagClick) {
+              console.log("Calling onTagClick with:", data.tag)
+              onTagClick(data.tag)
+            } else {
+              console.warn("onTagClick is not defined!")
+            }
+            break
+          } catch (error) {
+            console.error("Error parsing body label:", error)
+          }
+        }
+      }
+    }
+
+    canvas.addEventListener("click", handleClick)
+    canvas.style.cursor = onTagClick ? "pointer" : "default"
+
+    return () => {
+      canvas.removeEventListener("click", handleClick)
+    }
+  }, [onTagClick, imagesLoaded])
+
   return (
     <div
-      className="relative overflow-hidden backdrop-blur-xl  rounded-2xl"
+      className="relative overflow-hidden backdrop-blur-xl rounded-2xl"
       style={{ width: `${width}px`, height: `${height}px` }}
     >
-      <canvas ref={canvasRef} className="absolute inset-0" />
+      <canvas ref={canvasRef} className="absolute inset-0 z-10" />
     </div>
   )
 }
