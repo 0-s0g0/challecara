@@ -10,7 +10,7 @@ compatibility_flags = ["nodejs_compat"]
 main = ".open-next/worker.js"
 
 # 静的アセットの設定
-assets = { directory = ".open-next/assets", binding = "ASSETS" }
+assets = { directory = ".open-next/assets", binding = "STATIC_ASSETS" }
 
 # 本番環境の設定
 [env.production]
