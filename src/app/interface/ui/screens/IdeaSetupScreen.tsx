@@ -7,6 +7,7 @@ import { Input } from "@/app/interface/ui/components/ui/input"
 import { Label } from "@/app/interface/ui/components/ui/label"
 import { Textarea } from "@/app/interface/ui/components/ui/textarea"
 import { ChevronLeft } from "lucide-react"
+import Image from "next/image"
 import { useState } from "react"
 import { useRegistrationStore } from "../../state/registrationStore"
 
@@ -79,7 +80,7 @@ export function IdeaSetupScreen({ onNext, onBack }: IdeaSetupScreenProps) {
 
         <div className="space-y-3">
           <Label className="text-lg text-amber-950">カテゴリータグ</Label>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-10 gap-2">
             {IDEA_TAG_LIST.map((tag) => {
               const tagInfo = IDEA_TAGS[tag]
               const isSelected = ideaTag === tag
@@ -89,7 +90,7 @@ export function IdeaSetupScreen({ onNext, onBack }: IdeaSetupScreenProps) {
                   key={tag}
                   type="button"
                   onClick={() => setIdeaTag(tag)}
-                  className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all ${
+                  className={`relative flex flex-col items-center justify-center p-3 rounded-full border-2 transition-all aspect-square overflow-hidden ${
                     isSelected
                       ? "border-[#8B7355] bg-[#8B7355]/10 scale-105"
                       : "border-gray-200/50 bg-white/50 hover:border-[#8B7355]/50"
@@ -98,15 +99,24 @@ export function IdeaSetupScreen({ onNext, onBack }: IdeaSetupScreenProps) {
                     background: isSelected ? tagInfo.gradient : undefined,
                   }}
                 >
-                  <span className="text-2xl">{tagInfo.icon}</span>
-                  <div className="flex flex-col items-start flex-1">
+                  {/* 背景画像 */}
+                  <div className="absolute inset-0 opacity-20">
+                    <Image
+                      src={tagInfo.imagePath}
+                      alt={tagInfo.name}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  {/* テキスト */}
+                  <div className="relative z-10 flex flex-col items-center justify-center text-center">
                     <span
-                      className={`font-bold text-sm ${isSelected ? "text-white" : "text-amber-950"}`}
+                      className={`font-bold text-xl ${isSelected ? "text-white" : "text-amber-950"}`}
                     >
                       {tagInfo.name}
                     </span>
                     <span
-                      className={`text-xs ${isSelected ? "text-white/80" : "text-amber-900/60"}`}
+                      className={`text-[10px] mt-0.5 ${isSelected ? "text-white/80" : "text-amber-900/60"}`}
                     >
                       {tagInfo.nameEn}
                     </span>

@@ -6,7 +6,7 @@ import { Card } from "@/app/interface/ui/components/ui/card"
 import Image from "next/image"
 import type React from "react"
 import { FaFacebook, FaInstagram, FaXTwitter } from "react-icons/fa6"
-import { TagBallsCSS } from "./TagBallsCSS"
+import { TagBallsPhysics } from "./TagBallsPhysics"
 import { TrackableSocialLink } from "./TrackableSocialLink"
 
 interface ProfileData {
@@ -90,10 +90,10 @@ export function Layout1({ data }: LayoutProps) {
         </div>
       </div>
 
-      <div className="bg-white p-4 relative">
+      <div className=" p-4 relative">
         {data.ideaTags && data.ideaTags.length > 0 ? (
-          <div className="relative z-20 flex justify-center">
-            <TagBallsCSS
+          <div className="relative z-20 flex justify-center ">
+            <TagBallsPhysics
               tagCounts={
                 // タグを集計
                 (data.ideaTags || []).reduce(
@@ -176,19 +176,42 @@ export function Layout2({ data }: LayoutProps) {
             {data.bio || "自己紹介がここに表示されます"}
           </p>
 
-          <div className="rounded-xl bg-gradient-to-r from-purple-100 to-pink-100 p-4">
-            {data.ideaTag && (
-              <span
-                className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs font-bold mb-2"
-                style={{ background: IDEA_TAGS[data.ideaTag].gradient }}
-              >
-                <span>{IDEA_TAGS[data.ideaTag].icon}</span>
-                <span>{IDEA_TAGS[data.ideaTag].name}</span>
-              </span>
-            )}
-            <h3 className="font-semibold text-purple-900">{data.ideaTitle || "アイデア・想い"}</h3>
-            <p className="mt-1 text-xs text-purple-700">最新の投稿をチェック</p>
-          </div>
+          {data.ideaTags && data.ideaTags.length > 0 ? (
+            <div className="flex justify-center">
+              <TagBallsPhysics
+                tagCounts={(data.ideaTags || []).reduce(
+                  (acc, tag) => {
+                    const existing = acc.find((t) => t.tag === tag)
+                    if (existing) {
+                      existing.count++
+                    } else {
+                      acc.push({ tag, count: 1 })
+                    }
+                    return acc
+                  },
+                  [] as Array<{ tag: IdeaTag; count: number }>
+                )}
+                width={320}
+                height={200}
+              />
+            </div>
+          ) : (
+            <div className="rounded-xl bg-gradient-to-r from-purple-100 to-pink-100 p-4">
+              {data.ideaTag && (
+                <span
+                  className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs font-bold mb-2"
+                  style={{ background: IDEA_TAGS[data.ideaTag].gradient }}
+                >
+                  <span>{IDEA_TAGS[data.ideaTag].icon}</span>
+                  <span>{IDEA_TAGS[data.ideaTag].name}</span>
+                </span>
+              )}
+              <h3 className="font-semibold text-purple-900">
+                {data.ideaTitle || "アイデア・想い"}
+              </h3>
+              <p className="mt-1 text-xs text-purple-700">最新の投稿をチェック</p>
+            </div>
+          )}
         </div>
       </div>
     </Card>
@@ -225,21 +248,42 @@ export function Layout3({ data }: LayoutProps) {
             {data.facebookUsername && <SocialIconLarge type="facebook" />}
           </div>
 
-          <div className="mt-8 w-full rounded-2xl bg-gray-50 p-4 space-y-2">
-            {data.ideaTag && (
-              <div className="flex justify-center">
-                <span
-                  className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs font-bold"
-                  style={{ background: IDEA_TAGS[data.ideaTag].gradient }}
-                >
-                  <span>{IDEA_TAGS[data.ideaTag].icon}</span>
-                  <span>{IDEA_TAGS[data.ideaTag].name}</span>
-                </span>
-              </div>
-            )}
-            <h3 className="font-semibold text-gray-800">{data.ideaTitle || "アイデア・想い"}</h3>
-            <p className="mt-1 text-xs text-gray-500">最新の投稿</p>
-          </div>
+          {data.ideaTags && data.ideaTags.length > 0 ? (
+            <div className="mt-8 w-full flex justify-center">
+              <TagBallsPhysics
+                tagCounts={(data.ideaTags || []).reduce(
+                  (acc, tag) => {
+                    const existing = acc.find((t) => t.tag === tag)
+                    if (existing) {
+                      existing.count++
+                    } else {
+                      acc.push({ tag, count: 1 })
+                    }
+                    return acc
+                  },
+                  [] as Array<{ tag: IdeaTag; count: number }>
+                )}
+                width={340}
+                height={180}
+              />
+            </div>
+          ) : (
+            <div className="mt-8 w-full rounded-2xl bg-gray-50 p-4 space-y-2">
+              {data.ideaTag && (
+                <div className="flex justify-center">
+                  <span
+                    className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs font-bold"
+                    style={{ background: IDEA_TAGS[data.ideaTag].gradient }}
+                  >
+                    <span>{IDEA_TAGS[data.ideaTag].icon}</span>
+                    <span>{IDEA_TAGS[data.ideaTag].name}</span>
+                  </span>
+                </div>
+              )}
+              <h3 className="font-semibold text-gray-800">{data.ideaTitle || "アイデア・想い"}</h3>
+              <p className="mt-1 text-xs text-gray-500">最新の投稿</p>
+            </div>
+          )}
         </div>
       </div>
     </Card>

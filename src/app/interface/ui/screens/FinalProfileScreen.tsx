@@ -20,7 +20,7 @@ interface FinalProfileScreenProps {
 export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) {
   const formData = useRegistrationStore()
   const setUniqueIdInStore = useRegistrationStore((state) => state.setUniqueId)
-  const _router = useRouter()
+  const router = useRouter()
   const [copied, setCopied] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
   const [uniqueId, setUniqueId] = useState<string | null>(null)
@@ -80,16 +80,19 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
       console.log("プロフィール作成結果:", result)
 
       if (result.success && result.uniqueId) {
-        console.log("プロフィール作成成功:", result.uniqueId)
+        console.log("[FinalProfile] プロフィール作成成功:", result.uniqueId)
 
         // Sign in on the client side to update AuthContext
         if (result.email && result.password) {
           try {
             const auth = getFirebaseAuth()
             await signInWithEmailAndPassword(auth, result.email, result.password)
-            console.log("クライアント側でのサインインに成功しました")
+            console.log("[FinalProfile] クライアント側でのサインインに成功しました")
+
+            // AuthContextの更新を待つ
+            await new Promise((resolve) => setTimeout(resolve, 500))
           } catch (signInError) {
-            console.error("クライアント側でのサインインに失敗:", signInError)
+            console.error("[FinalProfile] クライアント側でのサインインに失敗:", signInError)
             // Don't block the flow if sign-in fails, as the cookie-based auth still works
           }
         }
@@ -97,13 +100,8 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
         // Set uniqueId to show the profile URL and store it
         setUniqueId(result.uniqueId)
         setUniqueIdInStore(result.uniqueId)
-        // Proceed to next screen after a short delay to allow user to see the URL
-        setTimeout(() => {
-          console.log("次の画面に遷移します")
-          onNext()
-        }, 1000)
       } else {
-        console.error("プロフィール作成失敗:", result.error)
+        console.error("[FinalProfile] プロフィール作成失敗:", result.error)
         alert(result.error || "プロフィールの作成に失敗しました")
       }
     } catch (error) {
@@ -126,7 +124,7 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
     ideaTitle: formData.ideaTitle,
     ideaTag: formData.ideaTag,
     ideaTags: formData.ideaTag ? [formData.ideaTag] : [],
-    backgroundColor: "#FFFFFF",
+    backgroundColor: formData.backgroundColor,
   }
 
   return (
@@ -197,7 +195,7 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
           戻る
         </Button>
         <Button
-          onClick={handleCreateProfile}
+          onClick={uniqueId ? onNext : handleCreateProfile}
           disabled={isCreating}
           className="h-12 flex-1 rounded-full bg-[#8B7355] text-white hover:bg-[#6B5335]"
         >
@@ -205,6 +203,25 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               作成中...
+            </>
+          ) : uniqueId ? (
+            <>
+              次へ
+              <svg
+                className="ml-1 h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <title>Next arrow</title>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
             </>
           ) : (
             "プロフィールを作成"

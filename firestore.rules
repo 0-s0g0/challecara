@@ -68,7 +68,7 @@ service cloud.firestore {
     match /blogPosts/{postId} {
       // Anyone can read all posts (for public profiles)
       allow read: if true;
-      // Only authenticated users can write
+      // Temporarily relaxed for debugging - any authenticated user can create
       allow create: if isAuthenticated();
       allow update, delete: if isAuthenticated();
     }
