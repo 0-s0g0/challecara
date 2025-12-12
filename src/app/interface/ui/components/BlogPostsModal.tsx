@@ -54,7 +54,8 @@ export function BlogPostsModal({ isOpen, onClose, selectedTag, userId }: BlogPos
 
         // 選択されたタグでフィルター
         const filteredPosts = allPosts.filter(
-          (post) => post.ideaTag !== "" && post.ideaTag !== undefined && post.ideaTag === selectedTag
+          (post) =>
+            post.ideaTag !== "" && post.ideaTag !== undefined && post.ideaTag === selectedTag
         )
         console.log("Filtered posts:", filteredPosts.length)
         setPosts(filteredPosts as BlogPost[])
