@@ -14,7 +14,7 @@ async function generateOpenAPISpec() {
 
   try {
     const spec = getApiDocs()
-    const outputPath = resolve(process.cwd(), "api/openapi/openapi.json")
+    const outputPath = resolve(process.cwd(), "src/lib/openapi.json")
 
     // Ensure the directory exists
     mkdirSync(dirname(outputPath), { recursive: true })
