@@ -125,7 +125,7 @@ export function SettingsScreen() {
             <div className="space-y-4">
               <button
                 onClick={() => setActiveSection(null)}
-                className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800"
+                className="flex items-center gap-2 text-sm text-gray-600 "
               >
                 <ChevronRight className="h-4 w-4 rotate-180" />
                 戻る
@@ -200,7 +200,7 @@ export function SettingsScreen() {
                         <button
                           key={itemIndex}
                           type="button"
-                          className="flex w-full items-center gap-4 p-4 transition-colors hover:bg-gray-50"
+                          className="flex w-full items-center gap-4 p-4 transition-colors "
                           onClick={() => {
                             if ("action" in item && item.action) {
                               setActiveSection(item.action)
@@ -232,7 +232,7 @@ export function SettingsScreen() {
                   type="button"
                   onClick={handleLogout}
                   disabled={isLoggingOut}
-                  className="flex w-full items-center gap-4 p-4 transition-colors hover:bg-red-50 disabled:opacity-50"
+                  className="flex w-full items-center gap-4 p-4 transition-colors disabled:opacity-50"
                 >
                   <div className="rounded-full bg-red-100 p-2">
                     <LogOut className="h-5 w-5 text-red-600" />
