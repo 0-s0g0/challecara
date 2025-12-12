@@ -156,8 +156,12 @@ export function SettingsScreen() {
                           <Link2 className="h-5 w-5 text-blue-600" />
                         </div>
                         <div className="flex-1 overflow-hidden">
-                          <p className="truncate text-sm font-medium text-blue-600 dark:text-blue-200">{profileUrl}</p>
-                          <p className="text-xs text-gray-500 dark:text-white">このURLをシェアして人とつながろう</p>
+                          <p className="truncate text-sm font-medium text-blue-600 dark:text-blue-200">
+                            {profileUrl}
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-white">
+                            このURLをシェアして人とつながろう
+                          </p>
                         </div>
                         <button
                           type="button"
@@ -186,7 +190,9 @@ export function SettingsScreen() {
 
               {settingsGroups.map((group, groupIndex) => (
                 <div key={groupIndex} className="space-y-2">
-                  <h2 className="px-2 text-sm font-semibold text-gray-500 dark:text-white">{group.title}</h2>
+                  <h2 className="px-2 text-sm font-semibold text-gray-500 dark:text-white">
+                    {group.title}
+                  </h2>
                   <Card className="overflow-hidden rounded-2xl border-0 bg-white dark:bg-gray-600/80 shadow-sm">
                     {group.items.map((item, itemIndex) => {
                       const Icon = item.icon
@@ -205,8 +211,12 @@ export function SettingsScreen() {
                             <Icon className="h-5 w-5 text-gray-600 " />
                           </div>
                           <div className="flex-1 text-left">
-                            <p className="font-medium text-gray-800 dark:text-white">{item.label}</p>
-                            <p className="text-sm text-gray-500 dark:text-white">{item.description}</p>
+                            <p className="font-medium text-gray-800 dark:text-white">
+                              {item.label}
+                            </p>
+                            <p className="text-sm text-gray-500 dark:text-white">
+                              {item.description}
+                            </p>
                           </div>
                           <ChevronRight className="h-5 w-5 text-gray-400" />
                         </button>

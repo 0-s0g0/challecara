@@ -155,7 +155,9 @@ export function SearchScreen() {
                         <p className="text-sm font-semibold text-gray-800 dark:text-white truncate">
                           {blog.author.nickname}
                         </p>
-                        <p className="text-xs text-gray-400 dark:text-white">{getTimeAgo(blog.createdAt)}</p>
+                        <p className="text-xs text-gray-400 dark:text-white">
+                          {getTimeAgo(blog.createdAt)}
+                        </p>
                       </div>
                       {tagInfo && (
                         <div
@@ -168,7 +170,9 @@ export function SearchScreen() {
                       )}
                     </div>
 
-                    <h3 className="mb-2 font-semibold text-gray-900 dark:text-white text-lg">{blog.title}</h3>
+                    <h3 className="mb-2 font-semibold text-gray-900 dark:text-white text-lg">
+                      {blog.title}
+                    </h3>
                     <p className="line-clamp-3 text-sm text-gray-600 dark:text-white whitespace-pre-wrap">
                       {blog.content}
                     </p>
