@@ -1,7 +1,7 @@
 "use client"
 
+import { UseCaseFactory } from "@/app/config/factories/useCaseFactory"
 import { IDEA_TAGS, IDEA_TAG_LIST, type IdeaTag } from "@/app/domain/models/ideaTags"
-import { createBlogPost } from "@/app/interface/controller/blogController"
 import { useAuth } from "@/app/interface/context/AuthContext"
 import { PastelBackground } from "@/app/interface/ui/components/PastelBackground"
 import { Button } from "@/app/interface/ui/components/ui/button"
@@ -31,7 +31,10 @@ export function BlogCreateScreen() {
 
     setIsPublishing(true)
     try {
-      const result = await createBlogPost({
+      // クライアント側から直接Firestoreに書き込む
+      const blogPostRepository = UseCaseFactory.createBlogPostRepository()
+
+      await blogPostRepository.create({
         userId: firebaseUser.uid,
         title,
         content,
@@ -40,16 +43,13 @@ export function BlogCreateScreen() {
         isPublished: true,
       })
 
-      if (result.success) {
-        alert("投稿しました！")
-        setTitle("")
-        setContent("")
-        setIdeaTag("")
-      } else {
-        alert(result.error || "投稿に失敗しました")
-      }
-    } catch (_error) {
-      alert("投稿に失敗しました")
+      alert("投稿しました！")
+      setTitle("")
+      setContent("")
+      setIdeaTag("")
+    } catch (error) {
+      console.error("投稿エラー:", error)
+      alert("投稿に失敗しました: " + (error instanceof Error ? error.message : "不明なエラー"))
     } finally {
       setIsPublishing(false)
     }
