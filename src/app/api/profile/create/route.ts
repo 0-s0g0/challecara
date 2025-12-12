@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import type { ProfileCreationInput } from "@/app/domain/usecase/profileCreationUseCase"
 
 // Edge Runtime is required for Cloudflare Pages
-export const runtime = 'edge'
+export const runtime = "edge"
 
 /**
  * Mock implementation for Cloudflare Pages preview environments
@@ -16,7 +16,7 @@ export const runtime = 'edge'
  */
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json() as ProfileCreationInput
+    const body = (await request.json()) as ProfileCreationInput
 
     // Generate a mock unique ID
     const uniqueId = `preview-${Math.random().toString(36).substring(2, 10)}`

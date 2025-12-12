@@ -60,15 +60,7 @@
             "description": "Last update timestamp"
           }
         },
-        "required": [
-          "id",
-          "accountId",
-          "nickname",
-          "bio",
-          "avatarUrl",
-          "createdAt",
-          "updatedAt"
-        ]
+        "required": ["id", "accountId", "nickname", "bio", "avatarUrl", "createdAt", "updatedAt"]
       },
       "UserCreateInput": {
         "type": "object",
@@ -101,13 +93,7 @@
             "description": "Avatar image URL"
           }
         },
-        "required": [
-          "accountId",
-          "password",
-          "nickname",
-          "bio",
-          "avatarUrl"
-        ]
+        "required": ["accountId", "password", "nickname", "bio", "avatarUrl"]
       },
       "SocialLink": {
         "type": "object",
@@ -124,12 +110,7 @@
           },
           "provider": {
             "type": "string",
-            "enum": [
-              "twitter",
-              "instagram",
-              "facebook",
-              "tiktok"
-            ],
+            "enum": ["twitter", "instagram", "facebook", "tiktok"],
             "description": "Social media provider"
           },
           "url": {
@@ -147,14 +128,7 @@
             "description": "Creation timestamp"
           }
         },
-        "required": [
-          "id",
-          "userId",
-          "provider",
-          "url",
-          "isActive",
-          "createdAt"
-        ]
+        "required": ["id", "userId", "provider", "url", "isActive", "createdAt"]
       },
       "SocialLinkCreateInput": {
         "type": "object",
@@ -166,12 +140,7 @@
           },
           "provider": {
             "type": "string",
-            "enum": [
-              "twitter",
-              "instagram",
-              "facebook",
-              "tiktok"
-            ],
+            "enum": ["twitter", "instagram", "facebook", "tiktok"],
             "description": "Social media provider"
           },
           "url": {
@@ -180,11 +149,7 @@
             "description": "Social media profile URL"
           }
         },
-        "required": [
-          "userId",
-          "provider",
-          "url"
-        ]
+        "required": ["userId", "provider", "url"]
       },
       "BlogPost": {
         "type": "object",
@@ -222,15 +187,7 @@
             "description": "Last update timestamp"
           }
         },
-        "required": [
-          "id",
-          "userId",
-          "title",
-          "content",
-          "isPublished",
-          "createdAt",
-          "updatedAt"
-        ]
+        "required": ["id", "userId", "title", "content", "isPublished", "createdAt", "updatedAt"]
       },
       "BlogPostCreateInput": {
         "type": "object",
@@ -254,12 +211,7 @@
             "description": "Whether the post is published"
           }
         },
-        "required": [
-          "userId",
-          "title",
-          "content",
-          "isPublished"
-        ]
+        "required": ["userId", "title", "content", "isPublished"]
       },
       "Error": {
         "type": "object",
@@ -273,9 +225,7 @@
             "description": "Error code"
           }
         },
-        "required": [
-          "error"
-        ]
+        "required": ["error"]
       }
     },
     "securitySchemes": {
@@ -309,9 +259,7 @@
       "get": {
         "summary": "Get blog posts",
         "description": "Retrieve blog posts, optionally filtered by user ID",
-        "tags": [
-          "Blog Posts"
-        ],
+        "tags": ["Blog Posts"],
         "parameters": [
           {
             "in": "query",
@@ -359,9 +307,7 @@
       "post": {
         "summary": "Create a blog post",
         "description": "Create a new blog post",
-        "tags": [
-          "Blog Posts"
-        ],
+        "tags": ["Blog Posts"],
         "requestBody": {
           "required": true,
           "content": {
@@ -410,9 +356,7 @@
       "get": {
         "summary": "Get OpenAPI specification",
         "description": "Returns the OpenAPI 3.0 specification for the CHALLECARA API",
-        "tags": [
-          "Documentation"
-        ],
+        "tags": ["Documentation"],
         "responses": {
           "200": {
             "description": "OpenAPI specification",
@@ -431,9 +375,7 @@
       "get": {
         "summary": "Get social links",
         "description": "Retrieve social links, optionally filtered by user ID",
-        "tags": [
-          "Social Links"
-        ],
+        "tags": ["Social Links"],
         "parameters": [
           {
             "in": "query",
@@ -473,9 +415,7 @@
       "post": {
         "summary": "Create a social link",
         "description": "Add a new social media link for a user",
-        "tags": [
-          "Social Links"
-        ],
+        "tags": ["Social Links"],
         "requestBody": {
           "required": true,
           "content": {
@@ -524,9 +464,7 @@
       "get": {
         "summary": "Get user by ID",
         "description": "Retrieve a specific user by their ID",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "parameters": [
           {
             "in": "path",
@@ -574,9 +512,7 @@
       "put": {
         "summary": "Update user",
         "description": "Update an existing user's information",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "parameters": [
           {
             "in": "path",
@@ -658,9 +594,7 @@
       "delete": {
         "summary": "Delete user",
         "description": "Delete a user account",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "parameters": [
           {
             "in": "path",
@@ -703,9 +637,7 @@
       "get": {
         "summary": "Get all users",
         "description": "Retrieve a list of all users",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "responses": {
           "200": {
             "description": "A list of users",
@@ -735,9 +667,7 @@
       "post": {
         "summary": "Create a new user",
         "description": "Create a new user account",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "requestBody": {
           "required": true,
           "content": {

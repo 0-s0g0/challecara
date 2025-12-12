@@ -8,7 +8,7 @@ import { ProfileAuthGate } from "@/app/interface/ui/components/ProfileAuthGate"
 import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
 import { ProfileTracker } from "./ProfileTracker"
 
-export const runtime = 'edge'
+export const runtime = "edge"
 
 interface PublicProfilePageProps {
   params: Promise<{

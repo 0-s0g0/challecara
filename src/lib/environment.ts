@@ -7,12 +7,12 @@
  * @returns true if running on *.challecara.pages.dev
  */
 export function isCloudflarePreview(): boolean {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return false
   }
 
   const hostname = window.location.hostname
-  return hostname.endsWith('.challecara.pages.dev')
+  return hostname.endsWith(".challecara.pages.dev")
 }
 
 /**
@@ -20,12 +20,12 @@ export function isCloudflarePreview(): boolean {
  * @returns true if running on tsunagulink.0-s0g0.com
  */
 export function isProduction(): boolean {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return false
   }
 
   const hostname = window.location.hostname
-  return hostname === 'tsunagulink.0-s0g0.com'
+  return hostname === "tsunagulink.0-s0g0.com"
 }
 
 /**

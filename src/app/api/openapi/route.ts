@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import openapiSpec from "@/lib/openapi.json"
 
-export const runtime = 'edge'
+export const runtime = "edge"
 
 /**
  * @swagger
