@@ -3,6 +3,9 @@ name: Deploy Preview to Cloudflare Workers
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+    branches-ignore:
+      - main
+  workflow_dispatch:
 
 permissions:
   contents: read
