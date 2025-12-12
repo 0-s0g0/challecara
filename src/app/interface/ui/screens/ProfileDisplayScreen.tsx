@@ -50,6 +50,7 @@ export function ProfileDisplayScreen() {
     ideaTag: formData.ideaTag,
     ideaTags: ideaTags,
     backgroundColor: formData.backgroundColor,
+    textColor: formData.textColor,
   }
 
   return (

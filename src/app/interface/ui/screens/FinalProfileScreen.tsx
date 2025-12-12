@@ -75,6 +75,9 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
         blogContent: formData.ideaContent,
         blogImageUrl: "",
         ideaTag: formData.ideaTag === "" ? undefined : formData.ideaTag,
+        selectedLayout: formData.selectedLayout,
+        backgroundColor: formData.backgroundColor,
+        textColor: formData.textColor,
       })
 
       console.log("プロフィール作成結果:", result)
@@ -125,6 +128,7 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
     ideaTag: formData.ideaTag,
     ideaTags: formData.ideaTag ? [formData.ideaTag] : [],
     backgroundColor: formData.backgroundColor,
+    textColor: formData.textColor,
   }
 
   return (

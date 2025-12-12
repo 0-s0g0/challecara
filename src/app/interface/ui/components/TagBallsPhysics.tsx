@@ -253,7 +253,7 @@ export function TagBallsPhysics({ tagCounts, width, height }: TagBallsPhysicsPro
 
   return (
     <div
-      className="relative overflow-hidden backdrop-blur-xl bg-white/50 rounded-2xl"
+      className="relative overflow-hidden backdrop-blur-xl  rounded-2xl"
       style={{ width: `${width}px`, height: `${height}px` }}
     >
       <canvas ref={canvasRef} className="absolute inset-0" />

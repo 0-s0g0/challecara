@@ -31,6 +31,9 @@ export interface ProfileCreationInput {
   blogContent: string
   blogImageUrl: string
   ideaTag?: IdeaTag | ""
+  selectedLayout?: number
+  backgroundColor?: string
+  textColor?: string
 }
 
 export class ProfileCreationUseCase {
@@ -76,6 +79,9 @@ export class ProfileCreationUseCase {
       bio: input.bio,
       avatarUrl: input.avatarUrl,
       uniqueId: uniqueId,
+      selectedLayout: input.selectedLayout,
+      backgroundColor: input.backgroundColor,
+      textColor: input.textColor,
     })
 
     // Validate and create social links

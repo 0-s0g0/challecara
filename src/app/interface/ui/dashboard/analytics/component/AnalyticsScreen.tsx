@@ -66,13 +66,9 @@ export function AnalyticsScreen() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen flex-col bg-gray-50">
-        <div className="sticky top-0 z-10 bg-white p-4 shadow-sm">
-          <div className="mx-auto max-w-md">
-            <h1 className="text-lg font-semibold text-gray-800">分析</h1>
-          </div>
-        </div>
-        <div className="flex flex-1 items-center justify-center">
+      <div className="relative flex flex-col bg-gray-50">
+        <PastelBackground />
+        <div className="flex flex-1 items-center justify-center p-8">
           <p className="text-gray-500">読み込み中...</p>
         </div>
       </div>
@@ -81,13 +77,9 @@ export function AnalyticsScreen() {
 
   if (!stats) {
     return (
-      <div className="flex min-h-screen flex-col bg-gray-50">
-        <div className="sticky top-0 z-10 bg-white p-4 shadow-sm">
-          <div className="mx-auto max-w-md">
-            <h1 className="text-lg font-semibold text-gray-800">分析</h1>
-          </div>
-        </div>
-        <div className="flex flex-1 items-center justify-center">
+      <div className="relative flex flex-col bg-gray-50">
+        <PastelBackground />
+        <div className="flex flex-1 items-center justify-center p-8">
           <p className="text-gray-500">データがありません</p>
         </div>
       </div>
@@ -106,7 +98,7 @@ export function AnalyticsScreen() {
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-gray-50">
+    <div className="relative flex flex-col bg-gray-50">
       <PastelBackground />
 
       <div className="flex-1 overflow-auto p-4 pb-24">

@@ -54,6 +54,7 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
   const formData = useRegistrationStore()
   const setSelectedLayout = useRegistrationStore((state) => state.setSelectedLayout)
   const setBackgroundColor = useRegistrationStore((state) => state.setBackgroundColor)
+  const setTextColorInStore = useRegistrationStore((state) => state.setTextColor)
 
   const [selectedLayout, setSelectedLayoutLocal] = useState(formData.selectedLayout || 0)
   const [currentScrollLeft, setCurrentScrollLeft] = useState(0)
@@ -67,6 +68,7 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
   const [gradientColor1, setGradientColor1] = useState("#FFFFFF")
   const [gradientColor2, setGradientColor2] = useState("#000000")
   const [gradientDirection, setGradientDirection] = useState("to-br")
+  const [textColor, setTextColor] = useState(formData.textColor || "#000000")
   const gradientStartColorId = "inline-gradient-start-color"
   const gradientEndColorId = "inline-gradient-end-color"
   const gradientDirectionId = "inline-gradient-direction"
@@ -103,6 +105,7 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
       ideaTitle: formData.ideaTitle,
       ideaTag: formData.ideaTag,
       backgroundColor: backgroundColor,
+      textColor: textColor,
       // デモ用：複数投稿をシミュレート（実際はFirestoreから取得）
       ideaTags: [
         "tech",
@@ -115,7 +118,7 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
         "tech",
       ] as IdeaTag[],
     }),
-    [formData, backgroundColor]
+    [formData, backgroundColor, textColor]
   )
 
   const handleScroll = useCallback(() => {
@@ -157,9 +160,10 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
   }
 
   const handleNext = () => {
-    // Save selected layout and background color to store
+    // Save selected layout, background color, and text color to store
     setSelectedLayout(selectedLayout)
     setBackgroundColor(backgroundColor)
+    setTextColorInStore(textColor)
     onNext()
   }
 
@@ -222,7 +226,7 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
                             variant="outline"
                             className="rounded-full bg-white/80 px-6 hover:bg-white"
                           >
-                            {isEditing ? "閉じる" : "背景を編集"}
+                            {isEditing ? "閉じる" : "色の変更"}
                           </Button>
                         </div>
 
@@ -386,6 +390,26 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
                                 </div>
                               </div>
                             )}
+
+                            {/* Text Color */}
+                            <div className="space-y-2 pt-4 border-t border-gray-200">
+                              <p className="text-sm text-gray-600">テキストカラー</p>
+                              <div className="flex items-center gap-3">
+                                <input
+                                  type="color"
+                                  value={textColor.startsWith("#") ? textColor : "#000000"}
+                                  onChange={(e) => setTextColor(e.target.value)}
+                                  className="w-12 h-12 rounded-lg border-2 border-gray-200 cursor-pointer"
+                                />
+                                <input
+                                  type="text"
+                                  value={textColor}
+                                  onChange={(e) => setTextColor(e.target.value)}
+                                  placeholder="#000000"
+                                  className="flex-1 h-10 rounded-lg border-2 border-gray-200 px-3 text-sm"
+                                />
+                              </div>
+                            </div>
                           </div>
                         )}
                       </div>
