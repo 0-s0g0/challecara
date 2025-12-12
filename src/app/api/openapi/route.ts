@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import openapiSpec from "../../../../../api/openapi/openapi.json"
+import openapiSpec from "@/lib/openapi.json"
 
 export const runtime = 'edge'
 
