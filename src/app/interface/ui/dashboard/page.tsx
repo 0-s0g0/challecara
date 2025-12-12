@@ -168,9 +168,12 @@ export default function DashboardPage() {
     <div className="relative flex min-h-screen flex-col">
       <AppHeader />
       <PastelBackground />
-      <div className="flex-1 overflow-auto pb-20">
-        <div className="bg-gradient-to-br from-background to-secondary">
-          <div className="flex min-h-screen items-center justify-center p-8">
+
+      {/* 修正1: flex-1 でヘッダーとフッター間の残りのスペースを占有。overflow-autoを削除し、内容がはみ出てもスクロールさせないようにする */}
+      <div className="flex-1">
+        <div className="h-full ">
+          {/* 修正3: min-h-screen を削除し、画面いっぱいに広がりすぎないようにする */}
+          <div className="flex h-full mt-3 justify-center">
             <div className="w-full max-w-sm">
               <SelectedLayout data={layoutData} />
             </div>

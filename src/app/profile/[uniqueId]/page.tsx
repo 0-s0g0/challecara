@@ -80,9 +80,9 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
   return (
     <ProfileAuthGate userId={user.id}>
       <ProfileTracker userId={user.id} uniqueId={uniqueId} />
-      <main className="min-h-screen items-center justify-center p-8">
+      <main className="relative min-h-screen flex items-center justify-center p-8">
         <PastelBackground />
-        <div className="max-w-md w-full">
+        <div className="relative z-10 max-w-md w-full">
           <SelectedLayout data={profileData} />
         </div>
       </main>
