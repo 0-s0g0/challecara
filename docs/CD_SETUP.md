@@ -1,34 +1,53 @@
 # CD (継続的デプロイメント) セットアップガイド
 
-このドキュメントでは、Cloudflare PagesへのCD設定と、Zitadel Cloudによるプレビュー環境のアクセス制御を説明します。
+このドキュメントでは、OpenNext + Cloudflare WorkersへのCD設定と、Zitadel Cloudによるプレビュー環境のアクセス制御を説明します。
 
 ## 目次
 
-1. [Cloudflare Pages セットアップ](#cloudflare-pages-セットアップ)
-2. [GitHub Secrets 設定](#github-secrets-設定)
-3. [Zitadel Cloud + Cloudflare Access 連携](#zitadel-cloud--cloudflare-access-連携)
-4. [動作確認](#動作確認)
+1. [アーキテクチャ概要](#アーキテクチャ概要)
+2. [Cloudflare Workers セットアップ](#cloudflare-workers-セットアップ)
+3. [GitHub Secrets 設定](#github-secrets-設定)
+4. [Zitadel Cloud + Cloudflare Access 連携](#zitadel-cloud--cloudflare-access-連携)
+5. [ローカル開発](#ローカル開発)
+6. [動作確認](#動作確認)
 
 ---
 
-## Cloudflare Pages セットアップ
+## アーキテクチャ概要
+
+```
+Next.js → OpenNext（変換）→ Cloudflare Workers
+                              ↓
+                    Cloudflare Access（認証）
+                              ↓
+                    Zitadel Cloud（OIDC）
+```
+
+### なぜ OpenNext + Workers？
+
+- **Cloudflare Pages は非推奨化の方向** - Cloudflare は Workers への統合を進めている
+- **Next.js フル機能対応** - SSR、API Routes、動的ルートがすべて動作
+- **高パフォーマンス** - エッジでの実行による低レイテンシー
+
+---
+
+## Cloudflare Workers セットアップ
 
 ### 1. Cloudflareアカウントの準備
 
 1. [Cloudflare Dashboard](https://dash.cloudflare.com/) にログイン
 2. 左メニューから「Workers & Pages」を選択
-3. 「Create」→「Pages」→「Direct Upload」を選択
-4. プロジェクト名を入力（例: `challecara`）
 
 ### 2. APIトークンの作成
 
 1. [Cloudflare API Tokens](https://dash.cloudflare.com/profile/api-tokens) にアクセス
 2. 「Create Token」をクリック
-3. 「Custom token」を選択
-4. 以下の権限を設定:
-   - **Account** > **Cloudflare Pages** > **Edit**
+3. 「Edit Cloudflare Workers」テンプレートを使用
+4. または「Custom token」で以下の権限を設定:
+   - **Account** > **Workers Scripts** > **Edit**
    - **Account** > **Account Settings** > **Read**
-5. トークンを生成して保存（後で使用）
+   - **Zone** > **Workers Routes** > **Edit**（カスタムドメイン使用時）
+5. トークンを生成して保存
 
 ### 3. Account IDの取得
 
@@ -47,7 +66,6 @@ GitHub リポジトリの Settings → Secrets and variables → Actions で以�
 |---------------|------|---------|
 | `CLOUDFLARE_API_TOKEN` | Cloudflare APIトークン | 上記「APIトークンの作成」で生成 |
 | `CLOUDFLARE_ACCOUNT_ID` | CloudflareアカウントID | Dashboard右サイドバーから取得 |
-| `CLOUDFLARE_PROJECT_NAME` | Pagesプロジェクト名 | 作成したプロジェクト名（例: `challecara`） |
 
 ### Firebase関連
 
@@ -70,7 +88,7 @@ GitHub リポジトリの Settings → Secrets and variables → Actions で以�
 ### アーキテクチャ
 
 ```
-プレビューURL → Cloudflare Access → Zitadel Cloud認証 → 許可されたユーザーのみアクセス可能
+Workers URL → Cloudflare Access → Zitadel Cloud認証 → 許可されたユーザーのみアクセス可能
 ```
 
 ### 1. Zitadel Cloud のセットアップ
@@ -92,7 +110,7 @@ GitHub リポジトリの Settings → Secrets and variables → Actions で以�
 ```
 Name: Cloudflare Access
 Type: Web
-Authentication Method: Code (PKCE不要、Codeを選択)
+Authentication Method: Code
 ```
 
 5. **Redirect URIs** を設定:
@@ -100,8 +118,6 @@ Authentication Method: Code (PKCE不要、Codeを選択)
 ```
 https://<your-team-name>.cloudflareaccess.com/cdn-cgi/access/callback
 ```
-
-> `<your-team-name>` は後でCloudflare Zero Trustで設定するチーム名
 
 6. 作成後、以下の情報をメモ:
    - **Client ID**
@@ -111,7 +127,6 @@ https://<your-team-name>.cloudflareaccess.com/cdn-cgi/access/callback
 
 1. 「Users」→「New」でユーザーを作成
 2. プレビュー環境にアクセスさせたいメンバーを追加
-3. 必要に応じてロールやグループを設定
 
 ### 2. Cloudflare Zero Trust (Access) のセットアップ
 
@@ -137,7 +152,7 @@ https://<your-team-name>.cloudflareaccess.com/cdn-cgi/access/callback
 
 4. 「Save」をクリック
 
-#### 2.3 プレビュー環境用のアクセスポリシーを作成
+#### 2.3 Workers用のアクセスポリシーを作成
 
 1. 「Access」→「Applications」→「Add an application」
 2. 「Self-hosted」を選択
@@ -151,12 +166,9 @@ Session Duration: 24 hours
 
 **Application domain:**
 ```
-Subdomain: *
-Domain: challecara.pages.dev
-Path: （空白）
+Subdomain: challecara
+Domain: <account-id>.workers.dev
 ```
-
-> これにより `*.challecara.pages.dev` 全体が保護されます
 
 4. 「Next」→ ポリシーを設定:
 
@@ -168,20 +180,35 @@ Path: （空白）
 
 5. 「Add application」で完了
 
-### 3. 本番環境のアクセス設定（オプション）
+---
 
-本番環境（mainブランチ）は公開したい場合、Cloudflare Accessの設定を調整します。
+## ローカル開発
 
-#### 方法A: 本番ドメインのみ除外
+### Cloudflare Workers 環境でのプレビュー
 
-カスタムドメイン（例: `app.example.com`）を本番用に設定し、`*.pages.dev` のみを保護。
+```bash
+# 依存関係インストール
+pnpm install
 
-#### 方法B: Bypass ポリシーの追加
+# Next.js ビルド
+pnpm build
 
-1. アプリケーション設定で新しいポリシーを追加
-2. Action: `Bypass`
-3. Include: `Everyone`
-4. Selector: Path → `/` （本番パスのみ）
+# Workers 用にビルド
+pnpm build:worker
+
+# ローカルプレビュー
+pnpm preview
+```
+
+### 環境変数の設定（ローカル）
+
+`.dev.vars` ファイルを作成:
+
+```
+NEXT_PUBLIC_FIREBASE_API_KEY=your-api-key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-domain
+# ... その他の環境変数
+```
 
 ---
 
@@ -190,7 +217,7 @@ Path: （空白）
 ### PRプレビューデプロイの確認
 
 1. 新しいブランチを作成してPRを作成
-2. GitHub Actionsで「Deploy Preview to Cloudflare Pages」が実行される
+2. GitHub Actionsで「Deploy Preview to Cloudflare Workers」が実行される
 3. 成功するとPRにプレビューURLがコメントされる
 4. プレビューURLにアクセスすると **Cloudflare Access のログイン画面** が表示される
 5. 「Zitadel」を選択してログイン
@@ -199,34 +226,42 @@ Path: （空白）
 ### 本番デプロイの確認
 
 1. PRをmainブランチにマージ
-2. GitHub Actionsで「Deploy Production to Cloudflare Pages」が実行される
+2. GitHub Actionsで「Deploy Production to Cloudflare Workers」が実行される
 3. 本番URLでサイトが更新される
 
 ---
 
 ## トラブルシューティング
 
+### ビルドが失敗する場合
+
+1. Node.js バージョンが20以上か確認
+2. `pnpm build` が正常に完了するか確認
+3. `pnpm build:worker` のエラーログを確認
+
 ### デプロイが失敗する場合
 
 1. GitHub Secretsが正しく設定されているか確認
 2. Cloudflare APIトークンの権限を確認
-3. GitHub Actionsのログでエラー詳細を確認
+3. `wrangler.toml` の `name` が有効なWorker名か確認
 
 ### Cloudflare Access ログインが失敗する場合
 
 1. Zitadel の Redirect URI が正しいか確認
-   - `https://<team-name>.cloudflareaccess.com/cdn-cgi/access/callback`
 2. Cloudflare Zero Trust の OIDC 設定を確認
 3. Zitadel でユーザーが有効になっているか確認
 
-### 「Access Denied」が表示される場合
+### 404 エラーが発生する場合
 
-1. Cloudflare Access のポリシーを確認
-2. ユーザーがZitadelに登録されているか確認
-3. ポリシーの「Include」設定が正しいか確認
+1. OpenNext のビルドが正常に完了しているか確認
+2. `.open-next/` ディレクトリが生成されているか確認
+3. `wrangler.toml` の `main` パスが正しいか確認
 
-### プレビューURLにアクセスできない場合
+---
 
-1. Cloudflare Access のアプリケーションドメイン設定を確認
-2. `*.challecara.pages.dev` が正しく設定されているか確認
-3. Cloudflare Pages のプロジェクト名と一致しているか確認
+## 参考リンク
+
+- [OpenNext for Cloudflare](https://opennext.js.org/cloudflare)
+- [Cloudflare Workers Documentation](https://developers.cloudflare.com/workers/)
+- [Cloudflare Zero Trust](https://developers.cloudflare.com/cloudflare-one/)
+- [Zitadel Documentation](https://zitadel.com/docs)

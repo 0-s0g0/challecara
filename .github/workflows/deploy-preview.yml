@@ -1,4 +1,4 @@
-name: Deploy Preview to Cloudflare Pages
+name: Deploy Preview to Cloudflare Workers
 
 on:
   pull_request:
@@ -33,7 +33,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build application
+      - name: Build Next.js
         run: pnpm build
         env:
           NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
@@ -44,25 +44,39 @@ jobs:
           NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}
           NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID }}
 
-      - name: Deploy to Cloudflare Pages
+      - name: Build for Cloudflare Workers
+        run: pnpm build:worker
+
+      - name: Deploy to Cloudflare Workers
         id: deploy
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy .next --project-name=${{ secrets.CLOUDFLARE_PROJECT_NAME }} --branch=${{ github.head_ref }}
+          command: versions upload --experimental-versions
+
+      - name: Deploy Preview Version
+        id: deploy-preview
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: versions deploy --experimental-versions --message "PR #${{ github.event.pull_request.number }} - ${{ github.head_ref }}"
+
+      - name: Get Preview URL
+        id: preview-url
+        run: |
+          echo "url=https://challecara.${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.workers.dev" >> $GITHUB_OUTPUT
 
       - name: Comment Preview URL on PR
         uses: actions/github-script@v7
         with:
           script: |
-            const previewUrl = '${{ steps.deploy.outputs.deployment-url }}';
+            const previewUrl = '${{ steps.preview-url.outputs.url }}';
             const prNumber = context.issue.number;
 
-            // コメントのマーカー
-            const marker = '<!-- cloudflare-pages-preview -->';
+            const marker = '<!-- cloudflare-workers-preview -->';
 
-            // 既存のプレビューコメントを検索
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -88,7 +102,6 @@ jobs:
             *このコメントはGitHub Actionsによって自動生成されました*`;
 
             if (existingComment) {
-              // 既存のコメントを更新
               await github.rest.issues.updateComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -97,7 +110,6 @@ jobs:
               });
               console.log('Updated existing preview comment');
             } else {
-              // 新しいコメントを作成
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,

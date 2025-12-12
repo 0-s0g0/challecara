@@ -1,4 +1,4 @@
-name: Deploy Production to Cloudflare Pages
+name: Deploy Production to Cloudflare Workers
 
 on:
   push:
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: production
-      url: ${{ steps.deploy.outputs.deployment-url }}
+      url: ${{ steps.preview-url.outputs.url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,7 +34,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build application
+      - name: Build Next.js
         run: pnpm build
         env:
           NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
@@ -45,13 +45,21 @@ jobs:
           NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}
           NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID }}
 
-      - name: Deploy to Cloudflare Pages
+      - name: Build for Cloudflare Workers
+        run: pnpm build:worker
+
+      - name: Deploy to Cloudflare Workers
         id: deploy
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy .next --project-name=${{ secrets.CLOUDFLARE_PROJECT_NAME }} --branch=main
+          command: deploy
+
+      - name: Get Production URL
+        id: preview-url
+        run: |
+          echo "url=https://challecara.${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.workers.dev" >> $GITHUB_OUTPUT
 
       - name: Deployment Summary
         run: |
@@ -59,6 +67,6 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| 項目 | 値 |" >> $GITHUB_STEP_SUMMARY
           echo "|------|-----|" >> $GITHUB_STEP_SUMMARY
-          echo "| URL | ${{ steps.deploy.outputs.deployment-url }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| URL | https://challecara.\${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.workers.dev |" >> $GITHUB_STEP_SUMMARY
           echo "| コミット | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| デプロイ日時 | $(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M:%S JST') |" >> $GITHUB_STEP_SUMMARY
