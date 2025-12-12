@@ -82,9 +82,9 @@ export function Layout1({ data }: LayoutProps) {
               </>
             ) : (
               <>
-                {data.instagramUsername && <SocialIcon type="instagram" />}
-                {data.xUsername && <SocialIcon type="x" />}
-                {data.facebookUsername && <SocialIcon type="facebook" />}
+                {data.instagramUsername && <SocialIcon type="instagram" username={data.instagramUsername} />}
+                {data.xUsername && <SocialIcon type="x" username={data.xUsername} />}
+                {data.facebookUsername && <SocialIcon type="facebook" username={data.facebookUsername} />}
               </>
             )}
           </div>
@@ -167,9 +167,9 @@ export function Layout2({ data }: LayoutProps) {
           <div className="flex-1">
             <h2 className="text-2xl font-bold" style={{ color: data.textColor || "#1F2937" }}>{data.nickname || "ユーザー名"}</h2>
             <div className="mt-6 flex gap-2">
-              {data.instagramUsername && <SocialIconClear type="instagram" />}
-              {data.xUsername && <SocialIconClear type="x" />}
-              {data.facebookUsername && <SocialIconClear type="facebook" />}
+              {data.instagramUsername && <SocialIconClear type="instagram" username={data.instagramUsername} />}
+              {data.xUsername && <SocialIconClear type="x" username={data.xUsername} />}
+              {data.facebookUsername && <SocialIconClear type="facebook" username={data.facebookUsername} />}
             </div>
           </div>
         </div>
@@ -247,9 +247,9 @@ export function Layout3({ data }: LayoutProps) {
           </p>
 
           <div className="mt-6 flex gap-3 ">
-            {data.instagramUsername && <SocialIconLarge type="instagram" />}
-            {data.xUsername && <SocialIconLarge type="x" />}
-            {data.facebookUsername && <SocialIconLarge type="facebook" />}
+            {data.instagramUsername && <SocialIconLarge type="instagram" username={data.instagramUsername} />}
+            {data.xUsername && <SocialIconLarge type="x" username={data.xUsername} />}
+            {data.facebookUsername && <SocialIconLarge type="facebook" username={data.facebookUsername} />}
           </div>
 
           {data.ideaTags && data.ideaTags.length > 0 ? (
@@ -337,9 +337,9 @@ export function Layout4({ data }: LayoutProps) {
           </div>
 
           <div className="flex gap-4 rounded-2xl bg-white p-4 shadow-md">
-            {data.instagramUsername && <SocialIconLarge type="instagram" />}
-            {data.xUsername && <SocialIconLarge type="x" />}
-            {data.facebookUsername && <SocialIconLarge type="facebook" />}
+            {data.instagramUsername && <SocialIconLarge type="instagram" username={data.instagramUsername} />}
+            {data.xUsername && <SocialIconLarge type="x" username={data.xUsername} />}
+            {data.facebookUsername && <SocialIconLarge type="facebook" username={data.facebookUsername} />}
           </div>
         </div>
       </div>
@@ -347,85 +347,126 @@ export function Layout4({ data }: LayoutProps) {
   )
 }
 
-function SocialIcon({ type }: { type: "instagram" | "x" | "facebook" }) {
+function SocialIcon({ type, username }: { type: "instagram" | "x" | "facebook"; username: string }) {
   const config = {
     instagram: {
       bg: "bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]",
       icon: <FaInstagram className="h-4 w-4 text-white" />,
+      url: `https://www.instagram.com/${username}`,
     },
     x: {
       bg: "bg-[#000000]",
       icon: <FaXTwitter className="h-4 w-4 text-white" />,
+      url: `https://x.com/${username}`,
     },
     facebook: {
       bg: "bg-[#1877F2]",
       icon: <FaFacebook className="h-4 w-4 text-white" />,
+      url: `https://www.facebook.com/share/${username}`,
     },
   }
 
   return (
-    <div className={`flex h-8 w-8 items-center justify-center rounded-full ${config[type].bg}`}>
+    <a
+      href={config[type].url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`flex h-8 w-8 items-center justify-center rounded-full ${config[type].bg} hover:opacity-80 transition-opacity`}
+    >
       {config[type].icon}
-    </div>
+    </a>
   )
 }
 
-function SocialIconSmall({ type }: { type: "instagram" | "x" | "facebook" }) {
-  const icons = {
-    instagram: <FaInstagram className="h-3 w-3 text-white" />,
-    x: <FaXTwitter className="h-3 w-3 text-white" />,
-    facebook: <FaFacebook className="h-3 w-3 text-white" />,
-  }
-
+function SocialIconSmall({ type, username }: { type: "instagram" | "x" | "facebook"; username: string }) {
   const config = {
-    instagram: "bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]",
-    x: "bg-[#000000]",
-    facebook: "bg-[#1877F2]",
+    instagram: {
+      icon: <FaInstagram className="h-3 w-3 text-white" />,
+      bg: "bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]",
+      url: `https://www.instagram.com/${username}`,
+    },
+    x: {
+      icon: <FaXTwitter className="h-3 w-3 text-white" />,
+      bg: "bg-[#000000]",
+      url: `https://x.com/${username}`,
+    },
+    facebook: {
+      icon: <FaFacebook className="h-3 w-3 text-white" />,
+      bg: "bg-[#1877F2]",
+      url: `https://www.facebook.com/share/${username}`,
+    },
   }
 
   return (
-    <div className={`flex h-6 w-6 items-center justify-center rounded-full ${config[type]}`}>
-      {icons[type]}
-    </div>
+    <a
+      href={config[type].url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`flex h-6 w-6 items-center justify-center rounded-full ${config[type].bg} hover:opacity-80 transition-opacity`}
+    >
+      {config[type].icon}
+    </a>
   )
 }
 
-function SocialIconLarge({ type }: { type: "instagram" | "x" | "facebook" }) {
-  const icons = {
-    instagram: <FaInstagram className="h-6 w-6 text-white" />,
-    x: <FaXTwitter className="h-6 w-6 text-white" />,
-    facebook: <FaFacebook className="h-6 w-6 text-white" />,
-  }
-
+function SocialIconLarge({ type, username }: { type: "instagram" | "x" | "facebook"; username: string }) {
   const config = {
-    instagram: "bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]",
-    x: "bg-[#000000]",
-    facebook: "bg-[#1877F2]",
+    instagram: {
+      icon: <FaInstagram className="h-6 w-6 text-white" />,
+      bg: "bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]",
+      url: `https://www.instagram.com/${username}`,
+    },
+    x: {
+      icon: <FaXTwitter className="h-6 w-6 text-white" />,
+      bg: "bg-[#000000]",
+      url: `https://x.com/${username}`,
+    },
+    facebook: {
+      icon: <FaFacebook className="h-6 w-6 text-white" />,
+      bg: "bg-[#1877F2]",
+      url: `https://www.facebook.com/share/${username}`,
+    },
   }
 
   return (
-    <div className={`flex h-12 w-12 items-center justify-center rounded-full ${config[type]}`}>
-      {icons[type]}
-    </div>
+    <a
+      href={config[type].url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`flex h-12 w-12 items-center justify-center rounded-full ${config[type].bg} hover:opacity-80 transition-opacity`}
+    >
+      {config[type].icon}
+    </a>
   )
 }
 
-function SocialIconClear({ type }: { type: "instagram" | "x" | "facebook" }) {
-  const icons = {
-    instagram: <FaInstagram className="h-5 w-5 text-white" />,
-    x: <FaXTwitter className="h-5 w-5 text-white" />,
-    facebook: <FaFacebook className="h-5 w-5 text-white" />,
-  }
-
+function SocialIconClear({ type, username }: { type: "instagram" | "x" | "facebook"; username: string }) {
   const config = {
-    instagram: "bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]",
-    x: "bg-[#000000]",
-    facebook: "bg-[#1877F2]",
+    instagram: {
+      icon: <FaInstagram className="h-5 w-5 text-white" />,
+      bg: "bg-gradient-to-br from-[#833AB4] via-[#FD1D1D] to-[#FCAF45]",
+      url: `https://www.instagram.com/${username}`,
+    },
+    x: {
+      icon: <FaXTwitter className="h-5 w-5 text-white" />,
+      bg: "bg-[#000000]",
+      url: `https://x.com/${username}`,
+    },
+    facebook: {
+      icon: <FaFacebook className="h-5 w-5 text-white" />,
+      bg: "bg-[#1877F2]",
+      url: `https://www.facebook.com/share/${username}`,
+    },
   }
 
   return (
-    <div className={`flex h-10 w-10 items-center justify-center rounded-full ${config[type]}`}>
-      {icons[type]}
-    </div>
+    <a
+      href={config[type].url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`flex h-10 w-10 items-center justify-center rounded-full ${config[type].bg} hover:opacity-80 transition-opacity`}
+    >
+      {config[type].icon}
+    </a>
   )
 }
