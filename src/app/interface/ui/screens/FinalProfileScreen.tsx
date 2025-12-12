@@ -4,6 +4,7 @@ import { getFirebaseAuth } from "@/app/config/firebase/firebaseConfig"
 import { Layout1, Layout2, Layout3, Layout4 } from "@/app/interface/ui/components/ProfileLayouts"
 import { Button } from "@/app/interface/ui/components/ui/button"
 import { Card } from "@/app/interface/ui/components/ui/card"
+import { shouldUseEdgeRuntime } from "@/lib/environment"
 import { signInWithEmailAndPassword } from "firebase/auth"
 import { Check, ChevronLeft, Copy, Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
@@ -52,8 +53,7 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
         nickname: formData.nickname,
       })
 
-      // Create profile with all collected data
-      const result = await createProfile({
+      const profileData = {
         accountId: formData.accountId,
         email: formData.email,
         password: formData.password,
@@ -78,7 +78,27 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
         selectedLayout: formData.selectedLayout,
         backgroundColor: formData.backgroundColor,
         textColor: formData.textColor,
-      })
+      }
+
+      let result
+
+      // Use different implementation based on environment
+      if (shouldUseEdgeRuntime()) {
+        // Cloudflare Pages (PR environment): Use Edge Runtime compatible API route
+        console.log("[FinalProfile] Using Edge Runtime API route")
+        const response = await fetch("/api/profile/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(profileData),
+        })
+        result = await response.json()
+      } else {
+        // Production: Use Server Action
+        console.log("[FinalProfile] Using Server Action")
+        result = await createProfile(profileData)
+      }
 
       console.log("プロフィール作成結果:", result)
 

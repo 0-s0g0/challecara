@@ -1,5 +1,7 @@
-import { getApiDocs } from "@/lib/swagger"
 import { NextResponse } from "next/server"
+import openapiSpec from "@/lib/openapi.json"
+
+export const runtime = "edge"
 
 /**
  * @swagger
@@ -18,6 +20,5 @@ import { NextResponse } from "next/server"
  *               type: object
  */
 export async function GET() {
-  const spec = getApiDocs()
-  return NextResponse.json(spec)
+  return NextResponse.json(openapiSpec)
 }
