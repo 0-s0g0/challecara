@@ -1,3 +1,5 @@
+# Cloudflare Pages Functions用の出力ディレクトリ指定
+pages_build_output_dir = ".open-next"
 #:schema node_modules/wrangler/config-schema.json
 
 name = "challecara"
