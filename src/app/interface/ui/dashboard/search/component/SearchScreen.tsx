@@ -97,7 +97,7 @@ export function SearchScreen() {
               onClick={() => setSelectedTag(undefined)}
               className={`flex-shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                 selectedTag === undefined
-                  ? "bg-gray-900 text-black"
+                  ? "bg-gray-400 text-white"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
@@ -128,7 +128,7 @@ export function SearchScreen() {
 
       <div className="relative z-0 flex-1 overflow-auto p-4 pb-20">
         <div className="mx-auto max-w-md space-y-4">
-          <h2 className="text-lg font-semibold text-gray-800">
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
             {loading ? "読み込み中..." : `投稿 (${filteredBlogs.length})`}
           </h2>
 
@@ -138,7 +138,7 @@ export function SearchScreen() {
               return (
                 <Card
                   key={blog.id}
-                  className="overflow-hidden rounded-2xl border-0 bg-white shadow-sm transition-shadow hover:shadow-md cursor-pointer"
+                  className="overflow-hidden rounded-2xl border-0 bg-white/80 dark:bg-gray-800/80 shadow-sm transition-shadow hover:shadow-md cursor-pointer"
                   onClick={() => router.push(`/profile/${blog.author.uniqueId}`)}
                 >
                   <div className="p-4">
@@ -152,14 +152,14 @@ export function SearchScreen() {
                         }
                       />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-gray-800 truncate">
+                        <p className="text-sm font-semibold text-gray-800 dark:text-white truncate">
                           {blog.author.nickname}
                         </p>
-                        <p className="text-xs text-gray-400">{getTimeAgo(blog.createdAt)}</p>
+                        <p className="text-xs text-gray-400 dark:text-white">{getTimeAgo(blog.createdAt)}</p>
                       </div>
                       {tagInfo && (
                         <div
-                          className="flex-shrink-0 rounded-full px-3 py-1 text-xs font-medium text-black"
+                          className="flex-shrink-0 rounded-full px-3 py-1 text-xs font-medium text-black "
                           style={{ background: tagInfo.gradient }}
                         >
                           <span className="mr-1">{tagInfo.icon}</span>
@@ -168,8 +168,8 @@ export function SearchScreen() {
                       )}
                     </div>
 
-                    <h3 className="mb-2 font-semibold text-gray-900 text-lg">{blog.title}</h3>
-                    <p className="line-clamp-3 text-sm text-gray-600 whitespace-pre-wrap">
+                    <h3 className="mb-2 font-semibold text-gray-900 dark:text-white text-lg">{blog.title}</h3>
+                    <p className="line-clamp-3 text-sm text-gray-600 dark:text-white whitespace-pre-wrap">
                       {blog.content}
                     </p>
                   </div>

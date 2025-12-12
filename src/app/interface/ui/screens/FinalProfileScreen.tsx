@@ -147,7 +147,7 @@ export function FinalProfileScreen({ onNext, onBack }: FinalProfileScreenProps) 
           <Card className="overflow-hidden mt-4 rounded-2xl border-0 bg-white shadow-lg">
             <div className="flex items-center gap-3 p-4">
               <div className="flex-1 overflow-hidden">
-                <p className="truncate text-sm font-medium text-primary">{profileUrl}</p>
+                <p className="truncate text-sm font-medium text-black">{profileUrl}</p>
               </div>
               <Button
                 onClick={handleCopyUrl}

@@ -101,10 +101,6 @@ export function SettingsScreen() {
       ],
     },
     {
-      title: "通知",
-      items: [{ icon: Bell, label: "通知設定", description: "いいね、コメント、フォロー" }],
-    },
-    {
       title: "プライバシーとセキュリティ",
       items: [
         { icon: Lock, label: "パスワード変更", description: "アカウントのセキュリティ" },
@@ -115,10 +111,6 @@ export function SettingsScreen() {
           action: "profile-secret",
         },
       ],
-    },
-    {
-      title: "サポート",
-      items: [{ icon: HelpCircle, label: "ヘルプセンター", description: "よくある質問と使い方" }],
     },
   ]
 
@@ -147,25 +139,25 @@ export function SettingsScreen() {
             <>
               {/* Profile URL Section */}
               <div className="space-y-2">
-                <h2 className="px-2 text-sm font-semibold text-gray-500">
+                <h2 className="px-2 text-sm font-semibold text-gray-500 dark:text-white">
                   あなたの公開プロフィールURL
                 </h2>
                 {isLoading ? (
-                  <Card className="overflow-hidden rounded-2xl border-0 bg-white shadow-sm">
+                  <Card className="overflow-hidden rounded-2xl border-0 dark:bg-gray-800/ shadow-sm">
                     <div className="p-4">
                       <p className="text-sm text-gray-500">読み込み中...</p>
                     </div>
                   </Card>
                 ) : uniqueId ? (
-                  <Card className="overflow-hidden rounded-2xl border-0 bg-white shadow-sm">
+                  <Card className="overflow-hidden rounded-2xl border-0 bg-white dark:bg-gray-600/80 shadow-sm">
                     <div className="p-4">
                       <div className="flex items-center gap-3">
                         <div className="rounded-full bg-blue-100 p-2">
                           <Link2 className="h-5 w-5 text-blue-600" />
                         </div>
                         <div className="flex-1 overflow-hidden">
-                          <p className="truncate text-sm font-medium text-blue-600">{profileUrl}</p>
-                          <p className="text-xs text-gray-500">このURLをシェアして人とつながろう</p>
+                          <p className="truncate text-sm font-medium text-blue-600 dark:text-blue-200">{profileUrl}</p>
+                          <p className="text-xs text-gray-500 dark:text-white">このURLをシェアして人とつながろう</p>
                         </div>
                         <button
                           type="button"
@@ -194,8 +186,8 @@ export function SettingsScreen() {
 
               {settingsGroups.map((group, groupIndex) => (
                 <div key={groupIndex} className="space-y-2">
-                  <h2 className="px-2 text-sm font-semibold text-gray-500">{group.title}</h2>
-                  <Card className="overflow-hidden rounded-2xl border-0 bg-white shadow-sm">
+                  <h2 className="px-2 text-sm font-semibold text-gray-500 dark:text-white">{group.title}</h2>
+                  <Card className="overflow-hidden rounded-2xl border-0 bg-white dark:bg-gray-600/80 shadow-sm">
                     {group.items.map((item, itemIndex) => {
                       const Icon = item.icon
                       return (
@@ -210,11 +202,11 @@ export function SettingsScreen() {
                           }}
                         >
                           <div className="rounded-full bg-gray-100 p-2">
-                            <Icon className="h-5 w-5 text-gray-600" />
+                            <Icon className="h-5 w-5 text-gray-600 " />
                           </div>
                           <div className="flex-1 text-left">
-                            <p className="font-medium text-gray-800">{item.label}</p>
-                            <p className="text-sm text-gray-500">{item.description}</p>
+                            <p className="font-medium text-gray-800 dark:text-white">{item.label}</p>
+                            <p className="text-sm text-gray-500 dark:text-white">{item.description}</p>
                           </div>
                           <ChevronRight className="h-5 w-5 text-gray-400" />
                         </button>
@@ -225,7 +217,7 @@ export function SettingsScreen() {
               ))}
 
               {/* Logout Button */}
-              <Card className="overflow-hidden rounded-2xl border-0 bg-white shadow-sm">
+              <Card className="overflow-hidden rounded-2xl border-0 bg-white dark:bg-gray-600/80 shadow-sm">
                 <button
                   type="button"
                   onClick={handleLogout}
@@ -236,7 +228,7 @@ export function SettingsScreen() {
                     <LogOut className="h-5 w-5 text-red-600" />
                   </div>
                   <div className="flex-1 text-left">
-                    <p className="font-medium text-red-600">
+                    <p className="font-medium text-red-600 dark:text-red-200">
                       {isLoggingOut ? "ログアウト中..." : "ログアウト"}
                     </p>
                   </div>

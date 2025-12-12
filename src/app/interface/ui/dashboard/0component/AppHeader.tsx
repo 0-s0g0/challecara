@@ -36,8 +36,9 @@ export function AppHeader() {
                       alt="TsunaguLink Logo"
                       width={70}
                       height={50}
-                      className="mx-auto dark:hidden"
+                      className="mx-auto "
               />
+              
           </button>
 
           {/* 右側: ユーザー情報 / ログインボタン */}

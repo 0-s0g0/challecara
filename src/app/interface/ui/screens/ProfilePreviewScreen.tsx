@@ -178,7 +178,7 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
 
       
         <div className="mt-6 text-center">
-          <div className="text-xl text-amber-950">デザインを選ぼう</div>
+          <div className="text-xl text-amber-950 dark:text-white">デザインを選ぼう</div>
         </div>
         <div className="relative flex-1 overflow-hidden">
           {/* Layout Indicators */}
@@ -224,7 +224,7 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
                           <Button
                             onClick={() => setIsEditing(!isEditing)}
                             variant="outline"
-                            className="rounded-full bg-white/80 px-6 hover:bg-white"
+                            className="rounded-full text-black bg-white/80 px-6 hover:bg-white"
                           >
                             {isEditing ? "閉じる" : "色の変更"}
                           </Button>
@@ -232,7 +232,7 @@ export function ProfilePreviewScreen({ onBack, onNext }: ProfilePreviewScreenPro
 
                         {/* Inline Edit Panel */}
                         {isEditing && (
-                          <div className="mx-auto max-w-sm rounded-2xl bg-white/90 backdrop-blur-sm p-6 shadow-lg space-y-4">
+                          <div className="mx-auto max-w-sm rounded-2xle text-black bg-white/90 backdrop-blur-sm p-6 shadow-lg space-y-4">
                             {/* Background Type Selector */}
                             <div className="space-y-2">
                               <p className="text-sm text-gray-600">背景タイプ</p>
