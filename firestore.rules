@@ -59,18 +59,30 @@ service cloud.firestore {
     match /socialLinks/{linkId} {
       // Anyone can read
       allow read: if true;
-      // Only owner can write (check on create using request.resource)
-      allow create: if isAuthenticated();
-      allow update, delete: if isAuthenticated();
+      // Authenticated users can create their own social links
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      // Only the owner can update/delete their own social links
+      allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
     }
 
     // Blog posts
     match /blogPosts/{postId} {
       // Anyone can read all posts (for public profiles)
       allow read: if true;
-      // Only authenticated users can write
-      allow create: if isAuthenticated();
-      allow update, delete: if isAuthenticated();
+      // Authenticated users can create their own posts
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      // Only the owner can update/delete their own posts
+      allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // Profile secrets (秘密の暗号)
+    match /profileSecrets/{userId} {
+      // Anyone can read (needed for authentication check)
+      allow read: if true;
+      // Only the owner can create/update/delete
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+      allow delete: if isOwner(userId);
     }
   }
 }

@@ -6,6 +6,8 @@ import { Button } from "@/app/interface/ui/components/ui/button"
 import { Input } from "@/app/interface/ui/components/ui/input"
 import { Label } from "@/app/interface/ui/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/interface/ui/components/ui/tabs"
+import { RefreshCw } from "lucide-react"
+import { useRouter } from "next/navigation"
 import type * as React from "react"
 import { useEffect, useState } from "react"
 
@@ -24,11 +26,23 @@ const generateAccountId = () => {
   return `${prefix}${randomNum}`
 }
 
+// Generate random email address (6 characters: alphanumeric + @gmail.com)
+const generateRandomEmail = () => {
+  const chars = "abcdefghijklmnopqrstuvwxyz0123456789"
+  let randomStr = ""
+  for (let i = 0; i < 6; i++) {
+    randomStr += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  return `${randomStr}@gmail.com`
+}
+
 export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
+  const router = useRouter()
   const setLoginData = useRegistrationStore((state) => state.setLoginData)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState("signin")
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
   // Sign In form state
   const [signInData, setSignInData] = useState({
@@ -40,22 +54,32 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
   const [signUpData, setSignUpData] = useState({
     email: "",
     password: "",
-    confirmPassword: "",
-    nickname: "",
     accountId: "",
   })
 
-  // Auto-generate accountId when modal opens or switches to signup tab
+  // Auto-generate accountId and email when modal opens or switches to signup tab
   useEffect(() => {
-    if (open && activeTab === "signup" && !signUpData.accountId) {
-      setSignUpData((prev) => ({ ...prev, accountId: generateAccountId() }))
+    if (open && activeTab === "signup") {
+      if (!signUpData.accountId) {
+        setSignUpData((prev) => ({ ...prev, accountId: generateAccountId() }))
+      }
+      if (!signUpData.email) {
+        setSignUpData((prev) => ({ ...prev, email: generateRandomEmail() }))
+      }
     }
-  }, [open, activeTab, signUpData.accountId])
+  }, [open, activeTab, signUpData.accountId, signUpData.email])
 
   // Clear error when switching tabs
   const handleTabChange = (value: string) => {
     setActiveTab(value)
     setError(null)
+  }
+
+  // Refresh email address
+  const handleRefreshEmail = () => {
+    setIsRefreshing(true)
+    setSignUpData((prev) => ({ ...prev, email: generateRandomEmail() }))
+    setTimeout(() => setIsRefreshing(false), 500)
   }
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -73,9 +97,16 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
         // Check tutorial completion status
         if (result.user.tutorialCompleted) {
           // チュートリアル完了済み → ダッシュボードへ
-          window.location.href = "/interface/ui/dashboard"
+          // Next.js Routerを使用してAuthContextの状態を確実に更新
+          console.log("[SignModal] ダッシュボードへリダイレクト中...")
+          router.push("/interface/ui/dashboard")
+          // AuthContextの更新を待つために少し遅延
+          setTimeout(() => {
+            router.refresh()
+          }, 100)
         } else {
           // チュートリアル未完了 → 続きから（onSuccessで処理）
+          console.log("[SignModal] チュートリアル未完了、続きから再開")
           if (onSuccess) {
             onSuccess()
           }
@@ -84,6 +115,7 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
         setError(result.error || "サインインに失敗しました")
       }
     } catch (err) {
+      console.error("[SignModal] サインインエラー:", err)
       setError(err instanceof Error ? err.message : "サインインに失敗しました")
     } finally {
       setIsLoading(false)
@@ -96,12 +128,6 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
     setError(null)
 
     // Validation
-    if (signUpData.password !== signUpData.confirmPassword) {
-      setError("パスワードが一致しません")
-      setIsLoading(false)
-      return
-    }
-
     if (signUpData.password.length < 8) {
       setError("パスワードは8文字以上である必要があります")
       setIsLoading(false)
@@ -118,8 +144,6 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
       setSignUpData({
         email: "",
         password: "",
-        confirmPassword: "",
-        nickname: "",
         accountId: "",
       })
 
@@ -182,7 +206,7 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                         onChange={(e) => setSignInData({ ...signInData, email: e.target.value })}
                         required
                         disabled={isLoading}
-                        className="h-12 rounded-2xl border-gray-200"
+                        className="h-12 rounded-2xl border-gray-200 text-zinc-800"
                       />
                     </div>
 
@@ -198,7 +222,8 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                         onChange={(e) => setSignInData({ ...signInData, password: e.target.value })}
                         required
                         disabled={isLoading}
-                        className="h-12 rounded-2xl border-gray-200"
+                        minLength={8}
+                        className="h-12 rounded-2xl border-gray-200 text-zinc-800"
                       />
                     </div>
 
@@ -230,37 +255,35 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                 <TabsContent value="signup" className="mt-0">
                   <form onSubmit={handleSignUp} className="space-y-6">
                     <div className="space-y-2">
-                      <Label htmlFor="signup-email" className="text-sm text-gray-600">
-                        メールアドレス
-                      </Label>
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="signup-email" className="text-sm text-gray-600">
+                          メールアドレス
+                        </Label>
+                        <button
+                          type="button"
+                          onClick={handleRefreshEmail}
+                          disabled={isLoading}
+                          className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs text-[#8B7355] hover:bg-[#8B7355]/10 disabled:opacity-50 transition-colors"
+                        >
+                          <RefreshCw
+                            className={`h-3.5 w-3.5 ${isRefreshing ? "animate-spin" : ""}`}
+                          />
+                          <span>ランダム</span>
+                        </button>
+                      </div>
                       <Input
                         id="signup-email"
                         type="email"
-                        placeholder="you@example.com"
+                        placeholder="xxxxxx@gmail.com"
                         value={signUpData.email}
                         onChange={(e) => setSignUpData({ ...signUpData, email: e.target.value })}
                         required
                         disabled={isLoading}
-                        className="h-12 rounded-2xl border-gray-200"
+                        className="h-12 rounded-2xl border-gray-200 text-zinc-800"
                       />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-nickname" className="text-sm text-gray-600">
-                        ニックネーム
-                      </Label>
-                      <Input
-                        id="signup-nickname"
-                        type="text"
-                        placeholder="あなたの名前"
-                        value={signUpData.nickname}
-                        onChange={(e) => setSignUpData({ ...signUpData, nickname: e.target.value })}
-                        required
-                        disabled={isLoading}
-                        minLength={1}
-                        maxLength={50}
-                        className="h-12 rounded-2xl border-gray-200"
-                      />
+                      <p className="text-xs text-gray-500">
+                        自動生成されたメールアドレスです（変更可能）
+                      </p>
                     </div>
 
                     <div className="space-y-2">
@@ -276,31 +299,9 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
                         required
                         disabled={isLoading}
                         minLength={8}
-                        className="h-12 rounded-2xl border-gray-200"
+                        className="h-12 rounded-2xl border-gray-200 text-zinc-800"
                       />
                       <p className="text-xs text-gray-500">8文字以上</p>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-confirm-password" className="text-sm text-gray-600">
-                        パスワード（確認）
-                      </Label>
-                      <Input
-                        id="signup-confirm-password"
-                        type="password"
-                        placeholder="••••••••"
-                        value={signUpData.confirmPassword}
-                        onChange={(e) =>
-                          setSignUpData({
-                            ...signUpData,
-                            confirmPassword: e.target.value,
-                          })
-                        }
-                        required
-                        disabled={isLoading}
-                        minLength={8}
-                        className="h-12 rounded-2xl border-gray-200"
-                      />
                     </div>
 
                     {error && <p className="text-sm text-red-500">{error}</p>}

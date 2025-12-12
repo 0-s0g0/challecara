@@ -25,19 +25,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Subscribe to Firebase Auth state changes
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      console.log("[AuthContext] Auth状態変更:", firebaseUser?.uid || "ログアウト")
       setFirebaseUser(firebaseUser)
 
       if (firebaseUser) {
         // Fetch user data from Firestore using UseCase
         try {
+          console.log("[AuthContext] ユーザーデータを取得中:", firebaseUser.uid)
           const getProfileUseCase = UseCaseFactory.createGetProfileUseCase()
           const profileData = await getProfileUseCase.execute(firebaseUser.uid)
           setUser(profileData.user)
+          console.log("[AuthContext] ユーザーデータ取得成功:", profileData.user.nickname)
         } catch (error) {
-          console.error("ユーザーデータの取得エラー:", error)
+          console.error("[AuthContext] ユーザーデータの取得エラー:", error)
+          // エラーが発生してもnullにして続行（ダッシュボードでエラー表示）
           setUser(null)
         }
       } else {
+        console.log("[AuthContext] ユーザーがログアウトしました")
         setUser(null)
       }
 
