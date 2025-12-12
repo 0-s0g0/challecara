@@ -3,6 +3,7 @@
 import { LogIn, UserCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "../../../context/AuthContext"
+import Image from "next/image"
 
 export function AppHeader() {
   const router = useRouter()
@@ -30,7 +31,13 @@ export function AppHeader() {
             className="text-xl font-bold text-gray-900 cursor-pointer"
             onClick={() => router.push("/interface/ui/dashboard")} // ホームへの遷移を想定
           >
-            TsunaguLink
+            <Image
+              src="/TsunaguLink-logo.svg"
+              alt="TsunaguLink Logo"
+              width={70}
+              height={50}
+              className="mx-auto "
+            />
           </button>
 
           {/* 右側: ユーザー情報 / ログインボタン */}
