@@ -71,7 +71,7 @@ export function BlogCreateScreen() {
               placeholder="ブログのタイトルを入力"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="h-12 rounded-2xl border-gray-200"
+              className="h-12 rounded-2xl border-gray-200 bg-red-50 text-gray-600"
             />
           </div>
 
@@ -85,7 +85,7 @@ export function BlogCreateScreen() {
               placeholder="ブログの内容を入力"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="min-h-64 rounded-2xl border-gray-200"
+              className="min-h-64 rounded-2xl border-gray-200 bg-red-50 text-gray-600"
             />
           </div>
 
@@ -123,7 +123,7 @@ export function BlogCreateScreen() {
                     {/* テキスト */}
                     <div className="relative z-10 flex flex-col items-center justify-center text-center">
                       <span
-                        className={`font-bold text-xs xl:text-xl  ${isSelected ? "amber-900" : "text-amber-950"}`}
+                        className={`font-bold text-xs xl:text-xl  ${isSelected ? "text-amber-900" : "text-amber-950"}`}
                       >
                         {tagInfo.name}
                       </span>

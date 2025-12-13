@@ -173,7 +173,7 @@ export default function DashboardPage() {
       <div className="flex-1">
         <div className="h-full ">
           {/* 修正3: min-h-screen を削除し、画面いっぱいに広がりすぎないようにする */}
-          <div className="flex h-full mt-3 justify-center">
+          <div className="flex h-full mt-3 p-4 justify-center">
             <div className="w-full max-w-sm">
               <SelectedLayout data={layoutData} />
             </div>

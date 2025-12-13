@@ -10,6 +10,9 @@ import { RefreshCw } from "lucide-react"
 import { useRouter } from "next/navigation"
 import type * as React from "react"
 import { useEffect, useState } from "react"
+import { signInWithEmailAndPassword } from "firebase/auth"
+import { getFirebaseAuth } from "@/app/config/firebase/firebaseConfig"
+import { UseCaseFactory } from "@/app/config/factories/useCaseFactory"
 
 interface SignModalProps {
   open: boolean
@@ -88,35 +91,51 @@ export function SignModal({ open, onOpenChange, onSuccess }: SignModalProps) {
     setError(null)
 
     try {
-      const result = await login(signInData.email, signInData.password)
+      // クライアント側で直接Firebase Authにログイン
+      const auth = getFirebaseAuth()
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        signInData.email,
+        signInData.password
+      )
 
-      if (result.success && result.user) {
-        onOpenChange(false)
-        setSignInData({ email: "", password: "" })
+      console.log("[SignModal] Firebase認証成功:", userCredential.user.uid)
 
-        // Check tutorial completion status
-        if (result.user.tutorialCompleted) {
-          // チュートリアル完了済み → ダッシュボードへ
-          // Next.js Routerを使用してAuthContextの状態を確実に更新
-          console.log("[SignModal] ダッシュボードへリダイレクト中...")
-          router.push("/interface/ui/dashboard")
-          // AuthContextの更新を待つために少し遅延
-          setTimeout(() => {
-            router.refresh()
-          }, 100)
-        } else {
-          // チュートリアル未完了 → 続きから（onSuccessで処理）
-          console.log("[SignModal] チュートリアル未完了、続きから再開")
-          if (onSuccess) {
-            onSuccess()
-          }
-        }
+      // Firestoreからユーザー情報を取得
+      const getProfileUseCase = UseCaseFactory.createGetProfileUseCase()
+      const profileData = await getProfileUseCase.execute(userCredential.user.uid)
+
+      onOpenChange(false)
+      setSignInData({ email: "", password: "" })
+
+      // Check tutorial completion status
+      if (profileData.user.tutorialCompleted) {
+        // チュートリアル完了済み → ダッシュボードへ
+        console.log("[SignModal] ダッシュボードへリダイレクト中...")
+        router.push("/interface/ui/dashboard")
       } else {
-        setError(result.error || "サインインに失敗しました")
+        // チュートリアル未完了 → 続きから（onSuccessで処理）
+        console.log("[SignModal] チュートリアル未完了、続きから再開")
+        if (onSuccess) {
+          onSuccess()
+        }
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("[SignModal] サインインエラー:", err)
-      setError(err instanceof Error ? err.message : "サインインに失敗しました")
+
+      // Firebase Auth エラーメッセージをユーザーフレンドリーに変換
+      let errorMessage = "サインインに失敗しました"
+      if (err.code === "auth/user-not-found") {
+        errorMessage = "このメールアドレスは登録されていません"
+      } else if (err.code === "auth/wrong-password" || err.code === "auth/invalid-credential") {
+        errorMessage = "メールアドレスまたはパスワードが正しくありません"
+      } else if (err.code === "auth/too-many-requests") {
+        errorMessage = "ログイン試行回数が多すぎます。しばらく待ってから再度お試しください"
+      } else if (err instanceof Error) {
+        errorMessage = err.message
+      }
+
+      setError(errorMessage)
     } finally {
       setIsLoading(false)
     }

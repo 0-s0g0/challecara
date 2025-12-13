@@ -45,10 +45,7 @@ export function IdeaSetupScreen({ onNext, onBack }: IdeaSetupScreenProps) {
       <Step3Background />
       <div className="z-10 mt-35 flex flex-1 flex-col space-y-6 bg-gray-200/30 dark:bg-gray-50/50 backdrop-blur-md p-6 rounded-3xl text-amber-950">
         <div className="mt-2 text-center">
-          <div className="text-xl text-amber-950">あなたのアイデア・想いを投稿しよう</div>
-          <p className="text-sm text-amber-900/70 mt-2">
-            起業したいこと、実現したい未来を自由に書いてみよう
-          </p>
+          <div className="text-xl text-amber-950">アイデア・想いを投稿しよう</div>
         </div>
 
         <div className="space-y-2">
@@ -60,7 +57,7 @@ export function IdeaSetupScreen({ onNext, onBack }: IdeaSetupScreenProps) {
             type="text"
             value={ideaTitle}
             onChange={(e) => setIdeaTitle(e.target.value)}
-            placeholder="例：AIで学校の時間割を最適化したい"
+            placeholder="例：AIでお店を最適化したい"
             className="h-12 rounded-2xl border-none bg-[#FF442C]/5 backdrop-blur-sm"
           />
         </div>
@@ -80,7 +77,7 @@ export function IdeaSetupScreen({ onNext, onBack }: IdeaSetupScreenProps) {
 
         <div className="space-y-3">
           <Label className="text-lg text-amber-950">カテゴリータグ</Label>
-          <div className="grid grid-cols-5 gap-2">
+          <div className="grid grid-cols-4 xl:grid-cols-5 gap-2">
             {IDEA_TAG_LIST.map((tag) => {
               const tagInfo = IDEA_TAGS[tag]
               const isSelected = ideaTag === tag
